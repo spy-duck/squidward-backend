@@ -1,6 +1,6 @@
 export type CreateNodeInterface = {
     name: string;
     host: string;
-    port: string;
-    description: string;
+    port: number;
+    description?: string | null;
 }

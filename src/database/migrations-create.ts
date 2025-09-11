@@ -4,6 +4,7 @@ import * as process from 'node:process';
 import { snakeCase } from 'lodash-es';
 import fs from 'node:fs/promises';
 import { DateTime } from 'luxon';
+import consola from 'consola';
 import path from 'path';
 
 function makeMigrationTemplate(migrationName: string, now: DateTime) {
@@ -12,6 +13,7 @@ function makeMigrationTemplate(migrationName: string, now: DateTime) {
 ** [Docs: https://kysely.dev/docs/migrations]
 **/
 import { Kysely } from 'kysely';
+
 import { TDatabase } from '@/database/database';
 
 export async function up(database: Kysely<TDatabase>): Promise<void> {
@@ -40,7 +42,7 @@ async function main() {
     }
 
     if (!name) {
-        console.error('Migration name is required');
+        consola.error('Migration name is required');
         process.exit(9);
         return;
     }
@@ -55,6 +57,6 @@ async function main() {
 
 main()
     .then((fullMigrationPath: string | undefined) => {
-        console.log(`# Migration created: ${ fullMigrationPath }`);
+        consola.log(`# Migration created: ${ fullMigrationPath }`);
         process.exit(0);
     });

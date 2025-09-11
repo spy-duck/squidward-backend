@@ -1,0 +1,7 @@
+{
+  "name": "@swuidward/contracts",
+  "packageManager": "yarn@4.9.4",
+  "dependencies": {
+    "zod": "^4.1.8"
+  }
+}

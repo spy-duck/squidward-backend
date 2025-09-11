@@ -28,6 +28,7 @@
     "bcrypt": "^6.0.0",
     "command-line-args": "^6.0.1",
     "compression": "^1.8.1",
+    "consola": "^3.4.2",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "kysely": "^0.28.5",
@@ -40,7 +41,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "winston": "^3.17.0",
-    "zod": "^4.1.7"
+    "zod": "^4.1.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

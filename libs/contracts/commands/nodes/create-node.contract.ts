@@ -13,10 +13,11 @@ export namespace CreateNodeContract {
     );
     
     export const RequestSchema = z.object({
-        name: z.string(),
-        host: z.string(),
-        port: z.string(),
-        description: z.string(),
+        name: z.string().min(2).nonempty(),
+        host: z.url().nonempty()
+            .or(z.ipv4().nonempty()),
+        port: z.number().int(),
+        description: z.string().optional().nullable(),
     });
     
     export type Request = z.infer<typeof RequestSchema>;

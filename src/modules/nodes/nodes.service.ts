@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 
+import { NodesListResponseModel } from '@/modules/nodes/models/nodes-list-response.model';
 import { ICommandResponse } from '@/common/types';
 import { ERRORS } from '@contract/constants';
 
@@ -40,6 +41,30 @@ export class NodesService {
                 success: false,
                 code: ERRORS.INTERNAL_SERVER_ERROR.code,
                 response: new CreateNodeResponseModel(false, message),
+            };
+        }
+    }
+    
+    async nodesList(): Promise<ICommandResponse<NodesListResponseModel>> {
+        try {
+            return {
+                success: true,
+                response: new NodesListResponseModel(
+                    true,
+                    null,
+                    await this.nodesRepository.getAll(),
+                ),
+            };
+        } catch (error) {
+            this.logger.error(error);
+            let message = '';
+            if (error instanceof Error) {
+                message = error.message;
+            }
+            return {
+                success: false,
+                code: ERRORS.INTERNAL_SERVER_ERROR.code,
+                response: new NodesListResponseModel(false, message),
             };
         }
     }
