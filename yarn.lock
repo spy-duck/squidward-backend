@@ -3449,7 +3449,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"consola@npm:^3.2.3":
+"consola@npm:^3.2.3, consola@npm:^3.4.2":
   version: 3.4.2
   resolution: "consola@npm:3.4.2"
   checksum: 10c0/7cebe57ecf646ba74b300bcce23bff43034ed6fbec9f7e39c27cee1dc00df8a21cd336b466ad32e304ea70fba04ec9e890c200270de9a526ce021ba8a7e4c11a
@@ -7296,6 +7296,7 @@ __metadata:
     bcrypt: "npm:^6.0.0"
     command-line-args: "npm:^6.0.1"
     compression: "npm:^1.8.1"
+    consola: "npm:^3.4.2"
     eslint: "npm:^9.18.0"
     eslint-plugin-paths: "npm:^1.1.0"
     eslint-plugin-perfectionist: "npm:^4.15.0"

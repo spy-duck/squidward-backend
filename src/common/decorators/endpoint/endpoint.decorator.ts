@@ -1,5 +1,3 @@
-import { EndpointDetails } from '@contract/constants/endpoint-details';
-
 import {
     applyDecorators,
     Patch,
@@ -11,6 +9,8 @@ import {
     HttpCode,
     Type,
 } from '@nestjs/common';
+
+import { EndpointDetails } from '@contract/constants/endpoint-details';
 
 
 

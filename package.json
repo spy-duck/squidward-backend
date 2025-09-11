@@ -28,6 +28,7 @@
     "bcrypt": "^6.0.0",
     "command-line-args": "^6.0.1",
     "compression": "^1.8.1",
+    "consola": "^3.4.2",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "kysely": "^0.28.5",

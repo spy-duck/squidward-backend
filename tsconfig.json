@@ -18,7 +18,7 @@
         "./src/*"
       ],
       "@contract/*": [
-        "./src/contracts/*"
+        "./libs/contracts/*"
       ]
     },
     "incremental": true,
