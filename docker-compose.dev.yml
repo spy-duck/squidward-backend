@@ -1,0 +1,48 @@
+services:
+  squidward-db:
+    image: postgres:17.6-bookworm
+    environment:
+      POSTGRES_HOST_FILE: /run/secrets/postgres_host
+      POSTGRES_PORT_FILE: /run/secrets/postgres_port
+      POSTGRES_DB_FILE: /run/secrets/postgres_db
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      TZ: ${TZ}
+      PGTZ: ${TZ}
+    network_mode: host
+    volumes:
+      - squidward-db-vol:/var/lib/postgresql/data
+    secrets:
+      - postgres_host
+      - postgres_port
+      - postgres_db
+      - postgres_user
+      - postgres_password
+
+volumes:
+  squidward-db-vol:
+    driver: local
+    external: false
+    name: squidward-db-vol
+
+networks:
+  squidward-network-internal:
+    name: squidward-network-internal
+    internal: true
+    external: false
+  squidward-network-external:
+    name: squidward-network-internal
+    driver: bridge
+    external: true
+
+secrets:
+  postgres_host:
+    environment: POSTGRES_HOST
+  postgres_port:
+    environment: POSTGRES_PORT
+  postgres_db:
+    environment: POSTGRES_DB
+  postgres_user:
+    environment: POSTGRES_USER
+  postgres_password:
+    environment: POSTGRES_PASSWORD

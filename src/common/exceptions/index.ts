@@ -1,0 +1,1 @@
+export * from './http-exeception-with-error-code.type';
