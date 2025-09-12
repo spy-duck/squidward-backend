@@ -3,8 +3,13 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ICommandResponse } from '@/common/types';
 import { ERRORS } from '@contract/constants';
 
-import { UpdateNodeResponseModel, CreateNodeResponseModel, NodesListResponseModel } from './models';
-import { CreateNodeInterface, UpdateNodeInterface } from './interfaces';
+import {
+    UpdateNodeResponseModel,
+    CreateNodeResponseModel,
+    NodesListResponseModel,
+    RemoveNodeResponseModel,
+} from './models';
+import { CreateNodeInterface, RemoveNodeInterface, UpdateNodeInterface } from './interfaces';
 import { NodesRepository } from './repositories/nodes.repository';
 import { NodeEntity } from './entities/node.entity';
 
@@ -79,6 +84,27 @@ export class NodesService {
                     description: request.description,
                 })
             )
+            return {
+                success: true,
+                response: new CreateNodeResponseModel(true),
+            };
+        } catch (error) {
+            this.logger.error(error);
+            let message = '';
+            if (error instanceof Error) {
+                message = error.message;
+            }
+            return {
+                success: false,
+                code: ERRORS.INTERNAL_SERVER_ERROR.code,
+                response: new CreateNodeResponseModel(false, message),
+            };
+        }
+    }
+    
+    async removeNode(request: RemoveNodeInterface): Promise<ICommandResponse<RemoveNodeResponseModel>> {
+        try {
+            await this.nodesRepository.delete(request.uuid);
             return {
                 success: true,
                 response: new CreateNodeResponseModel(true),
