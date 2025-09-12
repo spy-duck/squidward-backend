@@ -1734,6 +1734,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@swuidward-node/contracts@file:../squidward-node/libs/contracts::locator=squidward-backend%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@swuidward-node/contracts@file:../squidward-node/libs/contracts#../squidward-node/libs/contracts::hash=e308a7&locator=squidward-backend%40workspace%3A."
+  dependencies:
+    zod: "npm:^4.1.8"
+  checksum: 10c0/cc5ab8fca2a26cb05e1e3daaeb47d0f6208a55191d4e5e28bbb086c90e71902fa7e6ac1e4130f45943064ecf78fb0a277e063547d091235d18fe2d7e0a5ed5d6
+  languageName: node
+  linkType: hard
+
 "@tokenizer/inflate@npm:^0.2.7":
   version: 0.2.7
   resolution: "@tokenizer/inflate@npm:0.2.7"
@@ -7282,6 +7291,7 @@ __metadata:
     "@nestjs/platform-express": "npm:^11.0.1"
     "@nestjs/schematics": "npm:^11.0.0"
     "@nestjs/testing": "npm:^11.0.1"
+    "@swuidward-node/contracts": "file:../squidward-node/libs/contracts"
     "@types/bcrypt": "npm:^6"
     "@types/command-line-args": "npm:^5.2.3"
     "@types/compression": "npm:^1"
