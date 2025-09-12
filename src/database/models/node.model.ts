@@ -6,8 +6,13 @@ export interface NodeModel {
     host: string;
     port: number;
     description: string | null;
+    isEnabled: boolean;
+    isConnected: boolean;
+    isOnline: boolean;
     createdAt?: Date;
     updatedAt?: Date;
+    lastConnectedAt?: Date;
+    lastOnlineAt?: Date;
 }
 
 export type NodeEntityInsertable = Insertable<NodeModel>;

@@ -37,6 +37,15 @@ export class NodesRepository {
         return nodes.map(NodesMapper.toEntity);
     }
     
+    async getEnabledList(): Promise<NodeEntity[]> {
+        const nodes = await this.db
+            .selectFrom('nodes')
+            .selectAll()
+            .where('isEnabled', '=', true)
+            .execute();
+        return nodes.map(NodesMapper.toEntity);
+    }
+    
     async delete(nodeUuid: string): Promise<void> {
         await this.db
             .deleteFrom('nodes')

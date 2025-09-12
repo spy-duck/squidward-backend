@@ -16,6 +16,12 @@ export const NodeSchema = z.object({
         .datetime()
         .optional()
         .transform((str) => str && new Date(str)),
+    isEnabled: z.boolean(),
+    isConnected: z.boolean(),
+    isOnline: z.boolean(),
+    lastConnectedAt: z.iso.datetime().nullable(),
+    lastOnlineAt: z.iso.datetime().nullable(),
+    
 });
 
 export type TNode = z.infer<typeof NodeSchema>;

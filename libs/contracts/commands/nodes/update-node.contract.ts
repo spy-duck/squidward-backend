@@ -13,7 +13,15 @@ export namespace UpdateNodeContract {
         'Update node',
     );
     
-    export const RequestSchema = NodeSchema;
+    export const RequestSchema = NodeSchema
+        .pick({
+            uuid: true,
+            name: true,
+            host: true,
+            port: true,
+            description: true,
+            isEnabled: true,
+        });
     
     export type Request = z.infer<typeof RequestSchema>;
     

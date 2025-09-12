@@ -82,6 +82,7 @@ export class NodesService {
                     host: request.host,
                     port: request.port,
                     description: request.description,
+                    isEnabled: request.isEnabled,
                 })
             )
             return {

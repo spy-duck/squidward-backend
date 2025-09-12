@@ -14,8 +14,13 @@ export async function up(database: Kysely<TDatabase>): Promise<void> {
         .addColumn('host', 'varchar(255)', col => col.notNull())
         .addColumn('port', 'integer', col => col.notNull())
         .addColumn('description', 'text')
+        .addColumn('isEnabled', 'boolean', col => col.notNull().defaultTo(false))
+        .addColumn('isConnected', 'boolean', col => col.notNull().defaultTo(false))
+        .addColumn('isOnline', 'boolean', col => col.notNull().defaultTo(false))
         .addColumn('createdAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
         .addColumn('updatedAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
+        .addColumn('lastConnectedAt', 'timestamp')
+        .addColumn('lastOnlineAt', 'timestamp')
         .execute();
 }
 

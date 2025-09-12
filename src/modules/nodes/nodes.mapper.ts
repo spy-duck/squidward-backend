@@ -10,8 +10,13 @@ export class NodesMapper {
             host: model.host,
             port: model.port,
             description: model.description,
+            isEnabled: model.isEnabled,
+            isConnected: model.isConnected,
+            isOnline: model.isOnline,
             createdAt: model.createdAt,
             updatedAt: model.updatedAt,
+            lastConnectedAt: model.lastConnectedAt,
+            lastOnlineAt: model.lastOnlineAt,
         })
     }
     
@@ -21,8 +26,13 @@ export class NodesMapper {
             host: entity.host,
             port: entity.port,
             description: entity.description,
+            isEnabled: entity.isEnabled,
+            isConnected: entity.isConnected,
+            isOnline: entity.isOnline,
             createdAt: entity.createdAt,
             updatedAt: entity.updatedAt,
+            lastConnectedAt: entity.lastConnectedAt,
+            lastOnlineAt: entity.lastOnlineAt,
         }
     }
     

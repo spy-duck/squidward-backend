@@ -5,8 +5,13 @@ export class NodeEntity {
     readonly host: string;
     readonly port: number;
     readonly description: string | null;
+    readonly isEnabled: boolean;
+    readonly isConnected: boolean;
+    readonly isOnline: boolean;
     readonly createdAt: Date;
     readonly updatedAt: Date;
+    readonly lastConnectedAt: Date;
+    readonly lastOnlineAt: Date;
     
     constructor(node: Partial<NodeEntity>) {
         Object.assign(this, node);

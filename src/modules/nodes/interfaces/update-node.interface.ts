@@ -4,4 +4,5 @@ export type UpdateNodeInterface = {
     host: string;
     port: number;
     description?: string | null;
+    isEnabled: boolean;
 }
