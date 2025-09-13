@@ -1,9 +1,20 @@
+import { Generated, Selectable, Insertable, Updateable } from 'kysely';
+
 export interface NodeModel {
-    id?: string;
+    uuid: Generated<string>;
     name: string;
     host: string;
-    port: string;
-    description: string;
+    port: number;
+    description: string | null;
+    isEnabled: boolean;
+    isConnected: boolean;
+    isOnline: boolean;
     createdAt?: Date;
     updatedAt?: Date;
+    lastConnectedAt?: Date;
+    lastOnlineAt?: Date;
 }
+
+export type NodeEntityInsertable = Insertable<NodeModel>;
+export type NodeEntitySelectable = Selectable<NodeModel>;
+export type NodeEntityUpdateable = Updateable<NodeModel>;

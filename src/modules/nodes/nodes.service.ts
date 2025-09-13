@@ -1,11 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { NodesListResponseModel } from '@/modules/nodes/models/nodes-list-response.model';
 import { ICommandResponse } from '@/common/types';
 import { ERRORS } from '@contract/constants';
 
-import { CreateNodeResponseModel } from './models/create-node-response.model';
-import { CreateNodeInterface } from './interfaces/create-node.interface';
+import {
+    UpdateNodeResponseModel,
+    CreateNodeResponseModel,
+    NodesListResponseModel,
+    RemoveNodeResponseModel,
+} from './models';
+import { CreateNodeInterface, RemoveNodeInterface, UpdateNodeInterface } from './interfaces';
 import { NodesRepository } from './repositories/nodes.repository';
 import { NodeEntity } from './entities/node.entity';
 
@@ -65,6 +69,57 @@ export class NodesService {
                 success: false,
                 code: ERRORS.INTERNAL_SERVER_ERROR.code,
                 response: new NodesListResponseModel(false, message),
+            };
+        }
+    }
+    
+    async updateNode(request: UpdateNodeInterface): Promise<ICommandResponse<UpdateNodeResponseModel>> {
+        try {
+            await this.nodesRepository.update(
+                new NodeEntity({
+                    uuid: request.uuid,
+                    name: request.name,
+                    host: request.host,
+                    port: request.port,
+                    description: request.description,
+                    isEnabled: request.isEnabled,
+                })
+            )
+            return {
+                success: true,
+                response: new CreateNodeResponseModel(true),
+            };
+        } catch (error) {
+            this.logger.error(error);
+            let message = '';
+            if (error instanceof Error) {
+                message = error.message;
+            }
+            return {
+                success: false,
+                code: ERRORS.INTERNAL_SERVER_ERROR.code,
+                response: new CreateNodeResponseModel(false, message),
+            };
+        }
+    }
+    
+    async removeNode(request: RemoveNodeInterface): Promise<ICommandResponse<RemoveNodeResponseModel>> {
+        try {
+            await this.nodesRepository.delete(request.uuid);
+            return {
+                success: true,
+                response: new CreateNodeResponseModel(true),
+            };
+        } catch (error) {
+            this.logger.error(error);
+            let message = '';
+            if (error instanceof Error) {
+                message = error.message;
+            }
+            return {
+                success: false,
+                code: ERRORS.INTERNAL_SERVER_ERROR.code,
+                response: new CreateNodeResponseModel(false, message),
             };
         }
     }

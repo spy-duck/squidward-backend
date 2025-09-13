@@ -19,6 +19,9 @@
       ],
       "@contract/*": [
         "./libs/contracts/*"
+      ],
+      "@scheduler/*": [
+        "./scheduler/*"
       ]
     },
     "incremental": true,

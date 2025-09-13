@@ -1,20 +1,26 @@
-import { TDatabase } from '@/database/database';
 /**
  ** initial_migration - 2025-09-11T15:54:58.466+03:00
  ** [Docs: https://kysely.dev/docs/migrations]
  **/
 import { Kysely, sql } from 'kysely';
 
+import { TDatabase } from '@/database/database';
+
 export async function up(database: Kysely<TDatabase>): Promise<void> {
     await database.schema
         .createTable('nodes')
-        .addColumn('id', 'uuid', col => col.notNull().primaryKey().defaultTo(sql`gen_random_uuid()`))
+        .addColumn('uuid', 'uuid', col => col.notNull().primaryKey().defaultTo(sql`gen_random_uuid()`))
         .addColumn('name', 'varchar(255)', col => col.notNull())
         .addColumn('host', 'varchar(255)', col => col.notNull())
         .addColumn('port', 'integer', col => col.notNull())
         .addColumn('description', 'text')
+        .addColumn('isEnabled', 'boolean', col => col.notNull().defaultTo(false))
+        .addColumn('isConnected', 'boolean', col => col.notNull().defaultTo(false))
+        .addColumn('isOnline', 'boolean', col => col.notNull().defaultTo(false))
         .addColumn('createdAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
         .addColumn('updatedAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
+        .addColumn('lastConnectedAt', 'timestamp')
+        .addColumn('lastOnlineAt', 'timestamp')
         .execute();
 }
 

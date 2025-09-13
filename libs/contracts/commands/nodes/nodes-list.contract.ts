@@ -21,7 +21,20 @@ export namespace NodesListContract {
         response: z.object({
             success: z.boolean(),
             error: z.string().nullable(),
-            nodes: z.array(NodeSchema).optional(),
+            nodes: z.array(
+                NodeSchema.pick({
+                    uuid: true,
+                    name: true,
+                    host: true,
+                    port: true,
+                    description: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    isEnabled: true,
+                    isConnected: true,
+                    isOnline: true,
+                })
+            ).optional(),
         }),
     });
     

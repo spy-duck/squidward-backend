@@ -14,17 +14,17 @@ export class NodesRepository {
     async create(nodeEntity: NodeEntity): Promise<NodeEntity> {
         const node = await this.db
             .insertInto('nodes')
-            .values(NodesMapper.toModel(nodeEntity))
+            .values(NodesMapper.toModelNew(nodeEntity))
             .returningAll()
             .executeTakeFirstOrThrow();
         return NodesMapper.toEntity(node);
     }
     
-    async getById(nodeId: string): Promise<NodeEntity | null> {
+    async getById(nodeUuid: string): Promise<NodeEntity | null> {
         const node = await this.db
             .selectFrom('nodes')
             .selectAll()
-            .where('id', '=', nodeId)
+            .where('uuid', '=', nodeUuid)
             .executeTakeFirst();
         return node ? NodesMapper.toEntity(node) : null;
     }
@@ -37,10 +37,19 @@ export class NodesRepository {
         return nodes.map(NodesMapper.toEntity);
     }
     
-    async delete(nodeId: string): Promise<void> {
+    async getEnabledList(): Promise<NodeEntity[]> {
+        const nodes = await this.db
+            .selectFrom('nodes')
+            .selectAll()
+            .where('isEnabled', '=', true)
+            .execute();
+        return nodes.map(NodesMapper.toEntity);
+    }
+    
+    async delete(nodeUuid: string): Promise<void> {
         await this.db
             .deleteFrom('nodes')
-            .where('id', '=', nodeId)
+            .where('uuid', '=', nodeUuid)
             .execute();
     }
     
@@ -48,7 +57,7 @@ export class NodesRepository {
         const node = await this.db
             .updateTable('nodes')
             .set(NodesMapper.toModel(nodeEntity))
-            .where('id', '=', nodeEntity.id)
+            .where('uuid', '=', nodeEntity.uuid)
             .returningAll()
             .executeTakeFirstOrThrow();
         return NodesMapper.toEntity(node);

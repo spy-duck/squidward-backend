@@ -1,23 +1,20 @@
 import { z } from 'zod';
 
 import { getEndpointDetails } from '../../constants/endpoint-details';
+import { NodeSchema } from '../../schemas';
 import { REST_API } from '../../api';
 
-export namespace CreateNodeContract {
-    export const url = REST_API.NODES.CREATE;
+export namespace RemoveNodeContract {
+    export const url = REST_API.NODES.REMOVE;
     
     export const endpointDetails = getEndpointDetails(
-        REST_API.NODES.CREATE,
-        'post',
-        'Create a new node',
+        REST_API.NODES.REMOVE(':uuid'),
+        'delete',
+        'Remove node',
     );
     
-    export const RequestSchema = z.object({
-        name: z.string().min(2).nonempty(),
-        host: z.url().nonempty()
-            .or(z.ipv4().nonempty()),
-        port: z.number().int(),
-        description: z.string().optional().nullable(),
+    export const RequestSchema = NodeSchema.pick({
+        uuid: true,
     });
     
     export type Request = z.infer<typeof RequestSchema>;

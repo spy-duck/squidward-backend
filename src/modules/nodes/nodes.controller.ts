@@ -1,12 +1,14 @@
-import { Body, Controller, HttpStatus } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
 
-import { CreateNodeContract, NodesListContract } from '@contract/commands';
+import { CreateNodeContract, NodesListContract, UpdateNodeContract } from '@contract/commands';
+import { RemoveNodeContract } from '@contract/commands/nodes/remove-node.contract';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { errorHandler } from '@/common/helpers';
 
 import {
     CreateNodeRequestDto, CreateNodeResponseDto,
-    NodesListResponseDto,
+    NodesListResponseDto, RemoveNodeRequestDto, RemoveNodeResponseDto,
+    UpdateNodeRequestDto, UpdateNodeResponseDto,
 } from './dto';
 import { NodesService } from './nodes.service';
 
@@ -32,6 +34,25 @@ export class NodesController {
     })
     async nodesList(): Promise<NodesListResponseDto> {
         const response = await this.nodesService.nodesList();
+        return { response: errorHandler(response) };
+    }
+    
+    @Endpoint({
+        command: UpdateNodeContract,
+        httpCode: HttpStatus.OK,
+        apiBody: UpdateNodeRequestDto,
+    })
+    async updateNode(@Body() body: UpdateNodeRequestDto): Promise<UpdateNodeResponseDto> {
+        const response = await this.nodesService.updateNode(body);
+        return { response: errorHandler(response) };
+    }
+    
+    @Endpoint({
+        command: RemoveNodeContract,
+        httpCode: HttpStatus.OK,
+    })
+    async removeNode(@Param() body: RemoveNodeRequestDto): Promise<RemoveNodeResponseDto> {
+        const response = await this.nodesService.removeNode(body);
         return { response: errorHandler(response) };
     }
 }
