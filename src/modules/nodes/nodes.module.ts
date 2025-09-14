@@ -9,4 +9,4 @@ import { NodesService } from './nodes.service';
     controllers: [ NodesController ],
     providers: [ NodesRepository, NodesService ],
 })
-export class UsersModule {}
+export class NodesModule {}

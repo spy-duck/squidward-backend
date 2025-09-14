@@ -1,9 +1,9 @@
-import { NodeEntityInsertable, NodeEntitySelectable, NodeEntityUpdateable } from '@/database/models';
+import { NodeModelInsertable, NodeModelSelectable, NodeModelUpdateable } from '@/database/models';
 
 import { NodeEntity } from './entities/node.entity';
 
 export class NodesMapper {
-    static toEntity = (model: NodeEntitySelectable): NodeEntity => {
+    static toEntity = (model: NodeModelSelectable): NodeEntity => {
         return new NodeEntity({
             uuid: model.uuid,
             name: model.name,
@@ -20,7 +20,7 @@ export class NodesMapper {
         })
     }
     
-    static toModelNew = (entity: NodeEntity): NodeEntityInsertable => {
+    static toModelNew = (entity: NodeEntity): NodeModelInsertable => {
         return {
             name: entity.name,
             host: entity.host,
@@ -36,7 +36,7 @@ export class NodesMapper {
         }
     }
     
-    static toModel = (entity: NodeEntity): NodeEntityUpdateable => {
+    static toModel = (entity: NodeEntity): NodeModelUpdateable => {
         return entity;
     }
 }

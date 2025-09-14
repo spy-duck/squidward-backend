@@ -1,40 +1,42 @@
 import { z } from 'zod';
 
 import { getEndpointDetails } from '../../constants/endpoint-details';
-import { NodeSchema } from '../../schemas/node.schema';
+import { UserSchema } from '../../schemas';
 import { REST_API } from '../../api';
 
-export namespace NodesListContract {
-    export const url = REST_API.NODES.LIST;
+export namespace UsersListContract {
+    export const url = REST_API.USERS.LIST;
     
     export const endpointDetails = getEndpointDetails(
-        REST_API.NODES.LIST,
+        REST_API.USERS.LIST,
         'get',
-        'Get a list of nodes',
+        'Get a list of users',
     );
     
     export const RequestSchema = z.any();
     
     export type Request = z.infer<typeof RequestSchema>;
     
-    export const ItemSchema = NodeSchema.pick({
+    export const ItemSchema = UserSchema.pick({
         uuid: true,
         name: true,
-        host: true,
-        port: true,
+        username: true,
+        status: true,
+        email: true,
+        telegramId: true,
+        usedTrafficBytes: true,
+        firstConnectedAt: true,
+        expireAt: true,
         description: true,
         createdAt: true,
         updatedAt: true,
-        isEnabled: true,
-        isConnected: true,
-        state: true,
     });
     
     export const ResponseSchema = z.object({
         response: z.object({
             success: z.boolean(),
             error: z.string().nullable(),
-            nodes: z.array(ItemSchema).optional(),
+            users: z.array(ItemSchema).optional(),
         }),
     });
     
