@@ -1,6 +1,7 @@
 services:
   squidward-db:
     image: postgres:17.6-bookworm
+    restart: unless-stopped
     environment:
       POSTGRES_HOST_FILE: /run/secrets/postgres_host
       POSTGRES_PORT_FILE: /run/secrets/postgres_port

@@ -3,7 +3,7 @@ import { Cron } from '@nestjs/schedule';
 
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { NodeEntity } from '@/modules/nodes/entities/node.entity';
-import { NodeState } from '@contract/constants/nodes/node-state';
+import { TNodeState } from '@contract/constants/nodes/node.state';
 import { JOBS_INTERVALS } from '@/scheduler/intervals';
 import { NodeApi } from '@/common/node-api/node-api';
 
@@ -38,7 +38,7 @@ export class NodeHealthCheckTask {
             await this.nodesRepository.update({
                 ...node,
                 isConnected: true,
-                state: result.response.state as NodeState,
+                state: result.response.state as TNodeState,
             });
         } catch (error) {
             this.logger.error(error);
