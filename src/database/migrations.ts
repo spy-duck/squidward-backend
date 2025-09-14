@@ -1,10 +1,12 @@
 import { FileMigrationProvider, Migrator, PostgresDialect, CamelCasePlugin } from 'kysely';
 import commandLineArgs from 'command-line-args';
-import { Database } from '@/database/database';
 import { promises as fs } from 'fs';
+import { consola } from 'consola';
 import { config } from 'dotenv';
 import * as path from 'path';
 import { Pool } from 'pg';
+
+import { Database } from '@/database/database';
 
 config({
     path: [
@@ -12,14 +14,14 @@ config({
     ],
 });
 const migrationsPath = path.resolve('./src/database/migrations');
-console.log('MIGRATIONS_PATH', migrationsPath);
+consola.log('MIGRATIONS_PATH', migrationsPath);
 
 const options = commandLineArgs([
     { name: 'up', alias: 'u', type: Boolean },
     { name: 'down', alias: 'd', type: Boolean },
 ]);
 
-console.log('# Migrations started');
+consola.log('# Migrations started');
 
 async function migrateToLatest() {
     
@@ -50,8 +52,8 @@ async function migrateToLatest() {
     });
     
     const migrations = await migrator.getMigrations();
-    console.log('# PENDING MIGRATIONS');
-    console.log(
+    consola.log('# PENDING MIGRATIONS');
+    consola.log(
         migrations
             .filter((i) => !i.executedAt)
             .map((i) => i.name),
@@ -62,23 +64,23 @@ async function migrateToLatest() {
             
             results?.forEach((migrationResult) => {
                 if (migrationResult.status === 'Success') {
-                    console.log(
+                    consola.log(
                         `# EXECUTED: "${ migrationResult.migrationName }" successfully`,
                     );
                 } else if (migrationResult.status === 'Error') {
-                    console.error(
+                    consola.error(
                         `failed to execute migration "${ migrationResult.migrationName }"`,
                     );
                 }
             });
             
             if (results?.length === 0) {
-                console.log('# No migrations to execute');
+                consola.log('# No migrations to execute');
             }
             
             if (error) {
-                console.error('Failed to migrate');
-                console.error(error);
+                consola.error('Failed to migrate');
+                consola.error(error);
                 process.exit(1);
             }
         }
@@ -87,25 +89,25 @@ async function migrateToLatest() {
             const { error, results } = await migrator.migrateDown();
             results?.forEach((migrationResult) => {
                 if (migrationResult.status === 'Success') {
-                    console.log(
+                    consola.log(
                         `DOWNGRADED: "${ migrationResult.migrationName }" successfully`,
                     );
                 } else if (migrationResult.status === 'Error') {
-                    console.error(
+                    consola.error(
                         `failed to downgrade migration "${ migrationResult.migrationName }"`,
                     );
                 }
             });
             if (error) {
-                console.error('Failed to migrate');
-                console.error(error);
+                consola.error('Failed to migrate');
+                consola.error(error);
                 process.exit(1);
             }
         }
             break;
         default:
-            console.log('# Waiting migrations');
-            console.log(await migrator.getMigrations());
+            consola.log('# Waiting migrations');
+            consola.log(await migrator.getMigrations());
             break;
     }
     
@@ -113,4 +115,4 @@ async function migrateToLatest() {
 }
 
 migrateToLatest()
-    .then(() => console.log('# Exit...'));
+    .then(() => consola.log('# Exit...'));

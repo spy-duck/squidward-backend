@@ -3,6 +3,7 @@ import { Cron } from '@nestjs/schedule';
 
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { NodeEntity } from '@/modules/nodes/entities/node.entity';
+import { NodeState } from '@contract/constants/nodes/node-state';
 import { JOBS_INTERVALS } from '@/scheduler/intervals';
 import { NodeApi } from '@/common/node-api/node-api';
 
@@ -11,9 +12,7 @@ import { NodeApi } from '@/common/node-api/node-api';
 export class NodeHealthCheckTask {
     private static readonly CRON_NAME = 'nodeHealthCheck';
     private readonly logger = new Logger(NodeHealthCheckTask.name);
-    private cronName = NodeHealthCheckTask.CRON_NAME;
     
-    private isNodesRestarted: boolean;
     constructor(
         private readonly nodesRepository: NodesRepository,
     ) {}
@@ -25,27 +24,32 @@ export class NodeHealthCheckTask {
     async handleCron() {
         try {
             const nodes = await this.getEnabledNodes();
-            for (const node of nodes) {
-                try {
-                    new NodeApi(node.host, node.port);
-                } catch (error) {
-                    this.logger.error(error);
-                    await this.setNodeErrored(node);
-                }
-            }
+            await Promise.allSettled(
+                nodes.map(node => this.checkNodeStatus(node)),
+            );
         } catch (error) {
-            this.logger.error(`Error in NodeHealthCheckService: ${error}`);
+            this.logger.error(`Error in NodeHealthCheckService: ${ error }`);
         }
     }
     
-    private async setNodeErrored(node: NodeEntity): Promise<void> {
-        await this.nodesRepository.update({
-            ...node,
-            isConnected: false,
-        });
+    private async checkNodeStatus(node: NodeEntity): Promise<void> {
+        try {
+            const result = await new NodeApi(node.host, node.port).getStatus();
+            await this.nodesRepository.update({
+                ...node,
+                isConnected: true,
+                state: result.response.state as NodeState,
+            });
+        } catch (error) {
+            this.logger.error(error);
+            await this.nodesRepository.update({
+                ...node,
+                isConnected: false,
+            });
+        }
     }
     
     private async getEnabledNodes(): Promise<NodeEntity[]> {
-        return this.nodesRepository.getEnabledList();
+        return this.nodesRepository.getAll();
     }
 }

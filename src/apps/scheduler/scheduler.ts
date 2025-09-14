@@ -34,7 +34,9 @@ async function bootstrap(): Promise<void> {
         }),
     });
     
-    await app.init();
+    await app.listen(12345);
+    
     
     app.enableShutdownHooks();
 }
+bootstrap();

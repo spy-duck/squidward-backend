@@ -1,0 +1,1 @@
+export type NodeState = 'STOPPED' | 'RUNNING' | 'FATAL' | 'SHUTDOWN' | 'RESTARTING';

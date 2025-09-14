@@ -12,11 +12,11 @@ export class NodesMapper {
             description: model.description,
             isEnabled: model.isEnabled,
             isConnected: model.isConnected,
-            isOnline: model.isOnline,
             createdAt: model.createdAt,
             updatedAt: model.updatedAt,
             lastConnectedAt: model.lastConnectedAt,
             lastOnlineAt: model.lastOnlineAt,
+            state: model.state,
         })
     }
     
@@ -28,22 +28,15 @@ export class NodesMapper {
             description: entity.description,
             isEnabled: entity.isEnabled,
             isConnected: entity.isConnected,
-            isOnline: entity.isOnline,
             createdAt: entity.createdAt,
             updatedAt: entity.updatedAt,
             lastConnectedAt: entity.lastConnectedAt,
             lastOnlineAt: entity.lastOnlineAt,
+            state: entity.state,
         }
     }
     
     static toModel = (entity: NodeEntity): NodeEntityUpdateable => {
-        return {
-            name: entity.name,
-            host: entity.host,
-            port: entity.port,
-            description: entity.description,
-            createdAt: entity.createdAt,
-            updatedAt: entity.updatedAt,
-        }
+        return entity;
     }
 }

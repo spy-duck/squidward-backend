@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
 
-import { NodeHealthContract } from '@swuidward-node/contracts';
+import { NodeHealthContract } from '@squidward-node/contracts';
 import axios, { AxiosInstance } from 'axios';
 
 @Injectable()
 export class NodeApi {
     private readonly nodeAxios: AxiosInstance;
     constructor(host: string, port: number) {
-        const url = new URL(host);
-        url.port = String(port);
-        console.log(url.toString());
         this.nodeAxios = axios.create({
-            baseURL: url.toString(),
+            baseURL: `http://${host}:${port}`,
         });
     }
-    getStatus() {
-        return this.nodeAxios.post(NodeHealthContract.url);
+    
+    async getStatus(): Promise<NodeHealthContract.Response> {
+        const response = await this.nodeAxios.post(NodeHealthContract.url);
+        return NodeHealthContract.ResponseSchema.parse(response.data);
     }
 }

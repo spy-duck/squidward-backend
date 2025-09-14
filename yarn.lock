@@ -1746,12 +1746,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swuidward-node/contracts@file:../squidward-node/libs/contracts::locator=squidward-backend%40workspace%3A.":
+"@squidward-node/contracts@file:../squidward-node/libs/contracts::locator=squidward-backend%40workspace%3A.":
   version: 0.0.0
-  resolution: "@swuidward-node/contracts@file:../squidward-node/libs/contracts#../squidward-node/libs/contracts::hash=cff599&locator=squidward-backend%40workspace%3A."
+  resolution: "@squidward-node/contracts@file:../squidward-node/libs/contracts#../squidward-node/libs/contracts::hash=becfb6&locator=squidward-backend%40workspace%3A."
   dependencies:
     zod: "npm:^4.1.8"
-  checksum: 10c0/7eeca9ea628c71931da1b5631423780cfa18ffdaceb71d8375dcf2e657545a4122fb9c879ae041a8c828626c4807d01f005915fa2754ecc489380256680ac8b3
+  peerDependencies:
+    typescript: ^5.0.0
+  checksum: 10c0/4e2279cfa9b32416e1b48c316292dd34e0c7756dbc9b9133b121526d5ebf21e3577c5f77aff8675451a4dde3286c8020356e674983267bec091586be4103ebe7
   languageName: node
   linkType: hard
 
@@ -7356,7 +7358,7 @@ __metadata:
     "@nestjs/schedule": "npm:^6.0.0"
     "@nestjs/schematics": "npm:^11.0.0"
     "@nestjs/testing": "npm:^11.0.1"
-    "@swuidward-node/contracts": "file:../squidward-node/libs/contracts"
+    "@squidward-node/contracts": "file:../squidward-node/libs/contracts"
     "@types/bcrypt": "npm:^6"
     "@types/command-line-args": "npm:^5.2.3"
     "@types/compression": "npm:^1"

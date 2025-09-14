@@ -1,3 +1,4 @@
+import { NodeState } from '@contract/constants/nodes/node-state';
 
 export class NodeEntity {
     readonly uuid: string;
@@ -7,11 +8,11 @@ export class NodeEntity {
     readonly description: string | null;
     readonly isEnabled: boolean;
     readonly isConnected: boolean;
-    readonly isOnline: boolean;
     readonly createdAt: Date;
     readonly updatedAt: Date;
     readonly lastConnectedAt: Date;
     readonly lastOnlineAt: Date;
+    readonly state: NodeState;
     
     constructor(node: Partial<NodeEntity>) {
         Object.assign(this, node);

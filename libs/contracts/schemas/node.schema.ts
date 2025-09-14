@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { NodeState } from '../constants/nodes/node-state';
+
 export const NodeSchema = z.object({
     uuid: z.uuid(),
     name: z.string().min(3, 'Min. 3 characters'),
@@ -18,7 +20,7 @@ export const NodeSchema = z.object({
         .transform((str) => str && new Date(str)),
     isEnabled: z.boolean(),
     isConnected: z.boolean(),
-    isOnline: z.boolean(),
+    state: z.string<NodeState>(),
     lastConnectedAt: z.iso.datetime().nullable(),
     lastOnlineAt: z.iso.datetime().nullable(),
     

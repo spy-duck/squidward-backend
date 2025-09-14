@@ -1,5 +1,7 @@
 import { Generated, Selectable, Insertable, Updateable } from 'kysely';
 
+import { NodeState } from '@contract/constants/nodes/node-state';
+
 export interface NodeModel {
     uuid: Generated<string>;
     name: string;
@@ -8,7 +10,7 @@ export interface NodeModel {
     description: string | null;
     isEnabled: boolean;
     isConnected: boolean;
-    isOnline: boolean;
+    state: NodeState;
     createdAt?: Date;
     updatedAt?: Date;
     lastConnectedAt?: Date;

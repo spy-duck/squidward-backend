@@ -32,7 +32,7 @@ export namespace NodesListContract {
                     updatedAt: true,
                     isEnabled: true,
                     isConnected: true,
-                    isOnline: true,
+                    state: true,
                 })
             ).optional(),
         }),

@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 
+import { SchedulerModule } from '@/scheduler/scheduler.module';
+
 @Module({
-    imports: [],
+    imports: [SchedulerModule],
 })
 export class SchedulerRootModule {}
