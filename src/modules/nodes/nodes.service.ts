@@ -83,6 +83,7 @@ export class NodesService {
                     port: request.port,
                     description: request.description,
                     isEnabled: request.isEnabled,
+                    updatedAt: new Date(),
                 })
             )
             return {

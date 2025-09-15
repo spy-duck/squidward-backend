@@ -91,6 +91,7 @@ export class UsersService {
                     email: request.email,
                     telegramId: request.telegramId,
                     expireAt: request.expireAt,
+                    updatedAt: new Date(),
                 })
             )
             return {

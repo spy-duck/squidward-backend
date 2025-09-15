@@ -12,7 +12,7 @@ import { errorHandler } from '@/common/helpers';
 import {
     UsersListResponseDto,
     RemoveNodeRequestDto, RemoveNodeResponseDto,
-    UpdateNodeRequestDto, UpdateNodeResponseDto, CreateUserRequestDto, CreateUserResponseDto,
+    UserUpdateRequestDto, UserUpdateResponseDto, CreateUserRequestDto, CreateUserResponseDto,
 } from './dto';
 import { UsersService } from './users.service';
 
@@ -27,7 +27,7 @@ export class UsersController {
         httpCode: HttpStatus.CREATED,
         apiBody: CreateUserRequestDto,
     })
-    async createNode(@Body() body: CreateUserRequestDto): Promise<CreateUserResponseDto> {
+    async createUser(@Body() body: CreateUserRequestDto): Promise<CreateUserResponseDto> {
         const response = await this.usersService.createUser(body);
         return { response: errorHandler(response) };
     }
@@ -44,9 +44,9 @@ export class UsersController {
     @Endpoint({
         command: UserUpdateContract,
         httpCode: HttpStatus.OK,
-        apiBody: UpdateNodeRequestDto,
+        apiBody: UserUpdateRequestDto,
     })
-    async updateUser(@Body() body: UpdateNodeRequestDto): Promise<UpdateNodeResponseDto> {
+    async updateUser(@Body() body: UserUpdateRequestDto): Promise<UserUpdateResponseDto> {
         const response = await this.usersService.updateUser(body);
         return { response: errorHandler(response) };
     }

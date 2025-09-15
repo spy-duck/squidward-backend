@@ -2,13 +2,13 @@ import commandLineArgs from 'command-line-args';
 import * as process from 'node:process';
 import { snakeCase } from 'lodash-es';
 import fs from 'node:fs/promises';
-import { DateTime } from 'luxon';
 import consola from 'consola';
+import dayjs from 'dayjs';
 import path from 'path';
 
-function makeMigrationTemplate(migrationName: string, now: DateTime) {
+function makeMigrationTemplate(migrationName: string, now: dayjs.Dayjs) {
     return `/**
-** ${ migrationName } - ${ now.toISO() }
+** ${ migrationName } - ${ now.toISOString() }
 ** [Docs: https://kysely.dev/docs/migrations]
 **/
 import { Kysely } from 'kysely';
@@ -44,9 +44,9 @@ async function main() {
         return;
     }
 
-    const now = DateTime.now();
+    const now = dayjs();
     const dir = path.resolve('./src/database/migrations');
-    const migrationName = `${ now.toFormat('yyyyMMddHHmmss') }_${snakeCase(name)}.ts`;
+    const migrationName = `${ now.format('YYYYMMDDHHmmss') }_${snakeCase(name)}.ts`;
     const fullMigrationPath = path.join(dir, migrationName);
     await fs.writeFile(fullMigrationPath, makeMigrationTemplate(name, now));
     return fullMigrationPath;

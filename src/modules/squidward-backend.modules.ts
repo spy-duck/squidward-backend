@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { ConfigsModule } from '@/modules/configs/configs.module';
 import { NodesModule } from '@/modules/nodes/nodes.module';
 import { UsersModule } from '@/modules/users/users.module';
 
@@ -7,6 +8,7 @@ import { UsersModule } from '@/modules/users/users.module';
     imports: [
         NodesModule,
         UsersModule,
+        ConfigsModule,
     ],
     controllers: [],
     providers: [],
