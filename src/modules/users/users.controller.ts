@@ -1,7 +1,11 @@
 import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
 
-import { CreateNodeContract, NodesListContract, UpdateNodeContract } from '@contract/commands';
-import { RemoveNodeContract } from '@contract/commands/nodes/remove-node.contract';
+import {
+    CreateUserContract,
+    UsersListContract,
+    UpdateUserContract,
+    RemoveUserContract,
+} from '@contract/commands';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { errorHandler } from '@/common/helpers';
 
@@ -19,7 +23,7 @@ export class UsersController {
     ) {}
     
     @Endpoint({
-        command: CreateNodeContract,
+        command: CreateUserContract,
         httpCode: HttpStatus.CREATED,
         apiBody: CreateUserRequestDto,
     })
@@ -29,7 +33,7 @@ export class UsersController {
     }
     
     @Endpoint({
-        command: NodesListContract,
+        command: UsersListContract,
         httpCode: HttpStatus.OK,
     })
     async nodesList(): Promise<UsersListResponseDto> {
@@ -38,21 +42,21 @@ export class UsersController {
     }
     
     @Endpoint({
-        command: UpdateNodeContract,
+        command: UpdateUserContract,
         httpCode: HttpStatus.OK,
         apiBody: UpdateNodeRequestDto,
     })
-    async updateNode(@Body() body: UpdateNodeRequestDto): Promise<UpdateNodeResponseDto> {
-        const response = await this.usersService.updateNode(body);
+    async updateUser(@Body() body: UpdateNodeRequestDto): Promise<UpdateNodeResponseDto> {
+        const response = await this.usersService.updateUser(body);
         return { response: errorHandler(response) };
     }
     
     @Endpoint({
-        command: RemoveNodeContract,
+        command: RemoveUserContract,
         httpCode: HttpStatus.OK,
     })
-    async removeNode(@Param() body: RemoveNodeRequestDto): Promise<RemoveNodeResponseDto> {
-        const response = await this.usersService.removeNode(body);
+    async removeUser(@Param() body: RemoveNodeRequestDto): Promise<RemoveNodeResponseDto> {
+        const response = await this.usersService.removeUser(body);
         return { response: errorHandler(response) };
     }
 }

@@ -15,13 +15,20 @@ export namespace UpdateUserContract {
     
     export const RequestSchema = UserSchema
         .pick({
+            uuid: true,
             name: true,
             username: true,
-            password: true,
             status: true,
             email: true,
             telegramId: true,
             expireAt: true,
+        })
+        .extend({
+            password: z
+                .string()
+                .min(16, 'Min. 16 characters')
+                .nullable()
+                .optional(),
         });
     
     export type Request = z.infer<typeof RequestSchema>;

@@ -27,7 +27,6 @@ export namespace UsersListContract {
         usedTrafficBytes: true,
         firstConnectedAt: true,
         expireAt: true,
-        description: true,
         createdAt: true,
         updatedAt: true,
     });

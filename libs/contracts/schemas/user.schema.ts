@@ -15,14 +15,22 @@ export const UserSchema = z.object({
     usedTrafficBytes: z.number().nullable(),
     
     firstConnectedAt: z
-        .iso.datetime()
-        .nullable()
-        .transform((str) => str ? new Date(str) : null),
+        .date().nullable()
+        .or(z
+            .iso
+            .datetime()
+            .nullable()
+            .transform((str) => str && new Date(str)),
+        ),
     
     expireAt: z
-        .iso.datetime()
-        .transform((str) => new Date(str)),
-   
+        .date()
+        .or(z
+            .iso
+            .datetime()
+            .transform((str) => new Date(str)),
+        ),
+    
     createdAt: z
         .string()
         .datetime()

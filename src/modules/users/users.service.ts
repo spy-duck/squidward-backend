@@ -77,10 +77,11 @@ export class UsersService {
         }
     }
     
-    async updateNode(request: UpdateUserInterface): Promise<ICommandResponse<UpdateUserResponseModel>> {
+    async updateUser(request: UpdateUserInterface): Promise<ICommandResponse<UpdateUserResponseModel>> {
         try {
             await this.usersRepository.update(
                 new UserEntity({
+                    uuid: request.uuid,
                     name: request.name,
                     username: request.username,
                     ...request.password && {
@@ -110,7 +111,7 @@ export class UsersService {
         }
     }
     
-    async removeNode(request: RemoveUserInterface): Promise<ICommandResponse<RemoveUserResponseModel>> {
+    async removeUser(request: RemoveUserInterface): Promise<ICommandResponse<RemoveUserResponseModel>> {
         try {
             await this.usersRepository.delete(request.uuid);
             return {

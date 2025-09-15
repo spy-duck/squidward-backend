@@ -15,7 +15,7 @@ export class UsersMapper {
             password: model.password,
             status: model.status,
             email: model.email,
-            telegramId: model.telegramId,
+            telegramId: model.telegramId ? +model.telegramId : model.telegramId,
             usedTrafficBytes: model.usedTrafficBytes,
             firstConnectedAt: model.firstConnectedAt,
             expireAt: model.expireAt,

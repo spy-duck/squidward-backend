@@ -28,18 +28,18 @@ export class UsersRepository {
         return users.map(UsersMapper.toEntity);
     }
     
-    async delete(nodeUuid: string): Promise<void> {
+    async delete(userUuid: string): Promise<void> {
         await this.db
             .deleteFrom('users')
-            .where('uuid', '=', nodeUuid)
+            .where('uuid', '=', userUuid)
             .execute();
     }
     
-    async update(nodeEntity: UserEntity): Promise<UserEntity> {
+    async update(userEntity: UserEntity): Promise<UserEntity> {
         const user = await this.db
             .updateTable('users')
-            .set(UsersMapper.toModel(nodeEntity))
-            .where('uuid', '=', nodeEntity.uuid)
+            .set(UsersMapper.toModel(userEntity))
+            .where('uuid', '=', userEntity.uuid)
             .returningAll()
             .executeTakeFirstOrThrow();
         return UsersMapper.toEntity(user);
