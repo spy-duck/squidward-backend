@@ -14,14 +14,14 @@ config({
     ],
 });
 const migrationsPath = path.resolve('./src/database/migrations');
-consola.log('MIGRATIONS_PATH', migrationsPath);
+consola.info('MIGRATIONS_PATH', migrationsPath);
 
 const options = commandLineArgs([
     { name: 'up', alias: 'u', type: Boolean },
     { name: 'down', alias: 'd', type: Boolean },
 ]);
 
-consola.log('# Migrations started');
+consola.start('Migrations started');
 
 async function migrateToLatest() {
     
@@ -50,22 +50,22 @@ async function migrateToLatest() {
             migrationFolder: migrationsPath,
         }),
     });
-    
-    const migrations = await migrator.getMigrations();
-    consola.log('# PENDING MIGRATIONS');
-    consola.log(
-        migrations
-            .filter((i) => !i.executedAt)
-            .map((i) => i.name),
-    );
     switch (true) {
         case options.up: {
+            const migrations = await migrator.getMigrations();
+            consola.box(
+                'PENDING MIGRATIONS\n\n',
+                migrations
+                    .filter((i) => !i.executedAt)
+                    .map((i) => '- ' + i.name).join('\n'),
+            );
+            
             const { error, results } = await migrator.migrateToLatest();
             
             results?.forEach((migrationResult) => {
                 if (migrationResult.status === 'Success') {
                     consola.log(
-                        `# EXECUTED: "${ migrationResult.migrationName }" successfully`,
+                        `EXECUTED: "${ migrationResult.migrationName }" successfully`,
                     );
                 } else if (migrationResult.status === 'Error') {
                     consola.error(
@@ -75,7 +75,7 @@ async function migrateToLatest() {
             });
             
             if (results?.length === 0) {
-                consola.log('# No migrations to execute');
+                consola.warn('No migrations to execute');
             }
             
             if (error) {
@@ -106,8 +106,7 @@ async function migrateToLatest() {
         }
             break;
         default:
-            consola.log('# Waiting migrations');
-            consola.log(await migrator.getMigrations());
+            consola.info('Waiting migrations', await migrator.getMigrations());
             break;
     }
     
@@ -115,4 +114,4 @@ async function migrateToLatest() {
 }
 
 migrateToLatest()
-    .then(() => consola.log('# Exit...'));
+    .then(() => consola.log('Exit...'));

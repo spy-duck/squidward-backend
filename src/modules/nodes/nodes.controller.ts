@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
 
-import { CreateNodeContract, NodesListContract, UpdateNodeContract } from '@contract/commands';
-import { RemoveNodeContract } from '@contract/commands/nodes/remove-node.contract';
+import { NodeCreateContract, NodesListContract, NodeUpdateContract } from '@contract/commands';
+import { NodeRemoveContract } from '@contract/commands/nodes/node-remove.contract';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { errorHandler } from '@/common/helpers';
 
@@ -19,7 +19,7 @@ export class NodesController {
     ) {}
     
     @Endpoint({
-        command: CreateNodeContract,
+        command: NodeCreateContract,
         httpCode: HttpStatus.CREATED,
         apiBody: CreateNodeRequestDto,
     })
@@ -38,7 +38,7 @@ export class NodesController {
     }
     
     @Endpoint({
-        command: UpdateNodeContract,
+        command: NodeUpdateContract,
         httpCode: HttpStatus.OK,
         apiBody: UpdateNodeRequestDto,
     })
@@ -48,7 +48,7 @@ export class NodesController {
     }
     
     @Endpoint({
-        command: RemoveNodeContract,
+        command: NodeRemoveContract,
         httpCode: HttpStatus.OK,
     })
     async removeNode(@Param() body: RemoveNodeRequestDto): Promise<RemoveNodeResponseDto> {

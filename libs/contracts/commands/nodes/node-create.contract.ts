@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { getEndpointDetails } from '../../constants/endpoint-details';
 import { REST_API } from '../../api';
 
-export namespace CreateNodeContract {
+export namespace NodeCreateContract {
     export const url = REST_API.NODES.CREATE;
     
     export const endpointDetails = getEndpointDetails(

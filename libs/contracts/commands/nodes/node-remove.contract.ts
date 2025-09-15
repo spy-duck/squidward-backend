@@ -1,20 +1,19 @@
 import { z } from 'zod';
 
 import { getEndpointDetails } from '../../constants/endpoint-details';
-import { UserSchema } from '../../schemas';
+import { NodeSchema } from '../../schemas';
 import { REST_API } from '../../api';
 
-export namespace RemoveUserContract {
-    export const url = REST_API.USERS.REMOVE;
+export namespace NodeRemoveContract {
+    export const url = REST_API.NODES.REMOVE;
     
     export const endpointDetails = getEndpointDetails(
-        REST_API.USERS.REMOVE(':uuid'),
+        REST_API.NODES.REMOVE(':uuid'),
         'delete',
-        'Remove user',
+        'Remove node',
     );
     
-    export const RequestSchema = UserSchema
-        .pick({
+    export const RequestSchema = NodeSchema.pick({
         uuid: true,
     });
     

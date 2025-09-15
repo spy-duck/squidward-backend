@@ -1,10 +1,10 @@
 import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
 
 import {
-    CreateUserContract,
+    UserCreateContract,
     UsersListContract,
-    UpdateUserContract,
-    RemoveUserContract,
+    UserUpdateContract,
+    UserRemoveContract,
 } from '@contract/commands';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { errorHandler } from '@/common/helpers';
@@ -23,7 +23,7 @@ export class UsersController {
     ) {}
     
     @Endpoint({
-        command: CreateUserContract,
+        command: UserCreateContract,
         httpCode: HttpStatus.CREATED,
         apiBody: CreateUserRequestDto,
     })
@@ -42,7 +42,7 @@ export class UsersController {
     }
     
     @Endpoint({
-        command: UpdateUserContract,
+        command: UserUpdateContract,
         httpCode: HttpStatus.OK,
         apiBody: UpdateNodeRequestDto,
     })
@@ -52,7 +52,7 @@ export class UsersController {
     }
     
     @Endpoint({
-        command: RemoveUserContract,
+        command: UserRemoveContract,
         httpCode: HttpStatus.OK,
     })
     async removeUser(@Param() body: RemoveNodeRequestDto): Promise<RemoveNodeResponseDto> {

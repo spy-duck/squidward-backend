@@ -1,7 +1,7 @@
 import { createZodDto } from 'nestjs-zod';
 
-import { UpdateUserContract } from '@contract/commands';
+import { UserUpdateContract } from '@contract/commands';
 
 
-export class UpdateNodeRequestDto extends createZodDto(UpdateUserContract.RequestSchema) {}
-export class UpdateNodeResponseDto extends createZodDto(UpdateUserContract.ResponseSchema) {}
+export class UpdateNodeRequestDto extends createZodDto(UserUpdateContract.RequestSchema) {}
+export class UpdateNodeResponseDto extends createZodDto(UserUpdateContract.ResponseSchema) {}

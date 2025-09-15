@@ -4,31 +4,24 @@ import { getEndpointDetails } from '../../constants/endpoint-details';
 import { UserSchema } from '../../schemas';
 import { REST_API } from '../../api';
 
-export namespace UpdateUserContract {
-    export const url = REST_API.USERS.UPDATE;
+export namespace UserCreateContract {
+    export const url = REST_API.USERS.CREATE;
     
     export const endpointDetails = getEndpointDetails(
-        REST_API.USERS.UPDATE(':uuid'),
-        'put',
-        'Update user',
+        REST_API.USERS.CREATE,
+        'post',
+        'Create a new user',
     );
     
     export const RequestSchema = UserSchema
         .pick({
-            uuid: true,
             name: true,
             username: true,
+            password: true,
             status: true,
             email: true,
             telegramId: true,
             expireAt: true,
-        })
-        .extend({
-            password: z
-                .string()
-                .min(16, 'Min. 16 characters')
-                .nullable()
-                .optional(),
         });
     
     export type Request = z.infer<typeof RequestSchema>;

@@ -1,3 +1,3 @@
-export * from './create-node.contract';
+export * from './node-create.contract';
+export * from './node-update.contract';
 export * from './nodes-list.contract';
-export * from './update-node.contract';

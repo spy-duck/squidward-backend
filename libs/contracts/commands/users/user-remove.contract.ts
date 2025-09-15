@@ -1,27 +1,22 @@
 import { z } from 'zod';
 
 import { getEndpointDetails } from '../../constants/endpoint-details';
-import { NodeSchema } from '../../schemas/node.schema';
+import { UserSchema } from '../../schemas';
 import { REST_API } from '../../api';
 
-export namespace UpdateNodeContract {
-    export const url = REST_API.NODES.UPDATE;
+export namespace UserRemoveContract {
+    export const url = REST_API.USERS.REMOVE;
     
     export const endpointDetails = getEndpointDetails(
-        REST_API.NODES.UPDATE(':uuid'),
-        'put',
-        'Update node',
+        REST_API.USERS.REMOVE(':uuid'),
+        'delete',
+        'Remove user',
     );
     
-    export const RequestSchema = NodeSchema
+    export const RequestSchema = UserSchema
         .pick({
-            uuid: true,
-            name: true,
-            host: true,
-            port: true,
-            description: true,
-            isEnabled: true,
-        });
+        uuid: true,
+    });
     
     export type Request = z.infer<typeof RequestSchema>;
     

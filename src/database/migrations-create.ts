@@ -1,4 +1,3 @@
-import * as readline from 'node:readline/promises';
 import commandLineArgs from 'command-line-args';
 import * as process from 'node:process';
 import { snakeCase } from 'lodash-es';
@@ -34,11 +33,9 @@ const options = commandLineArgs([
 async function main() {
     let name: string = options.name;
     if (!name) {
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
+        name = await consola.prompt("Enter migration name:", {
+            type: 'text',
         });
-        name = await rl.question("Enter migration name:");
     }
 
     if (!name) {
@@ -57,6 +54,6 @@ async function main() {
 
 main()
     .then((fullMigrationPath: string | undefined) => {
-        consola.log(`# Migration created: ${ fullMigrationPath }`);
+        consola.box(`Migration created: ${ fullMigrationPath }`);
         process.exit(0);
     });
