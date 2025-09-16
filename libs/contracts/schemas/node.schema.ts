@@ -11,7 +11,7 @@ export const NodeSchema = z.object({
     port: z.number().int(),
     description: z.string().trim().optional().nullable(),
     configId: z.uuid(),
-    config: ConfigSchema.partial().optional(),
+    config: ConfigSchema.partial().nullable(),
     createdAt: z
         .string()
         .datetime()

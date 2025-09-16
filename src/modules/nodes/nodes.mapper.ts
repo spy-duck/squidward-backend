@@ -1,3 +1,5 @@
+import { omit } from 'lodash-es';
+
 import { NodeModelInsertable, NodeModelSelectable, NodeModelUpdateable } from '@/database/models';
 import { ConfigsMapper } from '@/modules/configs/configs.mapper';
 
@@ -43,6 +45,8 @@ export class NodesMapper {
     }
     
     static toModel = (entity: NodeEntity): NodeModelUpdateable => {
-        return entity;
+        return omit(entity, [
+            'config',
+        ]);
     }
 }

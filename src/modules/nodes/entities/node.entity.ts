@@ -1,3 +1,4 @@
+import { ConfigEntity } from '@/modules/configs/entities/config.entity';
 import { TNodeState } from '@contract/constants/nodes/node.state';
 
 export class NodeEntity {
@@ -14,6 +15,7 @@ export class NodeEntity {
     readonly lastConnectedAt: Date;
     readonly lastOnlineAt: Date;
     readonly state: TNodeState;
+    readonly config: Pick<ConfigEntity, 'name'> | null;
     
     constructor(node: Partial<NodeEntity>) {
         Object.assign(this, node);

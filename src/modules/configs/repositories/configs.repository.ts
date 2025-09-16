@@ -33,6 +33,7 @@ export class ConfigsRepository {
                     .whereRef('nodes.configId', '=', 'configs.uuid')
                     .as('nodesCount'),
             ])
+            .orderBy('name')
             .execute();
         return configs.map(ConfigsMapper.toEntity);
     }

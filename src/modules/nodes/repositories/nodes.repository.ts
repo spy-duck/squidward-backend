@@ -35,6 +35,7 @@ export class NodesRepository {
                         .whereRef('configs.uuid', '=', 'nodes.configId'),
                 ).as('config'),
             ])
+            .orderBy('name')
             .execute();
         return nodes.map(NodesMapper.toEntity);
     }

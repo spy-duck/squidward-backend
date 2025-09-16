@@ -33,7 +33,7 @@ export namespace NodesListContract {
     }).safeExtend({
         config: ConfigSchema.pick({
             name: true,
-        }).optional(),
+        }).nullable(),
     });
     
     export const ResponseSchema = z.object({
