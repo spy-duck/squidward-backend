@@ -5,4 +5,7 @@ export const NODES_ROUTES = {
     UPDATE:  (uuid: string) => uuid, // put method
     REMOVE:  (uuid: string) => uuid, // delete method
     LIST: '',
+    START:  (uuid: string) => `${uuid}/action/start`,
+    STOP:  (uuid: string) => `${uuid}/action/stop`,
+    RESTART:  (uuid: string) => `${uuid}/action/restart`,
 } as const;

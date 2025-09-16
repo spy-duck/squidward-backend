@@ -1,27 +1,21 @@
 import { z } from 'zod';
 
 import { getEndpointDetails } from '../../constants/endpoint-details';
-import { NodeSchema } from '../../schemas/node.schema';
+import { NodeSchema } from '../../schemas';
 import { REST_API } from '../../api';
 
-export namespace NodeUpdateContract {
-    export const url = REST_API.NODES.UPDATE;
+export namespace NodeStartContract {
+    export const url = REST_API.NODES.START;
     
     export const endpointDetails = getEndpointDetails(
-        REST_API.NODES.UPDATE(':uuid'),
-        'put',
-        'Update node',
+        REST_API.NODES.START(':uuid'),
+        'post',
+        'Start node',
     );
     
-    export const RequestSchema = NodeSchema
-        .pick({
-            uuid: true,
-            name: true,
-            host: true,
-            port: true,
-            configId: true,
-            description: true,
-        });
+    export const RequestSchema = NodeSchema.pick({
+        uuid: true,
+    });
     
     export type Request = z.infer<typeof RequestSchema>;
     

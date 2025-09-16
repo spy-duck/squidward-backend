@@ -22,7 +22,6 @@ export const NodeSchema = z.object({
         .datetime()
         .optional()
         .transform((str) => str && new Date(str)),
-    isEnabled: z.boolean(),
     isConnected: z.boolean(),
     state: z.string<TNodeState>(),
     lastConnectedAt: z.iso.datetime().nullable(),

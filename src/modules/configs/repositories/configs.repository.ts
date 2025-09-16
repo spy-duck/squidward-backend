@@ -55,7 +55,7 @@ export class ConfigsRepository {
         return ConfigsMapper.toEntity(config);
     }
     
-    async getOne(configUuid: string): Promise<ConfigEntity | null> {
+    async getByUuid(configUuid: string): Promise<ConfigEntity | null> {
         const config = await this.db
             .selectFrom('configs')
             .selectAll()

@@ -1,7 +1,9 @@
 services:
   squidward-db:
-    image: postgres:17.6-bookworm
+    image: postgres:17.6-alpine3.22
     restart: unless-stopped
+    container_name: squidward-db
+    hostname: squidward-db
     environment:
       POSTGRES_HOST_FILE: /run/secrets/postgres_host
       POSTGRES_PORT_FILE: /run/secrets/postgres_port
@@ -10,7 +12,11 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
       TZ: ${TZ}
       PGTZ: ${TZ}
-    network_mode: host
+    networks:
+      - squidward-network-internal
+      - squidward-network-external # DEV ONLY
+    ports:
+      - '5437:5432'
     volumes:
       - squidward-db-vol:/var/lib/postgresql/data
     secrets:
@@ -20,11 +26,37 @@ services:
       - postgres_user
       - postgres_password
 
+  squidward-redis:
+    image: valkey/valkey:9.0-alpine3.22
+    container_name: squidward-redis
+    hostname: squidward-redis
+    restart: always
+    networks:
+      - squidward-network-internal
+      - squidward-network-external # DEV ONLY
+    ports:
+      - '6389:6379'
+    volumes:
+      - squidward-redis-vol:/data
+    environment:
+      - VALKEY_PASSWORD_FILE=/run/secrets/valkey-password
+    secrets:
+      - redis_password
+    healthcheck:
+      test: [ 'CMD', 'valkey-cli', 'ping' ]
+      interval: 3s
+      timeout: 10s
+      retries: 3
+
 volumes:
   squidward-db-vol:
     driver: local
     external: false
     name: squidward-db-vol
+  squidward-redis-vol:
+    driver: local
+    external: false
+    name: squidward-redis-vol
 
 networks:
   squidward-network-internal:
@@ -32,9 +64,8 @@ networks:
     internal: true
     external: false
   squidward-network-external:
-    name: squidward-network-internal
+    name: squidward-network-external
     driver: bridge
-    external: true
 
 secrets:
   postgres_host:
@@ -47,3 +78,5 @@ secrets:
     environment: POSTGRES_USER
   postgres_password:
     environment: POSTGRES_PASSWORD
+  redis_password:
+    environment: REDIS_PASSWORD

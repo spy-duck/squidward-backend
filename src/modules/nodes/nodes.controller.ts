@@ -1,6 +1,6 @@
 import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
 
-import { NodeCreateContract, NodesListContract, NodeUpdateContract } from '@contract/commands';
+import { NodeCreateContract, NodesListContract, NodeStartContract, NodeUpdateContract } from '@contract/commands';
 import { NodeRemoveContract } from '@contract/commands/nodes/node-remove.contract';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { errorHandler } from '@/common/helpers';
@@ -9,6 +9,7 @@ import {
     CreateNodeRequestDto, CreateNodeResponseDto,
     NodesListResponseDto, RemoveNodeRequestDto, RemoveNodeResponseDto,
     UpdateNodeRequestDto, UpdateNodeResponseDto,
+    NodeStartRequestDto, NodeStartResponseDto
 } from './dto';
 import { NodesService } from './nodes.service';
 
@@ -53,6 +54,15 @@ export class NodesController {
     })
     async removeNode(@Param() body: RemoveNodeRequestDto): Promise<RemoveNodeResponseDto> {
         const response = await this.nodesService.removeNode(body);
+        return { response: errorHandler(response) };
+    }
+    
+    @Endpoint({
+        command: NodeStartContract,
+        httpCode: HttpStatus.OK,
+    })
+    async startNode(@Param() body: NodeStartRequestDto): Promise<NodeStartResponseDto> {
+        const response = await this.nodesService.startNode(body);
         return { response: errorHandler(response) };
     }
 }

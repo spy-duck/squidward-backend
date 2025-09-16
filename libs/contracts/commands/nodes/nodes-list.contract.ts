@@ -27,7 +27,6 @@ export namespace NodesListContract {
         description: true,
         createdAt: true,
         updatedAt: true,
-        isEnabled: true,
         isConnected: true,
         state: true,
     }).safeExtend({

@@ -31,7 +31,6 @@ export async function up(database: Kysely<TDatabase>): Promise<void> {
                 .onUpdate('restrict'),
         )
         .addColumn('description', 'text')
-        .addColumn('isEnabled', 'boolean', col => col.notNull().defaultTo(false))
         .addColumn('isConnected', 'boolean', col => col.notNull().defaultTo(false))
         .addColumn('state', 'varchar(255)', col => col.notNull().defaultTo(false))
         .addColumn('createdAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))

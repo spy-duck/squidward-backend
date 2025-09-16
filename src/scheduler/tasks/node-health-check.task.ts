@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
+import { NODE_STATE, TNodeState } from '@contract/constants/nodes/node.state';
 import { NodeEntity } from '@/modules/nodes/entities/node.entity';
-import { TNodeState } from '@contract/constants/nodes/node.state';
 import { JOBS_INTERVALS } from '@/scheduler/intervals';
 import { NodeApi } from '@/common/node-api/node-api';
 
@@ -45,6 +45,7 @@ export class NodeHealthCheckTask {
             await this.nodesRepository.update({
                 ...node,
                 isConnected: false,
+                state: NODE_STATE.OFFLINE,
             });
         }
     }

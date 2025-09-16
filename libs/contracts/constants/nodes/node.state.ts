@@ -1,9 +1,12 @@
 export const NODE_STATE = {
+    STARTING: 'STARTING',
+    STOPPING: 'STOPPING',
     STOPPED: 'STOPPED',
     RUNNING: 'RUNNING',
     FATAL: 'FATAL',
     SHUTDOWN: 'SHUTDOWN',
-    RESTARTING: 'RESTARTING'
+    RESTARTING: 'RESTARTING',
+    OFFLINE: 'OFFLINE'
 } as const;
 
 export type TNodeState = keyof typeof NODE_STATE;

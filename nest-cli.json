@@ -17,6 +17,12 @@
       "root": "src/apps/scheduler",
       "entryFile": "scheduler",
       "sourceRoot": "src/apps/scheduler"
+    },
+    "processors": {
+      "type": "application",
+      "root": "src/apps/processors",
+      "entryFile": "processors",
+      "sourceRoot": "src/apps/processors"
     }
   }
 }

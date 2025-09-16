@@ -10,7 +10,6 @@ export interface NodeModel {
     port: number;
     configId: string;
     description: string | null;
-    isEnabled: boolean;
     isConnected: boolean;
     state: TNodeState;
     createdAt?: Date;

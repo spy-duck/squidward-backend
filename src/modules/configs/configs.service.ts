@@ -110,7 +110,7 @@ export class ConfigsService {
     
     async removeUser(request: ConfigRemoveInterface): Promise<ICommandResponse<ConfigRemoveResponseModel>> {
         try {
-            const config = await this.configsRepository.getOne(request.uuid);
+            const config = await this.configsRepository.getByUuid(request.uuid);
             
             if (!config) {
                 return {
@@ -147,7 +147,7 @@ export class ConfigsService {
     
     async getOneConfig(request: ConfigGetOneInterface): Promise<ICommandResponse<ConfigGetOneResponseModel>> {
         try {
-            const config = await this.configsRepository.getOne(request.uuid);
+            const config = await this.configsRepository.getByUuid(request.uuid);
             
             if (!config) {
                 return {

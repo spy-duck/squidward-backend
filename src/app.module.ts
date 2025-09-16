@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { DatabaseOptions } from '@/database/definition/database.module-definition';
 import { SquidwardBackendModules } from '@/modules/squidward-backend.modules';
 import { DatabaseModule } from '@/database/definition/database.module';
+import { QueuesModule } from '@/queues/queues.module';
 
 import { AppService } from './app.service';
 
@@ -24,7 +25,8 @@ import { AppService } from './app.service';
               password: config.get('POSTGRES_PASSWORD'),
           } as DatabaseOptions),
       }),
-      SquidwardBackendModules
+      QueuesModule,
+      SquidwardBackendModules,
   ],
   controllers: [],
   providers: [

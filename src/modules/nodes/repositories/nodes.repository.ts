@@ -40,6 +40,24 @@ export class NodesRepository {
         return nodes.map(NodesMapper.toEntity);
     }
     
+    async getByUuid(nodeUuid: string): Promise<NodeEntity | null> {
+        const node = await this.db
+            .selectFrom('nodes')
+            .selectAll()
+            .select([
+                (sb) => jsonObjectFrom(
+                    sb.selectFrom('configs')
+                        .select([
+                            'name',
+                        ])
+                        .whereRef('configs.uuid', '=', 'nodes.configId'),
+                ).as('config'),
+            ])
+            .where('uuid', '=', nodeUuid)
+            .executeTakeFirst();
+        return node ? NodesMapper.toEntity(node) : null;
+    }
+    
     async delete(nodeUuid: string): Promise<void> {
         await this.db
             .deleteFrom('nodes')

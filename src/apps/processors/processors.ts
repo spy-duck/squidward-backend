@@ -4,7 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { utilities as winstonModuleUtilities, WinstonModule } from 'nest-winston';
 import winston, { createLogger } from 'winston';
 
-import { SchedulerRootModule } from '@/apps/scheduler/scheduler.root.module';
+import { ProcessorsRootModule } from '@/apps/processors/processors.root.module';
 import { isDevelopment } from '@/common/utils/is-development';
 
 const instanedId = process.env.INSTANCE_ID || '0';
@@ -17,7 +17,7 @@ const logger = createLogger({
         }),
         // winston.format.ms(),
         winston.format.align(),
-        winstonModuleUtilities.format.nestLike(`Scheduler: #${instanedId}`, {
+        winstonModuleUtilities.format.nestLike(`Processors: #${instanedId}`, {
             colors: true,
             prettyPrint: true,
             processId: false,
@@ -28,7 +28,7 @@ const logger = createLogger({
 });
 
 async function bootstrap(): Promise<void> {
-    const app = await NestFactory.create(SchedulerRootModule, {
+    const app = await NestFactory.create(ProcessorsRootModule, {
         logger: WinstonModule.createLogger({
             instance: logger,
         }),

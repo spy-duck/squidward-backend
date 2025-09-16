@@ -8,7 +8,6 @@ export class NodeEntity {
     readonly port: number;
     readonly configId: string;
     readonly description: string | null;
-    readonly isEnabled: boolean;
     readonly isConnected: boolean;
     readonly createdAt: Date;
     readonly updatedAt: Date;

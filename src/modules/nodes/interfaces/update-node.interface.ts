@@ -5,5 +5,4 @@ export type UpdateNodeInterface = {
     port: number;
     configId: string;
     description?: string | null;
-    isEnabled: boolean;
 }
