@@ -26,6 +26,13 @@ export class ConfigsRepository {
         const configs = await this.db
             .selectFrom('configs')
             .selectAll()
+            .select([
+                (sb) => sb
+                    .selectFrom('nodes')
+                    .select(sql<number>`count(*)`.as('nodesCount'))
+                    .whereRef('nodes.configId', '=', 'configs.uuid')
+                    .as('nodesCount'),
+            ])
             .execute();
         return configs.map(ConfigsMapper.toEntity);
     }

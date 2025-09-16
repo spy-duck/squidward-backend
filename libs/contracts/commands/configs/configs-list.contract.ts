@@ -20,6 +20,7 @@ export namespace ConfigsListContract {
     export const ItemSchema = ConfigSchema.pick({
         uuid: true,
         name: true,
+        nodesCount: true,
         version: true,
         createdAt: true,
         updatedAt: true,
