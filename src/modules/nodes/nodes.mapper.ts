@@ -1,4 +1,5 @@
 import { NodeModelInsertable, NodeModelSelectable, NodeModelUpdateable } from '@/database/models';
+import { ConfigsMapper } from '@/modules/configs/configs.mapper';
 
 import { NodeEntity } from './entities/node.entity';
 
@@ -9,6 +10,7 @@ export class NodesMapper {
             name: model.name,
             host: model.host,
             port: model.port,
+            configId: model.configId,
             description: model.description,
             isEnabled: model.isEnabled,
             isConnected: model.isConnected,
@@ -17,6 +19,9 @@ export class NodesMapper {
             lastConnectedAt: model.lastConnectedAt,
             lastOnlineAt: model.lastOnlineAt,
             state: model.state,
+            ...model.config && {
+                config: ConfigsMapper.toEntity(model.config),
+            }
         })
     }
     
@@ -25,6 +30,7 @@ export class NodesMapper {
             name: entity.name,
             host: entity.host,
             port: entity.port,
+            configId: entity.configId,
             description: entity.description,
             isEnabled: entity.isEnabled,
             isConnected: entity.isConnected,

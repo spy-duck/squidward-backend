@@ -5,6 +5,7 @@ export class ConfigEntity {
     readonly version: string;
     readonly createdAt: Date | undefined;
     readonly updatedAt: Date | undefined;
+    readonly nodesCount: number | null;
     
     constructor(config: Partial<ConfigEntity>) {
         Object.assign(this, config);

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { jsonObjectFrom } from 'kysely/helpers/postgres';
+
 import { NodeEntity } from '@/modules/nodes/entities/node.entity';
 import { Database } from '@/database/database';
 
@@ -20,28 +22,19 @@ export class NodesRepository {
         return NodesMapper.toEntity(node);
     }
     
-    async getById(nodeUuid: string): Promise<NodeEntity | null> {
-        const node = await this.db
-            .selectFrom('nodes')
-            .selectAll()
-            .where('uuid', '=', nodeUuid)
-            .executeTakeFirst();
-        return node ? NodesMapper.toEntity(node) : null;
-    }
-    
     async getAll(): Promise<NodeEntity[]> {
         const nodes = await this.db
             .selectFrom('nodes')
             .selectAll()
-            .execute();
-        return nodes.map(NodesMapper.toEntity);
-    }
-    
-    async getEnabledList(): Promise<NodeEntity[]> {
-        const nodes = await this.db
-            .selectFrom('nodes')
-            .selectAll()
-            .where('isEnabled', '=', true)
+            .select([
+                (sb) => jsonObjectFrom(
+                    sb.selectFrom('configs')
+                        .select([
+                            'name',
+                        ])
+                        .whereRef('configs.uuid', '=', 'nodes.configId'),
+                ).as('config'),
+            ])
             .execute();
         return nodes.map(NodesMapper.toEntity);
     }

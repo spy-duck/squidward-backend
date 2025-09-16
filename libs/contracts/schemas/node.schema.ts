@@ -1,13 +1,17 @@
 import { z } from 'zod';
 
 import { TNodeState } from '../constants/nodes/node.state';
+import { ConfigSchema } from '../schemas/config.schema';
 
 export const NodeSchema = z.object({
     uuid: z.uuid(),
-    name: z.string().min(3, 'Min. 3 characters'),
-    host: z.string(),
+    name: z.string().nonempty().min(3, 'Min. 3 characters').trim(),
+    host: z.url().nonempty().trim()
+        .or(z.ipv4().nonempty().trim()),
     port: z.number().int(),
-    description: z.string().optional().nullable(),
+    description: z.string().trim().optional().nullable(),
+    configId: z.uuid(),
+    config: ConfigSchema.partial().optional(),
     createdAt: z
         .string()
         .datetime()

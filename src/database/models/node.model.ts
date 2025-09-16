@@ -1,5 +1,6 @@
 import { Generated, Selectable, Insertable, Updateable } from 'kysely';
 
+import { ConfigModelSelectable } from '@/database/models/config.model';
 import { TNodeState } from '@contract/constants/nodes/node.state';
 
 export interface NodeModel {
@@ -7,6 +8,7 @@ export interface NodeModel {
     name: string;
     host: string;
     port: number;
+    configId: string;
     description: string | null;
     isEnabled: boolean;
     isConnected: boolean;
@@ -15,6 +17,7 @@ export interface NodeModel {
     updatedAt?: Date;
     lastConnectedAt?: Date;
     lastOnlineAt?: Date;
+    config?: ConfigModelSelectable;
 }
 
 export type NodeModelInsertable = Insertable<NodeModel>;

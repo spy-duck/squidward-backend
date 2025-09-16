@@ -2,9 +2,10 @@ import { z } from 'zod';
 
 export const ConfigSchema = z.object({
     uuid: z.uuid(),
-    name: z.string().min(3, 'Min. 3 characters'),
-    config: z.string().nonempty(),
+    name: z.string().min(3, 'Min. 3 characters').trim(),
+    config: z.string().nonempty().trim(),
     version: z.string(),
+    nodesCount: z.number().nullable().optional(),
     createdAt: z
         .date().optional()
         .or(z

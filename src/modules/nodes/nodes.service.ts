@@ -28,6 +28,7 @@ export class NodesService {
                     name: request.name,
                     host: request.host,
                     port: request.port,
+                    configId: request.configId,
                     description: request.description,
                 })
             )
@@ -81,6 +82,7 @@ export class NodesService {
                     name: request.name,
                     host: request.host,
                     port: request.port,
+                    configId: request.configId,
                     description: request.description,
                     isEnabled: request.isEnabled,
                     updatedAt: new Date(),

@@ -8,6 +8,7 @@ export interface ConfigModel {
     version: string;
     createdAt?: Date;
     updatedAt?: Date;
+    nodesCount?: number | null;
 }
 
 export type ConfigModelInsertable = Insertable<ConfigModel>;

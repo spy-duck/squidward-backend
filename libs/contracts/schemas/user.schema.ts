@@ -5,12 +5,12 @@ import { USER_STATUS_VALUES } from '../constants/users';
 
 export const UserSchema = z.object({
     uuid: z.uuid(),
-    name: z.string().min(3, 'Min. 3 characters'),
-    username: z.string().min(5, 'Min. 5 characters'),
-    password: z.string().min(16, 'Min. 16 characters'),
+    name: z.string().min(3, 'Min. 3 characters').trim(),
+    username: z.string().min(5, 'Min. 5 characters').trim(),
+    password: z.string().min(16, 'Min. 16 characters').trim(),
     status: z.enum(USER_STATUS_VALUES),
     
-    email: z.email().nullable(),
+    email: z.email().trim().nullable(),
     telegramId: z.number().nullable(),
     usedTrafficBytes: z.number().nullable(),
     

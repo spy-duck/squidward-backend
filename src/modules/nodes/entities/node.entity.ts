@@ -5,6 +5,7 @@ export class NodeEntity {
     readonly name: string;
     readonly host: string;
     readonly port: number;
+    readonly configId: string;
     readonly description: string | null;
     readonly isEnabled: boolean;
     readonly isConnected: boolean;

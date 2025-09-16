@@ -19,6 +19,7 @@ export namespace NodeUpdateContract {
             name: true,
             host: true,
             port: true,
+            configId: true,
             description: true,
             isEnabled: true,
         });

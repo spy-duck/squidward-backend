@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { getEndpointDetails } from '../../constants/endpoint-details';
-import { NodeSchema } from '../../schemas/node.schema';
+import { NodeSchema, ConfigSchema } from '../../schemas';
 import { REST_API } from '../../api';
 
 export namespace NodesListContract {
@@ -22,12 +22,18 @@ export namespace NodesListContract {
         name: true,
         host: true,
         port: true,
+        configId: true,
+        config: true,
         description: true,
         createdAt: true,
         updatedAt: true,
         isEnabled: true,
         isConnected: true,
         state: true,
+    }).safeExtend({
+        config: ConfigSchema.pick({
+            name: true,
+        }).optional(),
     });
     
     export const ResponseSchema = z.object({

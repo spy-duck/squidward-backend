@@ -23,7 +23,7 @@ export namespace UserUpdateContract {
             telegramId: true,
             expireAt: true,
         })
-        .extend({
+        .safeExtend({
             password: z
                 .string()
                 .min(16, 'Min. 16 characters')

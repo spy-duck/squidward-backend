@@ -7,12 +7,29 @@ import { Kysely, sql } from 'kysely';
 import { TDatabase } from '@/database/database';
 
 export async function up(database: Kysely<TDatabase>): Promise<void> {
+    
+    await database.schema
+        .createTable('configs')
+        .addColumn('uuid', 'uuid', col => col.notNull().primaryKey().defaultTo(sql`gen_random_uuid()`))
+        .addColumn('name', 'varchar(255)', col => col.notNull())
+        .addColumn('config', 'text', col => col.notNull())
+        .addColumn('version', 'varchar(255)', col => col.notNull())
+        .addColumn('createdAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
+        .addColumn('updatedAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
+        .execute();
+    
     await database.schema
         .createTable('nodes')
         .addColumn('uuid', 'uuid', col => col.notNull().primaryKey().defaultTo(sql`gen_random_uuid()`))
         .addColumn('name', 'varchar(255)', col => col.notNull())
         .addColumn('host', 'varchar(255)', col => col.notNull())
         .addColumn('port', 'integer', col => col.notNull())
+        .addColumn('configId', 'uuid', col =>
+            col.notNull()
+                .references('configs.uuid')
+                .onDelete('restrict')
+                .onUpdate('restrict'),
+        )
         .addColumn('description', 'text')
         .addColumn('isEnabled', 'boolean', col => col.notNull().defaultTo(false))
         .addColumn('isConnected', 'boolean', col => col.notNull().defaultTo(false))
@@ -46,5 +63,8 @@ export async function down(database: Kysely<TDatabase>): Promise<void> {
         .execute();
     await database.schema
         .dropTable('nodes')
+        .execute();
+    await database.schema
+        .dropTable('configs')
         .execute();
 }

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { getEndpointDetails } from '../../constants/endpoint-details';
+import { NodeSchema } from '../../schemas';
 import { REST_API } from '../../api';
 
 export namespace NodeCreateContract {
@@ -12,13 +13,14 @@ export namespace NodeCreateContract {
         'Create a new node',
     );
     
-    export const RequestSchema = z.object({
-        name: z.string().min(2).nonempty(),
-        host: z.url().nonempty()
-            .or(z.ipv4().nonempty()),
-        port: z.number().int(),
-        description: z.string().optional().nullable(),
-    });
+    export const RequestSchema = NodeSchema
+        .pick({
+            name: true,
+            host: true,
+            port: true,
+            configId: true,
+            description: true,
+        });
     
     export type Request = z.infer<typeof RequestSchema>;
     

@@ -110,6 +110,22 @@ export class ConfigsService {
     
     async removeUser(request: ConfigRemoveInterface): Promise<ICommandResponse<ConfigRemoveResponseModel>> {
         try {
+            const config = await this.configsRepository.getOne(request.uuid);
+            
+            if (!config) {
+                return {
+                    success: false,
+                    code: ERRORS.CONFIG_NOT_FOUND.code,
+                    response: new ConfigGetOneResponseModel(false, 'Config not found'),
+                };
+            }
+            if (config.nodesCount && config.nodesCount > 0) {
+                return {
+                    success: false,
+                    code: ERRORS.CONFIG_IS_USED_BY_NODES.code,
+                    response: new ConfigGetOneResponseModel(false, ERRORS.CONFIG_IS_USED_BY_NODES.message),
+                };
+            }
             await this.configsRepository.delete(request.uuid);
             return {
                 success: true,
@@ -132,6 +148,7 @@ export class ConfigsService {
     async getOneConfig(request: ConfigGetOneInterface): Promise<ICommandResponse<ConfigGetOneResponseModel>> {
         try {
             const config = await this.configsRepository.getOne(request.uuid);
+            
             if (!config) {
                 return {
                     success: false,
@@ -139,6 +156,7 @@ export class ConfigsService {
                     response: new ConfigGetOneResponseModel(false, 'Config not found'),
                 };
             }
+            
             return {
                 success: true,
                 response: new ConfigGetOneResponseModel(true, null, config),

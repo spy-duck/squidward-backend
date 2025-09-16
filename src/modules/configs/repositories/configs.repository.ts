@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+import { sql } from 'kysely';
+
 import { Database } from '@/database/database';
 
 import { ConfigEntity } from '../entities/config.entity';
@@ -49,6 +51,13 @@ export class ConfigsRepository {
         const config = await this.db
             .selectFrom('configs')
             .selectAll()
+            .select([
+                (sb) => sb
+                    .selectFrom('nodes')
+                    .select(sql<number>`count(*)`.as('nodesCount'))
+                    .whereRef('nodes.configId', '=', 'configs.uuid')
+                    .as('nodesCount'),
+            ])
             .where('uuid', '=', configUuid)
             .executeTakeFirst();
         return config ? ConfigsMapper.toEntity(config) : null;

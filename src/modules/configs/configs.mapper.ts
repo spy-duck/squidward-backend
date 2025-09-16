@@ -3,6 +3,7 @@ import {
     ConfigModelSelectable,
     ConfigModelUpdateable,
 } from '@/database/models';
+import { isDefined } from '@/common/utils/is-defined';
 
 import { ConfigEntity } from './entities/config.entity';
 
@@ -15,6 +16,7 @@ export class ConfigsMapper {
             version: model.version,
             createdAt: model.createdAt,
             updatedAt: model.updatedAt,
+            nodesCount: isDefined(model.nodesCount) ? +model.nodesCount : null,
         })
     }
     
