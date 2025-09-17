@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { TNodeState } from '../constants/nodes/node.state';
+import { NODE_STATE_VALUES } from '../constants/nodes/node.state';
 import { ConfigSchema } from '../schemas/config.schema';
 
 export const NodeSchema = z.object({
@@ -23,7 +23,7 @@ export const NodeSchema = z.object({
         .optional()
         .transform((str) => str && new Date(str)),
     isConnected: z.boolean(),
-    state: z.string<TNodeState>(),
+    state: z.enum(NODE_STATE_VALUES),
     lastConnectedAt: z.iso.datetime().nullable(),
     lastOnlineAt: z.iso.datetime().nullable(),
     

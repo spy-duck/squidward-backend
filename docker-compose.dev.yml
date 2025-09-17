@@ -25,12 +25,18 @@ services:
       - postgres_db
       - postgres_user
       - postgres_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$(cat /run/secrets/postgres_user) -d $$(cat /run/secrets/postgres_db)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   squidward-redis:
     image: valkey/valkey:9.0-alpine3.22
     container_name: squidward-redis
     hostname: squidward-redis
-    restart: always
+    restart: unless-stopped
     networks:
       - squidward-network-internal
       - squidward-network-external # DEV ONLY
@@ -38,10 +44,9 @@ services:
       - '6389:6379'
     volumes:
       - squidward-redis-vol:/data
-    environment:
-      - VALKEY_PASSWORD_FILE=/run/secrets/valkey-password
+    entrypoint: "/bin/sh -c \"valkey-server --requirepass $$(cat /run/secrets/valkey_password)\""
     secrets:
-      - redis_password
+      - valkey_password
     healthcheck:
       test: [ 'CMD', 'valkey-cli', 'ping' ]
       interval: 3s
@@ -78,5 +83,5 @@ secrets:
     environment: POSTGRES_USER
   postgres_password:
     environment: POSTGRES_PASSWORD
-  redis_password:
+  valkey_password:
     environment: REDIS_PASSWORD

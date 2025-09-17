@@ -7,6 +7,7 @@ import {
     SquidRestartContract,
     SquidConfigContract,
     PostUsersContract,
+    AddUserContract,
 } from '@squidward-node/contracts';
 import axios, { AxiosInstance } from 'axios';
 
@@ -79,5 +80,15 @@ export class NodeApi {
             timeout: 20000,
         });
         return PostUsersContract.ResponseSchema.parse(response.data);
+    }
+    
+    async addUser(user: AddUserContract.Request): Promise<AddUserContract.Response> {
+        const response = await this.nodeAxios.request({
+            method: 'POST',
+            url: AddUserContract.url,
+            data: user,
+            timeout: 20000,
+        });
+        return AddUserContract.ResponseSchema.parse(response.data);
     }
 }

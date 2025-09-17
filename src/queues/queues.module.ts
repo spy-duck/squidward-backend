@@ -28,7 +28,7 @@ const queueModules = [
                     host: configService.getOrThrow<string>('REDIS_HOST'),
                     port: configService.getOrThrow<number>('REDIS_PORT'),
                     db: configService.getOrThrow<number>('REDIS_DB'),
-                    // password: configService.get<string | undefined>('REDIS_PASSWORD'),
+                    password: configService.get<string | undefined>('REDIS_PASSWORD'),
                 },
                 defaultJobOptions: {
                     removeOnComplete: 500,
