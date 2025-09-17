@@ -1,6 +1,12 @@
 import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
 
-import { NodeCreateContract, NodesListContract, NodeStartContract, NodeUpdateContract } from '@contract/commands';
+import {
+    NodeCreateContract,
+    NodesListContract,
+    NodeStartContract,
+    NodeStopContract,
+    NodeUpdateContract,
+} from '@contract/commands';
 import { NodeRemoveContract } from '@contract/commands/nodes/node-remove.contract';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { errorHandler } from '@/common/helpers';
@@ -9,7 +15,7 @@ import {
     CreateNodeRequestDto, CreateNodeResponseDto,
     NodesListResponseDto, RemoveNodeRequestDto, RemoveNodeResponseDto,
     UpdateNodeRequestDto, UpdateNodeResponseDto,
-    NodeStartRequestDto, NodeStartResponseDto
+    NodeStartRequestDto, NodeStartResponseDto, NodeStopRequestDto, NodeStopResponseDto,
 } from './dto';
 import { NodesService } from './nodes.service';
 
@@ -63,6 +69,15 @@ export class NodesController {
     })
     async startNode(@Param() body: NodeStartRequestDto): Promise<NodeStartResponseDto> {
         const response = await this.nodesService.startNode(body);
+        return { response: errorHandler(response) };
+    }
+    
+    @Endpoint({
+        command: NodeStopContract,
+        httpCode: HttpStatus.OK,
+    })
+    async stopNode(@Param() body: NodeStopRequestDto): Promise<NodeStopResponseDto> {
+        const response = await this.nodesService.stopNode(body);
         return { response: errorHandler(response) };
     }
 }

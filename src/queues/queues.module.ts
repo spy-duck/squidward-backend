@@ -6,9 +6,11 @@ import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 
 import { NodeStartQueueModule } from '@/queues/node-start/node-start.queue.module';
+import { NodeStopQueueModule } from '@/queues/node-stop/node-stop.queue.module';
 
 const queueModules = [
     NodeStartQueueModule,
+    NodeStopQueueModule,
 ];
 
 @Module({

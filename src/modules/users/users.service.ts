@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 
+import { StartNodeResponseModel, StopNodeResponseModel } from '@/modules/nodes/models';
+import { safeExecute } from '@/common/helpers/safe-execute';
 import { encryptPassword } from '@/common/helpers';
 import { ICommandResponse } from '@/common/types';
 import { ERRORS } from '@contract/constants';
@@ -17,40 +19,82 @@ import { UserEntity } from './entities/user.entity';
 @Injectable()
 export class UsersService {
     private readonly logger = new Logger(UsersService.name);
+    private readonly execute = safeExecute(this.logger);
     
     constructor(
         private readonly usersRepository: UsersRepository,
     ) {}
     
-    async createUser(request: CreateUserInterface): Promise<ICommandResponse<CreateUserResponseModel>> {
-        try {
-            await this.usersRepository.create(
-                new UserEntity({
-                    name: request.name,
-                    username: request.username,
-                    password: await encryptPassword(request.password),
-                    status: request.status,
-                    email: request.email,
-                    telegramId: request.telegramId,
-                    expireAt: request.expireAt,
-                })
-            )
-            return {
-                success: true,
-                response: new CreateUserResponseModel(true),
-            };
-        } catch (error) {
-            this.logger.error(error);
-            let message = '';
-            if (error instanceof Error) {
-                message = error.message;
-            }
-            return {
-                success: false,
-                code: ERRORS.INTERNAL_SERVER_ERROR.code,
-                response: new CreateUserResponseModel(false, message),
-            };
+    private async validateForUserExists<T>(
+        request: CreateUserInterface | UpdateUserInterface,
+        makeResponse: (message: string) => T,
+        excludeUuid?: string,
+    ): Promise<ICommandResponse<T> | null> {
+        const exists = await this.usersRepository.findExist(
+            request.name,
+            request.username,
+            request.email,
+            request.telegramId,
+            excludeUuid,
+        );
+        
+        if (!exists) {
+            return null;
         }
+        
+        const message = (() => {
+            switch (true) {
+                case exists.name === request.name:
+                    return 'User with same name already exists';
+                case exists.username === request.username:
+                    return 'User with same username already exists';
+                case exists.email === request.email:
+                    return 'User with same email already exists';
+                case exists.telegramId === request.telegramId:
+                    return 'User with same telegram id already exists';
+                default:
+                    return 'User already exists';
+            }
+        })();
+        
+        return {
+            success: false,
+            code: ERRORS.USER_ALREADY_EXISTS.code,
+            response: makeResponse(message),
+            message,
+        }
+    }
+    
+    async createUser(request: CreateUserInterface): Promise<ICommandResponse<CreateUserResponseModel>> {
+        return this.execute<StartNodeResponseModel>(
+            async () => {
+                const existsErrorResponse = await this.validateForUserExists(
+                    request,
+                    (message) => new CreateUserResponseModel(false, message),
+                );
+                
+                if (existsErrorResponse) {
+                    return existsErrorResponse;
+                }
+                
+                await this.usersRepository.create(
+                    new UserEntity({
+                        name: request.name,
+                        username: request.username,
+                        password: await encryptPassword(request.password),
+                        status: request.status,
+                        email: request.email,
+                        telegramId: request.telegramId,
+                        expireAt: request.expireAt,
+                    }),
+                )
+                return {
+                    success: true,
+                    response: new CreateUserResponseModel(true),
+                };
+            },
+            (errorMessage) => new StopNodeResponseModel(false, errorMessage),
+        );
     }
     
     async usersList(): Promise<ICommandResponse<UsersListResponseModel>> {
@@ -79,6 +123,16 @@ export class UsersService {
     
     async updateUser(request: UpdateUserInterface): Promise<ICommandResponse<UpdateUserResponseModel>> {
         try {
+            const existsErrorResponse = await this.validateForUserExists(
+                request,
+                (message) => new UpdateUserResponseModel(false, message),
+                request.uuid,
+            );
+            
+            if (existsErrorResponse) {
+                return existsErrorResponse;
+            }
+            
             await this.usersRepository.update(
                 new UserEntity({
                     uuid: request.uuid,
@@ -92,11 +146,11 @@ export class UsersService {
                     telegramId: request.telegramId,
                     expireAt: request.expireAt,
                     updatedAt: new Date(),
-                })
+                }),
             )
             return {
                 success: true,
-                response: new CreateUserResponseModel(true),
+                response: new UpdateUserResponseModel(true),
             };
         } catch (error) {
             this.logger.error(error);
@@ -107,7 +161,7 @@ export class UsersService {
             return {
                 success: false,
                 code: ERRORS.INTERNAL_SERVER_ERROR.code,
-                response: new CreateUserResponseModel(false, message),
+                response: new UpdateUserResponseModel(false, message),
             };
         }
     }

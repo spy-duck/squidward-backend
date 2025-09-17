@@ -7,7 +7,7 @@ export const UserSchema = z.object({
     uuid: z.uuid(),
     name: z.string().min(3, 'Min. 3 characters').trim(),
     username: z.string().min(5, 'Min. 5 characters').trim(),
-    password: z.string().min(16, 'Min. 16 characters').trim(),
+    password: z.string().min(8, 'Min. 8 characters').trim(),
     status: z.enum(USER_STATUS_VALUES),
     
     email: z.email().trim().nullable(),

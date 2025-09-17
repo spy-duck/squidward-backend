@@ -8,4 +8,6 @@ export const ERRORS = {
     CONFIG_IS_USED_BY_NODES: { code: 'C002', message: 'Some nodes using this config', httpCode: 400 },
     NODE_NOT_FOUND: { code: 'N001', message: 'Node not found', httpCode: 404 },
     NODE_INVALID_STATUS_FOR_START: { code: 'N002', message: 'Start failed. Invalid status of node', httpCode: 400 },
+    USER_NOT_FOUND: { code: 'U001', message: 'User not found', httpCode: 404 },
+    USER_ALREADY_EXISTS: { code: 'U002', message: 'User already exists', httpCode: 400 },
 };

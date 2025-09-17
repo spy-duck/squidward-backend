@@ -1,17 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { NodeStartQueueService } from '@/queues/node-start/node-start.queue.service';
+import { NodeStartQueueService, NodeStopQueueService } from '@/queues';
+import { ERRORS, NODE_STATE, TNodeState } from '@contract/constants';
 import { safeExecute } from '@/common/helpers/safe-execute';
-import { ERRORS, NODE_STATE } from '@contract/constants';
 import { ICommandResponse } from '@/common/types';
 
 import {
     UpdateNodeResponseModel,
     CreateNodeResponseModel,
     NodesListResponseModel,
-    RemoveNodeResponseModel, StartNodeResponseModel,
+    RemoveNodeResponseModel, StartNodeResponseModel, StopNodeResponseModel,
 } from './models';
-import { CreateNodeInterface, RemoveNodeInterface, UpdateNodeInterface } from './interfaces';
+import {
+    CreateNodeInterface,
+    RemoveNodeInterface,
+    StartNodeInterface,
+    StopNodeInterface,
+    UpdateNodeInterface,
+} from './interfaces';
 import { NodesRepository } from './repositories/nodes.repository';
 import { NodeEntity } from './entities/node.entity';
 
@@ -23,6 +29,7 @@ export class NodesService {
     constructor(
         private readonly nodesRepository: NodesRepository,
         private readonly nodeStartQueueService: NodeStartQueueService,
+        private readonly nodeStopQueueService: NodeStopQueueService,
     ) {}
     
     async createNode(request: CreateNodeInterface): Promise<ICommandResponse<CreateNodeResponseModel>> {
@@ -130,7 +137,7 @@ export class NodesService {
         }
     }
     
-    async startNode(request: RemoveNodeInterface): Promise<ICommandResponse<StartNodeResponseModel>> {
+    async startNode(request: StartNodeInterface): Promise<ICommandResponse<StartNodeResponseModel>> {
         return this.execute<StartNodeResponseModel>(
             async () => {
                 const node = await this.nodesRepository.getByUuid(request.uuid);
@@ -141,32 +148,26 @@ export class NodesService {
                         response: new StartNodeResponseModel(false, ERRORS.NODE_NOT_FOUND.message),
                     };
                 }
-                // if (node.state === NODE_STATE.RUNNING) {
-                //     return {
-                //         success: false,
-                //         code: ERRORS.NODE_INVALID_STATUS_FOR_START.code,
-                //         response: new StartNodeResponseModel(false, 'Node is already running'),
-                //     };
-                // }
-                // if (node.state === NODE_STATE.STARTING) {
-                //     return {
-                //         success: false,
-                //         code: ERRORS.NODE_INVALID_STATUS_FOR_START.code,
-                //         response: new StartNodeResponseModel(false, 'Node is starting now'),
-                //     };
-                // }
-                // if (node.state === NODE_STATE.RESTARTING) {
-                //     return {
-                //         success: false,
-                //         code: ERRORS.NODE_INVALID_STATUS_FOR_START.code,
-                //         response: new StartNodeResponseModel(false, 'Node is restarting now'),
-                //     };
-                // }
+                
+                if (!this.validateNodeStateForAction(node, [
+                    NODE_STATE.STOPPED,
+                    NODE_STATE.FATAL,
+                    NODE_STATE.SHUTDOWN,
+                ])) {
+                    return {
+                        success: false,
+                        code: ERRORS.NODE_INVALID_STATUS_FOR_START.code,
+                        response: new StartNodeResponseModel(false, 'Node is already running'),
+                    };
+                }
+                
                 await this.nodesRepository.update({
                     ...node,
                     state: NODE_STATE.STARTING,
                 });
+                
                 await this.nodeStartQueueService.startNode({ nodeUuid: request.uuid });
+                
                 return {
                     success: true,
                     response: new StartNodeResponseModel(true),
@@ -174,5 +175,47 @@ export class NodesService {
             },
             (errorMessage) => new StartNodeResponseModel(false, errorMessage),
         );
+    }
+    
+    async stopNode(request: StopNodeInterface): Promise<ICommandResponse<StopNodeResponseModel>> {
+        return this.execute<StartNodeResponseModel>(
+            async () => {
+                const node = await this.nodesRepository.getByUuid(request.uuid);
+                if (!node) {
+                    return {
+                        success: false,
+                        code: ERRORS.NODE_NOT_FOUND.code,
+                        response: new StopNodeResponseModel(false, ERRORS.NODE_NOT_FOUND.message),
+                    };
+                }
+                
+                if (!this.validateNodeStateForAction(node, [
+                    NODE_STATE.RUNNING,
+                ])) {
+                    return {
+                        success: false,
+                        code: ERRORS.NODE_INVALID_STATUS_FOR_START.code,
+                        response: new StopNodeResponseModel(false, 'Node is already running'),
+                    };
+                }
+                
+                await this.nodesRepository.update({
+                    ...node,
+                    state: NODE_STATE.STOPPING,
+                });
+                
+                await this.nodeStopQueueService.stopNode({ nodeUuid: request.uuid });
+                
+                return {
+                    success: true,
+                    response: new StopNodeResponseModel(true),
+                };
+            },
+            (errorMessage) => new StopNodeResponseModel(false, errorMessage),
+        );
+    }
+    
+    private validateNodeStateForAction(node: NodeEntity, availableStates: TNodeState[]): boolean {
+        return availableStates.includes(node.state);
     }
 }

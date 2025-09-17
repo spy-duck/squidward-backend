@@ -26,7 +26,7 @@ export namespace UserUpdateContract {
         .safeExtend({
             password: z
                 .string()
-                .min(16, 'Min. 16 characters')
+                .min(8, 'Min. 8 characters')
                 .nullable()
                 .optional(),
         });

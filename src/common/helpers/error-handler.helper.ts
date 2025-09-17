@@ -16,14 +16,15 @@ export function errorHandler<T>(response: ICommandResponse<T>): T {
         throw new InternalServerErrorException('Unknown error');
     }
     
-    const errorObject = Object.values(ERRORS).find((error) => error.code === response.code);
+    const errorObject = Object.values(ERRORS)
+        .find((error) => error.code === response.code);
     
     if (!errorObject) {
         throw new InternalServerErrorException('Unknown error');
     }
     
     throw new HttpExceptionWithErrorCodeType(
-        errorObject.message,
+        response.message || errorObject.message,
         errorObject.code,
         errorObject.httpCode,
     );
