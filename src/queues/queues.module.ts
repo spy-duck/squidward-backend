@@ -5,12 +5,18 @@ import { Module } from '@nestjs/common';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { ExpressAdapter } from '@bull-board/express';
 
-import { NodeStartQueueModule } from '@/queues/node-start/node-start.queue.module';
-import { NodeStopQueueModule } from '@/queues/node-stop/node-stop.queue.module';
+import {
+    NodeStartQueueModule,
+    NodeStopQueueModule,
+    NodeHealthCheckQueueModule,
+    NodeRestartQueueModule,
+} from './nodes';
 
 const queueModules = [
     NodeStartQueueModule,
     NodeStopQueueModule,
+    NodeHealthCheckQueueModule,
+    NodeRestartQueueModule,
 ];
 
 @Module({

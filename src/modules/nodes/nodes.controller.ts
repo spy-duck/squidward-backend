@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
 
 import {
-    NodeCreateContract,
+    NodeCreateContract, NodeRestartContract,
     NodesListContract,
     NodeStartContract,
     NodeStopContract,
@@ -12,10 +12,13 @@ import { Endpoint } from '@/common/decorators/endpoint';
 import { errorHandler } from '@/common/helpers';
 
 import {
-    CreateNodeRequestDto, CreateNodeResponseDto,
-    NodesListResponseDto, RemoveNodeRequestDto, RemoveNodeResponseDto,
-    UpdateNodeRequestDto, UpdateNodeResponseDto,
-    NodeStartRequestDto, NodeStartResponseDto, NodeStopRequestDto, NodeStopResponseDto,
+    NodeCreateRequestDto, NodeCreateResponseDto,
+    NodesListResponseDto,
+    NodeRemoveRequestDto, NodeRemoveResponseDto,
+    NodeUpdateRequestDto, NodeUpdateResponseDto,
+    NodeStartRequestDto, NodeStartResponseDto,
+    NodeStopRequestDto, NodeStopResponseDto,
+    NodeRestartRequestDto, NodeRestartResponseDto,
 } from './dto';
 import { NodesService } from './nodes.service';
 
@@ -28,9 +31,9 @@ export class NodesController {
     @Endpoint({
         command: NodeCreateContract,
         httpCode: HttpStatus.CREATED,
-        apiBody: CreateNodeRequestDto,
+        apiBody: NodeCreateRequestDto,
     })
-    async createNode(@Body() body: CreateNodeRequestDto): Promise<CreateNodeResponseDto> {
+    async createNode(@Body() body: NodeCreateRequestDto): Promise<NodeCreateResponseDto> {
         const response = await this.nodesService.createNode(body);
         return { response: errorHandler(response) };
     }
@@ -47,9 +50,9 @@ export class NodesController {
     @Endpoint({
         command: NodeUpdateContract,
         httpCode: HttpStatus.OK,
-        apiBody: UpdateNodeRequestDto,
+        apiBody: NodeUpdateRequestDto,
     })
-    async updateNode(@Body() body: UpdateNodeRequestDto): Promise<UpdateNodeResponseDto> {
+    async updateNode(@Body() body: NodeUpdateRequestDto): Promise<NodeUpdateResponseDto> {
         const response = await this.nodesService.updateNode(body);
         return { response: errorHandler(response) };
     }
@@ -58,7 +61,7 @@ export class NodesController {
         command: NodeRemoveContract,
         httpCode: HttpStatus.OK,
     })
-    async removeNode(@Param() body: RemoveNodeRequestDto): Promise<RemoveNodeResponseDto> {
+    async removeNode(@Param() body: NodeRemoveRequestDto): Promise<NodeRemoveResponseDto> {
         const response = await this.nodesService.removeNode(body);
         return { response: errorHandler(response) };
     }
@@ -69,6 +72,15 @@ export class NodesController {
     })
     async startNode(@Param() body: NodeStartRequestDto): Promise<NodeStartResponseDto> {
         const response = await this.nodesService.startNode(body);
+        return { response: errorHandler(response) };
+    }
+    
+    @Endpoint({
+        command: NodeRestartContract,
+        httpCode: HttpStatus.OK,
+    })
+    async restartNode(@Param() body: NodeRestartRequestDto): Promise<NodeRestartResponseDto> {
+        const response = await this.nodesService.restartNode(body);
         return { response: errorHandler(response) };
     }
     

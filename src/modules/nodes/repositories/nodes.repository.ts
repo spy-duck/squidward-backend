@@ -74,4 +74,21 @@ export class NodesRepository {
             .executeTakeFirstOrThrow();
         return NodesMapper.toEntity(node);
     }
+    
+    async findExist(
+        name: string,
+        host: string,
+        excludeUuid?: string,
+    ): Promise<NodeEntity | null> {
+        const node = await this.db
+            .selectFrom('nodes')
+            .selectAll()
+            .$if(!!excludeUuid, (wb) => wb.where('uuid', '!=', excludeUuid!))
+            .where((wb) => wb.or([
+                wb('name', '=', name),
+                wb('host', '=', host),
+            ]))
+            .executeTakeFirst();
+        return node ? NodesMapper.toEntity(node) : null;
+    }
 }

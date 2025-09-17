@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { NodeStartQueueService, NodeStopQueueService } from '@/queues';
+import { NodeRestartQueueService, NodeStartQueueService, NodeStopQueueService } from '@/queues';
 import { ERRORS, NODE_STATE, TNodeState } from '@contract/constants';
 import { safeExecute } from '@/common/helpers/safe-execute';
 import { ICommandResponse } from '@/common/types';
@@ -9,11 +9,11 @@ import {
     UpdateNodeResponseModel,
     CreateNodeResponseModel,
     NodesListResponseModel,
-    RemoveNodeResponseModel, StartNodeResponseModel, StopNodeResponseModel,
+    RemoveNodeResponseModel, StartNodeResponseModel, StopNodeResponseModel, RestartNodeResponseModel,
 } from './models';
 import {
     CreateNodeInterface,
-    RemoveNodeInterface,
+    RemoveNodeInterface, RestartNodeInterface,
     StartNodeInterface,
     StopNodeInterface,
     UpdateNodeInterface,
@@ -29,11 +29,54 @@ export class NodesService {
     constructor(
         private readonly nodesRepository: NodesRepository,
         private readonly nodeStartQueueService: NodeStartQueueService,
+        private readonly nodeRestartQueueService: NodeRestartQueueService,
         private readonly nodeStopQueueService: NodeStopQueueService,
     ) {}
     
+    private async validateForNodeExists<T>(
+        request: CreateNodeInterface | UpdateNodeInterface,
+        makeResponse: (message: string) => T,
+        excludeUuid?: string,
+    ): Promise<ICommandResponse<T> | null> {
+        const exists = await this.nodesRepository.findExist(
+            request.name,
+            request.host,
+            excludeUuid,
+        );
+        
+        if (!exists) {
+            return null;
+        }
+        
+        const message = (() => {
+            switch (true) {
+                case exists.name === request.name:
+                    return 'Node with same name already exists';
+                case exists.host === request.host:
+                    return 'Node with same host already exists';
+                default:
+                    return 'Node already exists';
+            }
+        })();
+        
+        return {
+            success: false,
+            code: ERRORS.USER_ALREADY_EXISTS.code,
+            response: makeResponse(message),
+            message,
+        }
+    }
+    
     async createNode(request: CreateNodeInterface): Promise<ICommandResponse<CreateNodeResponseModel>> {
         try {
+            const existsErrorResponse = await this.validateForNodeExists(
+                request,
+                (message) => new CreateNodeResponseModel(false, message),
+            );
+            if (existsErrorResponse) {
+                return existsErrorResponse;
+            }
+            
             await this.nodesRepository.create(
                 new NodeEntity({
                     name: request.name,
@@ -41,6 +84,7 @@ export class NodesService {
                     port: request.port,
                     configId: request.configId,
                     description: request.description,
+                    state: NODE_STATE.CREATED,
                 }),
             )
             return {
@@ -87,6 +131,22 @@ export class NodesService {
     
     async updateNode(request: UpdateNodeInterface): Promise<ICommandResponse<UpdateNodeResponseModel>> {
         try {
+            const node = await this.nodesRepository.getByUuid(request.uuid);
+            if (!node) {
+                return {
+                    success: false,
+                    code: ERRORS.NODE_NOT_FOUND.code,
+                    response: new UpdateNodeResponseModel(false, ERRORS.NODE_NOT_FOUND.message),
+                };
+            }
+            const existsErrorResponse = await this.validateForNodeExists(
+                request,
+                (message) => new UpdateNodeResponseModel(false, message),
+                request.uuid,
+            );
+            if (existsErrorResponse) {
+                return existsErrorResponse;
+            }
             await this.nodesRepository.update(
                 new NodeEntity({
                     uuid: request.uuid,
@@ -100,7 +160,7 @@ export class NodesService {
             )
             return {
                 success: true,
-                response: new CreateNodeResponseModel(true),
+                response: new UpdateNodeResponseModel(true),
             };
         } catch (error) {
             this.logger.error(error);
@@ -118,10 +178,18 @@ export class NodesService {
     
     async removeNode(request: RemoveNodeInterface): Promise<ICommandResponse<RemoveNodeResponseModel>> {
         try {
+            const node = await this.nodesRepository.getByUuid(request.uuid);
+            if (!node) {
+                return {
+                    success: false,
+                    code: ERRORS.NODE_NOT_FOUND.code,
+                    response: new RemoveNodeResponseModel(false, ERRORS.NODE_NOT_FOUND.message),
+                };
+            }
             await this.nodesRepository.delete(request.uuid);
             return {
                 success: true,
-                response: new CreateNodeResponseModel(true),
+                response: new RemoveNodeResponseModel(true),
             };
         } catch (error) {
             this.logger.error(error);
@@ -132,7 +200,7 @@ export class NodesService {
             return {
                 success: false,
                 code: ERRORS.INTERNAL_SERVER_ERROR.code,
-                response: new CreateNodeResponseModel(false, message),
+                response: new RemoveNodeResponseModel(false, message),
             };
         }
     }
@@ -174,6 +242,44 @@ export class NodesService {
                 };
             },
             (errorMessage) => new StartNodeResponseModel(false, errorMessage),
+        );
+    }
+    
+    async restartNode(request: RestartNodeInterface): Promise<ICommandResponse<RestartNodeResponseModel>> {
+        return this.execute<StartNodeResponseModel>(
+            async () => {
+                const node = await this.nodesRepository.getByUuid(request.uuid);
+                if (!node) {
+                    return {
+                        success: false,
+                        code: ERRORS.NODE_NOT_FOUND.code,
+                        response: new RestartNodeResponseModel(false, ERRORS.NODE_NOT_FOUND.message),
+                    };
+                }
+                
+                if (!this.validateNodeStateForAction(node, [
+                    NODE_STATE.RUNNING,
+                ])) {
+                    return {
+                        success: false,
+                        code: ERRORS.NODE_INVALID_STATUS_FOR_START.code,
+                        response: new RestartNodeResponseModel(false, 'Node is already running'),
+                    };
+                }
+                
+                await this.nodesRepository.update({
+                    ...node,
+                    state: NODE_STATE.RESTARTING,
+                });
+                
+                await this.nodeRestartQueueService.restartNode({ nodeUuid: request.uuid });
+                
+                return {
+                    success: true,
+                    response: new RestartNodeResponseModel(true),
+                };
+            },
+            (errorMessage) => new RestartNodeResponseModel(false, errorMessage),
         );
     }
     

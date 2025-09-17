@@ -6,6 +6,7 @@ import { DatabaseOptions } from '@/database/definition/database.module-definitio
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { NodeHealthCheckTask } from '@/scheduler/tasks/node-health-check.task';
 import { DatabaseModule } from '@/database/definition/database.module';
+import { QueuesModule } from '@/queues/queues.module';
 
 @Module({
     imports: [
@@ -14,7 +15,7 @@ import { DatabaseModule } from '@/database/definition/database.module';
             isGlobal: true,
         }),
         DatabaseModule.forRootAsync({
-            imports: [ConfigModule],
+            imports: [ ConfigModule ],
             inject: [ ConfigService ],
             useFactory: (config: ConfigService) => ({
                 host: config.get('POSTGRES_HOST'),
@@ -25,6 +26,7 @@ import { DatabaseModule } from '@/database/definition/database.module';
             } as DatabaseOptions),
         }),
         ScheduleModule.forRoot(),
+        QueuesModule,
     ],
     providers: [
         NodesRepository,

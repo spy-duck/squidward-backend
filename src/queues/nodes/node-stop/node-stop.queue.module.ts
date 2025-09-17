@@ -8,6 +8,7 @@ import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { isProcessorsInstance } from '@/common/utils/environment';
 import { QUEUES } from '@/queues/queue.enum';
 
+import { NodeHealthCheckQueueModule } from '../node-health-check/node-health-check.queue.module';
 import { NodeStopQueueProcessor } from './node-stop.queue.processor';
 import { NodeStopQueueService } from './node-stop.queue.service';
 
@@ -22,6 +23,7 @@ const providers = isProcessorsInstance()
     imports: [
         BullModule.registerQueue({ name: QUEUES.NODE_STOP }),
         BullBoardModule.forFeature({ name: QUEUES.NODE_STOP, adapter: BullMQAdapter }),
+        NodeHealthCheckQueueModule,
     ],
     providers: [
         ...providers,

@@ -4,6 +4,7 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
+import { NodeHealthCheckQueueService } from '@/queues';
 import { NodeApi } from '@/common/node-api/node-api';
 import { QUEUES } from '@/queues/queue.enum';
 
@@ -15,6 +16,7 @@ export class NodeStopQueueProcessor extends WorkerHost {
     
     constructor(
         private readonly nodesRepository: NodesRepository,
+        private readonly nodeHealthCheckQueueService: NodeHealthCheckQueueService,
     ) {
         super();
     }
@@ -33,6 +35,7 @@ export class NodeStopQueueProcessor extends WorkerHost {
         const { response } = await nodeApi.squidStop();
         
         if (response.success) {
+            await this.nodeHealthCheckQueueService.healthCheckNode({ nodeUuid: node.uuid });
             this.logger.log(`Node ${ node.name } [${ node.uuid }] stopped successfully`);
         } else {
             this.logger.error(

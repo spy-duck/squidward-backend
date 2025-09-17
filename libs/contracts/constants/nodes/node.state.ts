@@ -1,4 +1,5 @@
 export const NODE_STATE = {
+    CREATED: 'CREATED',
     STARTING: 'STARTING',
     STOPPING: 'STOPPING',
     STOPPED: 'STOPPED',
