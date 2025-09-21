@@ -51,13 +51,9 @@ export class NodesQueueSharedService {
     
     private async postUsersToNode(nodeApi: NodeApi, node: NodeEntity): Promise<boolean> {
         const users = await this.usersRepository.getAllActive();
-        if (!users.length) {
-            this.logger.error(`No users found for node ${ node.uuid }`);
-            return true;
-        }
         const { response } = await nodeApi.postUsers(
             users.map(user => ({
-                id: user.uuid,
+                uuid: user.uuid,
                 username: user.username,
                 password: user.password,
             })),

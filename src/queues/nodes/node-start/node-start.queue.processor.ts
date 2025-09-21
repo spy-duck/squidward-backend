@@ -31,9 +31,7 @@ export class NodeStartQueueProcessor extends WorkerHost {
             this.logger.error(`Node with uuid ${ job.data.nodeUuid } not found`);
             return;
         }
-        
         const nodeApi = new NodeApi(node.host, node.port);
-        
         const isSetupSuccess = await this.nodesQueueSharedService.setupNode(nodeApi, node);
         if (!isSetupSuccess) {
             this.logger.error('Node setup failed');

@@ -7,7 +7,8 @@ export const NODE_STATE = {
     FATAL: 'FATAL',
     SHUTDOWN: 'SHUTDOWN',
     RESTARTING: 'RESTARTING',
-    OFFLINE: 'OFFLINE'
+    OFFLINE: 'OFFLINE',
+    BACKOFF: 'BACKOFF',
 } as const;
 
 export type TNodeState = keyof typeof NODE_STATE;

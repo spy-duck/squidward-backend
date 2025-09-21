@@ -1869,12 +1869,12 @@ __metadata:
 
 "@squidward-node/contracts@file:../squidward-node/libs/contracts::locator=squidward-backend%40workspace%3A.":
   version: 0.0.0
-  resolution: "@squidward-node/contracts@file:../squidward-node/libs/contracts#../squidward-node/libs/contracts::hash=da1ae7&locator=squidward-backend%40workspace%3A."
+  resolution: "@squidward-node/contracts@file:../squidward-node/libs/contracts#../squidward-node/libs/contracts::hash=b09e6d&locator=squidward-backend%40workspace%3A."
   dependencies:
     zod: "npm:^4.1.8"
   peerDependencies:
     typescript: ^5.0.0
-  checksum: 10c0/999ec47d37eab93fa8fc1bbb089932e1e85ca7836bc42892062f977511f73ea6b4cdcebfbcdd6f39308b6cdf8a8b86d8e49ad3742e75aa7154a1ec8f711f8df2
+  checksum: 10c0/b36c03665d1d9a0b6ded9035c2d3eef1d8064a126ba1df55bc03b03b2965040e18b0a3254e4496b6c2fe6c309eea180386409a0357daf0db00097fa8f6e18a10
   languageName: node
   linkType: hard
 
