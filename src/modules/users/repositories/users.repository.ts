@@ -54,6 +54,14 @@ export class UsersRepository {
             .executeTakeFirstOrThrow();
         return UsersMapper.toEntity(user);
     }
+    async getByUuid(userUuid: string): Promise<UserEntity | null> {
+        const user = await this.db
+            .selectFrom('users')
+            .selectAll()
+            .where('uuid', '=', userUuid)
+            .executeTakeFirst();
+        return user ? UsersMapper.toEntity(user) : null;
+    }
     
     async findExist(
         name: string,
