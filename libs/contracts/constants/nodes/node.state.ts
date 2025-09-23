@@ -9,6 +9,7 @@ export const NODE_STATE = {
     RESTARTING: 'RESTARTING',
     OFFLINE: 'OFFLINE',
     BACKOFF: 'BACKOFF',
+    EXITED: 'EXITED',
 } as const;
 
 export type TNodeState = keyof typeof NODE_STATE;

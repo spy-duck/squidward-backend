@@ -3,7 +3,7 @@ import { Logger } from '@nestjs/common';
 
 import { Job } from 'bullmq';
 
-import { NodesQueueSharedService } from '@/queues/nodes/nodes-queue-shared.service';
+import { NodesSharedService } from '@/queues/nodes/nodes-shared/nodes-shared.service';
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { NodeHealthCheckQueueService } from '@/queues';
 import { NodeApi } from '@/common/node-api/node-api';
@@ -17,7 +17,7 @@ export class NodeStartQueueProcessor extends WorkerHost {
     
     constructor(
         private readonly nodesRepository: NodesRepository,
-        private readonly nodesQueueSharedService: NodesQueueSharedService,
+        private readonly nodesSharedService: NodesSharedService,
         private readonly nodeHealthCheckQueueService: NodeHealthCheckQueueService,
     ) {
         super();
@@ -32,7 +32,7 @@ export class NodeStartQueueProcessor extends WorkerHost {
             return;
         }
         const nodeApi = new NodeApi(node.host, node.port);
-        const isSetupSuccess = await this.nodesQueueSharedService.setupNode(nodeApi, node);
+        const isSetupSuccess = await this.nodesSharedService.setupNode(nodeApi, node);
         if (!isSetupSuccess) {
             this.logger.error('Node setup failed');
             return;

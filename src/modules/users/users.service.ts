@@ -1,10 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 
+import { some } from 'lodash-es';
+
 import { StartNodeResponseModel, StopNodeResponseModel } from '@/modules/nodes/models';
+import { NodesAddUserQueueService, NodesRemoveUserQueueService } from '@/queues';
 import { safeExecute } from '@/common/helpers/safe-execute';
+import { ERRORS, USER_STATUS } from '@contract/constants';
 import { encryptPassword } from '@/common/helpers';
 import { ICommandResponse } from '@/common/types';
-import { ERRORS } from '@contract/constants';
 
 import {
     UpdateUserResponseModel,
@@ -23,6 +26,8 @@ export class UsersService {
     
     constructor(
         private readonly usersRepository: UsersRepository,
+        private readonly nodesAddUserQueueService: NodesAddUserQueueService,
+        private readonly nodesRemoveUserQueueService: NodesRemoveUserQueueService,
     ) {}
     
     private async validateForUserExists<T>(
@@ -77,7 +82,7 @@ export class UsersService {
                     return existsErrorResponse;
                 }
                 
-                await this.usersRepository.create(
+                const createdUser = await this.usersRepository.create(
                     new UserEntity({
                         name: request.name,
                         username: request.username,
@@ -88,6 +93,11 @@ export class UsersService {
                         expireAt: request.expireAt,
                     }),
                 )
+                
+                await this.nodesAddUserQueueService.addUser({
+                    userUuid: createdUser.uuid,
+                });
+                
                 return {
                     success: true,
                     response: new CreateUserResponseModel(true),
@@ -133,7 +143,17 @@ export class UsersService {
                 return existsErrorResponse;
             }
             
-            await this.usersRepository.update(
+            const user = await this.usersRepository.getByUuid(request.uuid);
+            
+            if (!user) {
+                return {
+                    success: false,
+                    code: ERRORS.USER_NOT_FOUND.code,
+                    response: new UpdateUserResponseModel(false, 'User not found'),
+                };
+            }
+            
+            const updatedUser = await this.usersRepository.update(
                 new UserEntity({
                     uuid: request.uuid,
                     name: request.name,
@@ -147,7 +167,28 @@ export class UsersService {
                     expireAt: request.expireAt,
                     updatedAt: new Date(),
                 }),
-            )
+            );
+            
+            if (user.status === USER_STATUS.ACTIVE && request.status !== USER_STATUS.ACTIVE) {
+                await this.nodesRemoveUserQueueService.removeUser({
+                    userUuid: request.uuid,
+                });
+            }
+            
+            if (user.status !== USER_STATUS.ACTIVE && request.status === USER_STATUS.ACTIVE) {
+                await this.nodesAddUserQueueService.addUser({
+                    userUuid: user.uuid,
+                });
+            }
+            
+            if (some([
+                user.username !== request.username,
+                request.password,
+            ])) {
+                // TODO: send updated user to nodes
+                console.log(updatedUser);
+            }
+            
             return {
                 success: true,
                 response: new UpdateUserResponseModel(true),
@@ -169,6 +210,10 @@ export class UsersService {
     async removeUser(request: RemoveUserInterface): Promise<ICommandResponse<RemoveUserResponseModel>> {
         try {
             await this.usersRepository.delete(request.uuid);
+            await this.nodesRemoveUserQueueService.removeUser({
+                userUuid: request.uuid,
+            });
+            
             return {
                 success: true,
                 response: new CreateUserResponseModel(true),

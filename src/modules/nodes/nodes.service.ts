@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 import { NodeRestartQueueService, NodeStartQueueService, NodeStopQueueService } from '@/queues';
 import { ERRORS, NODE_STATE, TNodeState } from '@contract/constants';
@@ -22,7 +22,7 @@ import { NodesRepository } from './repositories/nodes.repository';
 import { NodeEntity } from './entities/node.entity';
 
 @Injectable()
-export class NodesService {
+export class NodesService implements OnModuleInit{
     private readonly logger = new Logger(NodesService.name);
     private readonly execute = safeExecute(this.logger);
     
@@ -32,6 +32,17 @@ export class NodesService {
         private readonly nodeRestartQueueService: NodeRestartQueueService,
         private readonly nodeStopQueueService: NodeStopQueueService,
     ) {}
+    
+    async onModuleInit(): Promise<void> {
+        const nodes = await this.nodesRepository.getAll();
+        for (const node of nodes) {
+            await this.nodesRepository.update({
+                ...node,
+                isConnected: false,
+                state: NODE_STATE.OFFLINE,
+            });
+        }
+    }
     
     private async validateForNodeExists<T>(
         request: CreateNodeInterface | UpdateNodeInterface,
@@ -221,6 +232,7 @@ export class NodesService {
                     NODE_STATE.STOPPED,
                     NODE_STATE.FATAL,
                     NODE_STATE.SHUTDOWN,
+                    NODE_STATE.EXITED,
                 ])) {
                     return {
                         success: false,

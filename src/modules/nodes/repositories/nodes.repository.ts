@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 
 import { NodeEntity } from '@/modules/nodes/entities/node.entity';
+import { NODE_STATE } from '@contract/constants';
 import { Database } from '@/database/database';
 
 import { NodesMapper } from '../nodes.mapper';
@@ -35,6 +36,26 @@ export class NodesRepository {
                         .whereRef('configs.uuid', '=', 'nodes.configId'),
                 ).as('config'),
             ])
+            .orderBy('name')
+            .execute();
+        return nodes.map(NodesMapper.toEntity);
+    }
+    
+    async getAllActive(): Promise<NodeEntity[]> {
+        const nodes = await this.db
+            .selectFrom('nodes')
+            .selectAll()
+            .select([
+                (sb) => jsonObjectFrom(
+                    sb.selectFrom('configs')
+                        .select([
+                            'name',
+                        ])
+                        .whereRef('configs.uuid', '=', 'nodes.configId'),
+                ).as('config'),
+            ])
+            .where('isConnected', '=', true)
+            .where('state', '=', NODE_STATE.RUNNING)
             .orderBy('name')
             .execute();
         return nodes.map(NodesMapper.toEntity);

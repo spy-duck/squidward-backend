@@ -7,7 +7,7 @@ import {
     SquidRestartContract,
     SquidConfigContract,
     PostUsersContract,
-    AddUserContract,
+    AddUserContract, RemoveUserContract,
 } from '@squidward-node/contracts';
 import axios, { AxiosInstance } from 'axios';
 
@@ -90,5 +90,15 @@ export class NodeApi {
             timeout: 20000,
         });
         return AddUserContract.ResponseSchema.parse(response.data);
+    }
+    
+    async removeUser(user: RemoveUserContract.Request): Promise<RemoveUserContract.Response> {
+        const response = await this.nodeAxios.request({
+            method: 'POST',
+            url: RemoveUserContract.url,
+            data: user,
+            timeout: 20000,
+        });
+        return RemoveUserContract.ResponseSchema.parse(response.data);
     }
 }
