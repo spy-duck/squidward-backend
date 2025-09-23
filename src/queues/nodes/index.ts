@@ -4,3 +4,4 @@ export * from './node-start';
 export * from './node-stop';
 export * from './nodes-add-user';
 export * from './nodes-remove-user';
+export * from './nodes-update-user';

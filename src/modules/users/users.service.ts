@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { some } from 'lodash-es';
 
+import { NodesUpdateUserQueueService, NodesRemoveUserQueueService, NodesAddUserQueueService } from '@/queues';
 import { StartNodeResponseModel, StopNodeResponseModel } from '@/modules/nodes/models';
-import { NodesAddUserQueueService, NodesRemoveUserQueueService } from '@/queues';
 import { safeExecute } from '@/common/helpers/safe-execute';
 import { ERRORS, USER_STATUS } from '@contract/constants';
 import { encryptPassword } from '@/common/helpers';
@@ -28,6 +28,7 @@ export class UsersService {
         private readonly usersRepository: UsersRepository,
         private readonly nodesAddUserQueueService: NodesAddUserQueueService,
         private readonly nodesRemoveUserQueueService: NodesRemoveUserQueueService,
+        private readonly nodesUpdateUserQueueService: NodesUpdateUserQueueService,
     ) {}
     
     private async validateForUserExists<T>(
@@ -153,7 +154,7 @@ export class UsersService {
                 };
             }
             
-            const updatedUser = await this.usersRepository.update(
+            await this.usersRepository.update(
                 new UserEntity({
                     uuid: request.uuid,
                     name: request.name,
@@ -185,8 +186,9 @@ export class UsersService {
                 user.username !== request.username,
                 request.password,
             ])) {
-                // TODO: send updated user to nodes
-                console.log(updatedUser);
+                await this.nodesUpdateUserQueueService.updateUser({
+                    userUuid: request.uuid,
+                });
             }
             
             return {

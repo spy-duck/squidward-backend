@@ -10,7 +10,7 @@ import {
     NodeStopQueueModule,
     NodeHealthCheckQueueModule,
     NodeRestartQueueModule,
-    NodesAddUserQueueModule,
+    NodesUpdateUserQueueModule,
     NodesRemoveUserQueueModule,
 } from './nodes';
 
@@ -19,7 +19,7 @@ const queueModules = [
     NodeStopQueueModule,
     NodeHealthCheckQueueModule,
     NodeRestartQueueModule,
-    NodesAddUserQueueModule,
+    NodesUpdateUserQueueModule,
     NodesRemoveUserQueueModule,
 ];
 
