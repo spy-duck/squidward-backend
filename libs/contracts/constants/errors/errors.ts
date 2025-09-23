@@ -10,4 +10,5 @@ export const ERRORS = {
     NODE_INVALID_STATUS_FOR_START: { code: 'N002', message: 'Start failed. Invalid status of node', httpCode: 400 },
     USER_NOT_FOUND: { code: 'U001', message: 'User not found', httpCode: 404 },
     USER_ALREADY_EXISTS: { code: 'U002', message: 'User already exists', httpCode: 400 },
+    KEYGEN_ERROR: { code: 'K001', message: 'Keygen error', httpCode: 400 },
 };

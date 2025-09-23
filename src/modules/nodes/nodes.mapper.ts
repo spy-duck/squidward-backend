@@ -2,6 +2,7 @@ import { omit } from 'lodash-es';
 
 import { NodeModelInsertable, NodeModelSelectable, NodeModelUpdateable } from '@/database/models';
 import { ConfigsMapper } from '@/modules/configs/configs.mapper';
+import { NodeCredentialsEntity } from '@/modules/nodes/entities';
 
 import { NodeEntity } from './entities/node.entity';
 
@@ -46,5 +47,10 @@ export class NodesMapper {
         return omit(entity, [
             'config',
         ]);
+    }
+    
+    static credentialsToPublic = (entity: NodeCredentialsEntity): string => {
+        const json = JSON.stringify(entity);
+        return Buffer.from(json, 'utf-8').toString('base64');
     }
 }

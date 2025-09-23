@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
 
 import {
-    NodeCreateContract, NodeRestartContract,
+    NodeCreateContract, NodeKeygenContract, NodeRestartContract,
     NodesListContract,
     NodeStartContract,
     NodeStopContract,
@@ -18,7 +18,7 @@ import {
     NodeUpdateRequestDto, NodeUpdateResponseDto,
     NodeStartRequestDto, NodeStartResponseDto,
     NodeStopRequestDto, NodeStopResponseDto,
-    NodeRestartRequestDto, NodeRestartResponseDto,
+    NodeRestartRequestDto, NodeRestartResponseDto, NodeKeygenResponseDto,
 } from './dto';
 import { NodesService } from './nodes.service';
 
@@ -90,6 +90,15 @@ export class NodesController {
     })
     async stopNode(@Param() body: NodeStopRequestDto): Promise<NodeStopResponseDto> {
         const response = await this.nodesService.stopNode(body);
+        return { response: errorHandler(response) };
+    }
+    
+    @Endpoint({
+        command: NodeKeygenContract,
+        httpCode: HttpStatus.OK,
+    })
+    async keygenNode(): Promise<NodeKeygenResponseDto> {
+        const response = await this.nodesService.keygenNode();
         return { response: errorHandler(response) };
     }
 }

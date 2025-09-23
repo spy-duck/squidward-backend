@@ -1,15 +1,23 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 import { NodeRestartQueueService, NodeStartQueueService, NodeStopQueueService } from '@/queues';
+import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
 import { ERRORS, NODE_STATE, TNodeState } from '@contract/constants';
+import { NodeCredentialsEntity } from '@/modules/nodes/entities';
 import { safeExecute } from '@/common/helpers/safe-execute';
+import { NodesMapper } from '@/modules/nodes/nodes.mapper';
+import { generateNodeCert } from '@/common/utils/keygen';
 import { ICommandResponse } from '@/common/types';
 
 import {
     UpdateNodeResponseModel,
     CreateNodeResponseModel,
     NodesListResponseModel,
-    RemoveNodeResponseModel, StartNodeResponseModel, StopNodeResponseModel, RestartNodeResponseModel,
+    RemoveNodeResponseModel,
+    StartNodeResponseModel,
+    StopNodeResponseModel,
+    RestartNodeResponseModel,
+    NodesKeygenResponseModel,
 } from './models';
 import {
     CreateNodeInterface,
@@ -22,12 +30,13 @@ import { NodesRepository } from './repositories/nodes.repository';
 import { NodeEntity } from './entities/node.entity';
 
 @Injectable()
-export class NodesService implements OnModuleInit{
+export class NodesService implements OnModuleInit {
     private readonly logger = new Logger(NodesService.name);
     private readonly execute = safeExecute(this.logger);
     
     constructor(
         private readonly nodesRepository: NodesRepository,
+        private readonly certsRepository: CertsRepository,
         private readonly nodeStartQueueService: NodeStartQueueService,
         private readonly nodeRestartQueueService: NodeRestartQueueService,
         private readonly nodeStopQueueService: NodeStopQueueService,
@@ -76,6 +85,10 @@ export class NodesService implements OnModuleInit{
             response: makeResponse(message),
             message,
         }
+    }
+    
+    private validateNodeStateForAction(node: NodeEntity, availableStates: TNodeState[]): boolean {
+        return availableStates.includes(node.state);
     }
     
     async createNode(request: CreateNodeInterface): Promise<ICommandResponse<CreateNodeResponseModel>> {
@@ -333,7 +346,37 @@ export class NodesService implements OnModuleInit{
         );
     }
     
-    private validateNodeStateForAction(node: NodeEntity, availableStates: TNodeState[]): boolean {
-        return availableStates.includes(node.state);
+    async keygenNode(): Promise<ICommandResponse<NodesKeygenResponseModel>> {
+        return this.execute<NodesKeygenResponseModel>(
+            async () => {
+                const masterCert = await this.certsRepository.getMasterCert();
+                if (!masterCert) {
+                    return {
+                        success: false,
+                        code: ERRORS.KEYGEN_ERROR.code,
+                        response: new NodesKeygenResponseModel(false, '', ERRORS.KEYGEN_ERROR.message),
+                    };
+                }
+                
+                const credentials = await generateNodeCert(
+                    masterCert.caCertPem,
+                    masterCert.caKeyPem,
+                );
+                
+                return {
+                    success: true,
+                    response: new NodesKeygenResponseModel(
+                        true,
+                        NodesMapper.credentialsToPublic(
+                            new NodeCredentialsEntity({
+                                ...credentials,
+                                jwtPublicKey: masterCert.publicKey,
+                            }),
+                        ),
+                    ),
+                };
+            },
+            (errorMessage) => new NodesKeygenResponseModel(false, '', errorMessage),
+        );
     }
 }

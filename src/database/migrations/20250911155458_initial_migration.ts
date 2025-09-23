@@ -42,17 +42,17 @@ export async function up(database: Kysely<TDatabase>): Promise<void> {
     await database.schema
         .createTable('users')
         .addColumn('uuid', 'uuid', col => col.notNull().primaryKey().defaultTo(sql`gen_random_uuid()`))
-         .addColumn('name', 'varchar(255)', col => col.notNull())
-         .addColumn('username', 'varchar(255)', col => col.notNull())
-         .addColumn('password', 'varchar(255)', col => col.notNull())
-         .addColumn('status', 'varchar(255)', col => col.notNull())
-         .addColumn('email', 'varchar(255)')
-         .addColumn('telegramId', 'bigint')
-         .addColumn('usedTrafficBytes', 'bigint')
-         .addColumn('firstConnectedAt', 'timestamp')
-         .addColumn('expireAt', 'timestamp', col => col.notNull())
-         .addColumn('createdAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
-         .addColumn('updatedAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
+        .addColumn('name', 'varchar(255)', col => col.notNull())
+        .addColumn('username', 'varchar(255)', col => col.notNull())
+        .addColumn('password', 'varchar(255)', col => col.notNull())
+        .addColumn('status', 'varchar(255)', col => col.notNull())
+        .addColumn('email', 'varchar(255)')
+        .addColumn('telegramId', 'bigint')
+        .addColumn('usedTrafficBytes', 'bigint')
+        .addColumn('firstConnectedAt', 'timestamp')
+        .addColumn('expireAt', 'timestamp', col => col.notNull())
+        .addColumn('createdAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
+        .addColumn('updatedAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
         .execute();
 }
 
