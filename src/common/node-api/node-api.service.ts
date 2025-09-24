@@ -10,6 +10,7 @@ import {
     AddUserContract, RemoveUserContract, UpdateUserContract,
 } from '@squidward-node/contracts';
 import axios, { AxiosInstance } from 'axios';
+import * as jwt from 'jsonwebtoken';
 import * as https from 'node:https';
 
 import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
@@ -17,7 +18,6 @@ import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
 @Injectable()
 export class NodeApiService implements OnModuleInit {
     private readonly nodeAxios: AxiosInstance;
-    
     
     constructor(
         private readonly certsRepository: CertsRepository,
@@ -37,7 +37,7 @@ export class NodeApiService implements OnModuleInit {
         if (!masterCert) {
             throw new Error('Master cert not found');
         }
-
+        
         this.nodeAxios.defaults.httpsAgent = new https.Agent({
             cert: masterCert.clientCertPem,
             key: masterCert.clientKeyPem,
@@ -45,6 +45,19 @@ export class NodeApiService implements OnModuleInit {
             checkServerIdentity: () => undefined,
             rejectUnauthorized: true,
         });
+        
+        const payload: any = {
+            uuid: null,
+            username: null,
+            role: 'API',
+        };
+        
+        const token = jwt.sign(payload, masterCert.privateKey, {
+            algorithm: 'RS256',
+            expiresIn: '9999d',
+        });
+
+        this.nodeAxios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
     
     private getNodeUrl(host: string, path: string, port: null | number): string {
