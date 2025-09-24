@@ -4,7 +4,7 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
-import { NodeApi } from '@/common/node-api/node-api';
+import { NodeApiService } from '@/common/node-api/node-api.service';
 import { QUEUES } from '@/queues/queue.enum';
 
 import { NodeAddUserInterface } from './interfaces';
@@ -17,6 +17,7 @@ export class NodesRemoveUserQueueProcessor extends WorkerHost {
     
     constructor(
         private readonly nodesRepository: NodesRepository,
+        private readonly nodeApiService: NodeApiService,
     ) {
         super();
     }
@@ -27,9 +28,8 @@ export class NodesRemoveUserQueueProcessor extends WorkerHost {
         const nodes = await this.nodesRepository.getAllActive();
        
         for (const node of nodes) {
-            const nodeApi = new NodeApi(node.host, node.port);
             try {
-                const { response } = await nodeApi.removeUser({
+                const { response } = await this.nodeApiService.removeUser(node.host, node.port, {
                     userUuid: job.data.userUuid,
                 });
                 

@@ -6,6 +6,7 @@ import { BullBoardModule } from '@bull-board/nestjs';
 
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { isProcessorsInstance } from '@/common/utils/environment';
+import { NodeApiModule } from '@/common/node-api/node-api.module';
 import { QUEUES } from '@/queues/queue.enum';
 
 import { NodeHealthCheckQueueModule } from '../node-health-check/node-health-check.queue.module';
@@ -18,12 +19,13 @@ const providers = isProcessorsInstance()
         NodeStopQueueProcessor,
     ]
     : [];
+const imports = isProcessorsInstance() ? [ NodeHealthCheckQueueModule, NodeApiModule ] : [];
 
 @Module({
     imports: [
         BullModule.registerQueue({ name: QUEUES.NODE_STOP }),
         BullBoardModule.forFeature({ name: QUEUES.NODE_STOP, adapter: BullMQAdapter }),
-        NodeHealthCheckQueueModule,
+        ...imports,
     ],
     providers: [
         ...providers,

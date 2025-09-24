@@ -4,8 +4,8 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
+import { NodeApiService } from '@/common/node-api/node-api.service';
 import { NODE_STATE, TNodeState } from '@contract/constants';
-import { NodeApi } from '@/common/node-api/node-api';
 import { QUEUES } from '@/queues/queue.enum';
 
 @Processor(QUEUES.NODE_HEALTH_CHECK, {
@@ -16,6 +16,7 @@ export class NodeHealthCheckQueueProcessor extends WorkerHost {
     
     constructor(
         private readonly nodesRepository: NodesRepository,
+        private readonly nodeApiService: NodeApiService,
     ) {
         super();
     }
@@ -31,9 +32,7 @@ export class NodeHealthCheckQueueProcessor extends WorkerHost {
         
         
         try {
-            const nodeApi = new NodeApi(node.host, node.port);
-            
-            const result = await nodeApi.getStatus();
+            const result = await this.nodeApiService.healthCheck(node.host, node.port);
             
             await this.nodesRepository.update({
                 ...node,

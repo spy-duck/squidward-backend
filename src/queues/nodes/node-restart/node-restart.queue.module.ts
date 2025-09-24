@@ -8,6 +8,7 @@ import { NodesSharedService } from '@/queues/nodes/nodes-shared/nodes-shared.ser
 import { NodesSharedModule } from '@/queues/nodes/nodes-shared/nodes-shared.module';
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { isProcessorsInstance } from '@/common/utils/environment';
+import { NodeApiModule } from '@/common/node-api/node-api.module';
 import { QUEUES } from '@/queues/queue.enum';
 
 import { NodeHealthCheckQueueModule } from '../node-health-check/node-health-check.queue.module';
@@ -22,12 +23,17 @@ const providers = isProcessorsInstance()
     ]
     : [];
 
+const imports = isProcessorsInstance() ? [
+    NodeHealthCheckQueueModule,
+    NodesSharedModule,
+    NodeApiModule,
+] : [];
+
 @Module({
     imports: [
         BullModule.registerQueue({ name: QUEUES.NODE_RESTART }),
         BullBoardModule.forFeature({ name: QUEUES.NODE_RESTART, adapter: BullMQAdapter }),
-        NodeHealthCheckQueueModule,
-        NodesSharedModule,
+        ...imports,
     ],
     providers: [
         ...providers,

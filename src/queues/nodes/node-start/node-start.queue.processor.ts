@@ -5,8 +5,8 @@ import { Job } from 'bullmq';
 
 import { NodesSharedService } from '@/queues/nodes/nodes-shared/nodes-shared.service';
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
+import { NodeApiService } from '@/common/node-api/node-api.service';
 import { NodeHealthCheckQueueService } from '@/queues';
-import { NodeApi } from '@/common/node-api/node-api';
 import { QUEUES } from '@/queues/queue.enum';
 
 @Processor(QUEUES.NODE_START, {
@@ -19,6 +19,7 @@ export class NodeStartQueueProcessor extends WorkerHost {
         private readonly nodesRepository: NodesRepository,
         private readonly nodesSharedService: NodesSharedService,
         private readonly nodeHealthCheckQueueService: NodeHealthCheckQueueService,
+        private readonly nodeApiService: NodeApiService,
     ) {
         super();
     }
@@ -31,14 +32,14 @@ export class NodeStartQueueProcessor extends WorkerHost {
             this.logger.error(`Node with uuid ${ job.data.nodeUuid } not found`);
             return;
         }
-        const nodeApi = new NodeApi(node.host, node.port);
-        const isSetupSuccess = await this.nodesSharedService.setupNode(nodeApi, node);
+        
+        const isSetupSuccess = await this.nodesSharedService.setupNode(node);
         if (!isSetupSuccess) {
             this.logger.error('Node setup failed');
             return;
         }
         
-        const { response } = await nodeApi.squidStart();
+        const { response } = await this.nodeApiService.squidStart(node.host, node.port);
         if (response.success) {
             await this.nodeHealthCheckQueueService.healthCheckNode({ nodeUuid: node.uuid });
             this.logger.log(`Node ${ node.name } [${ node.uuid }] started successfully`);

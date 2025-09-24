@@ -5,7 +5,7 @@ import { Job } from 'bullmq';
 
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { UsersRepository } from '@/modules/users/repositories/users.repository';
-import { NodeApi } from '@/common/node-api/node-api';
+import { NodeApiService } from '@/common/node-api/node-api.service';
 import { QUEUES } from '@/queues/queue.enum';
 
 import { NodeAddUserInterface } from './interfaces';
@@ -19,6 +19,7 @@ export class NodesAddUserQueueProcessor extends WorkerHost {
     constructor(
         private readonly nodesRepository: NodesRepository,
         private readonly usersRepository: UsersRepository,
+        private readonly nodeApiService: NodeApiService,
     ) {
         super();
     }
@@ -36,9 +37,8 @@ export class NodesAddUserQueueProcessor extends WorkerHost {
         const nodes = await this.nodesRepository.getAllActive();
        
         for (const node of nodes) {
-            const nodeApi = new NodeApi(node.host, node.port);
             try {
-                const { response } = await nodeApi.addUser({
+                const { response } = await this.nodeApiService.addUser(node.host, node.port, {
                     uuid: user.uuid,
                     username: user.username,
                     password: user.password,

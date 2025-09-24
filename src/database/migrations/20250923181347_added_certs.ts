@@ -21,18 +21,18 @@ export async function up(database: Kysely<TDatabase>): Promise<void> {
         .addColumn('updatedAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
         .execute();
     
-    const { publicKey, privateKey } = await generateJwtKeypair();
     const { caCertPem, caKeyPem, clientCertPem, clientKeyPem } = await generateMasterCerts();
+    const { publicKey, privateKey } = await generateJwtKeypair();
     
     await database
         .insertInto('certs')
         .values({
-            publicKey,
-            privateKey,
             caCertPem,
             caKeyPem,
             clientCertPem,
             clientKeyPem,
+            publicKey,
+            privateKey,
         })
         .execute();
 }

@@ -9,6 +9,7 @@ import { ConfigsRepository } from '@/modules/configs/repositories/configs.reposi
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { UsersRepository } from '@/modules/users/repositories/users.repository';
 import { isProcessorsInstance } from '@/common/utils/environment';
+import { NodeApiModule } from '@/common/node-api/node-api.module';
 import { QUEUES } from '@/queues/queue.enum';
 
 import { NodeHealthCheckQueueModule } from '../node-health-check/node-health-check.queue.module';
@@ -23,13 +24,15 @@ const providers = isProcessorsInstance()
         NodesSharedService,
         NodeStartQueueProcessor,
     ]
-    : [];
+    : []
+
+const imports = isProcessorsInstance() ? [ NodeHealthCheckQueueModule, NodeApiModule ] : [];
 
 @Module({
     imports: [
         BullModule.registerQueue({ name: QUEUES.NODE_START }),
         BullBoardModule.forFeature({ name: QUEUES.NODE_START, adapter: BullMQAdapter }),
-        NodeHealthCheckQueueModule,
+        ...imports,
     ],
     providers: [
         ...providers,
