@@ -6,10 +6,10 @@ import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Cache } from 'cache-manager';
 
+import { ApiRepository } from '@/modules/api-tokens/repositories/api.repository';
 import { AdminRepository } from '@/modules/admin/repositories/admin.repository';
-import { ApiRepository } from '@/modules/api/repositories/api.repository';
+import { ApiEntity } from '@/modules/api-tokens/entities/api.entity';
 import { AdminEntity } from '@/modules/admin/entities/admin.entity';
-import { ApiEntity } from '@/modules/api/entities/api.entity';
 import { IJWTAuthPayload } from '@/modules/auth/interfaces';
 import { ROLE } from '@contract/constants';
 
