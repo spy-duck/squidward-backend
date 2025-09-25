@@ -1,8 +1,17 @@
 import { Kysely } from 'kysely';
 
-import { CertModel, ConfigModel, NodeModel, UserModel } from './models';
+import {
+    AdminModel,
+    ApiTokenModel,
+    CertModel,
+    ConfigModel,
+    NodeModel,
+    UserModel,
+} from './models';
 
 export interface TDatabase {
+    admins: AdminModel;
+    apiTokens: ApiTokenModel;
     nodes: NodeModel;
     users: UserModel;
     configs: ConfigModel;

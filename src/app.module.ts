@@ -1,5 +1,8 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
+
+import { createKeyv } from '@keyv/redis';
 
 import { DatabaseOptions } from '@/database/definition/database.module-definition';
 import { SquidwardBackendModules } from '@/modules/squidward-backend.modules';
@@ -25,12 +28,34 @@ import { AppService } from './app.service';
               password: config.get('POSTGRES_PASSWORD'),
           } as DatabaseOptions),
       }),
+      CacheModule.registerAsync({
+          imports: [ConfigModule],
+          inject: [ConfigService],
+          isGlobal: true,
+          useFactory: async (configService: ConfigService) => {
+              return {
+                  stores: [
+                      createKeyv(
+                          {
+                              url: `redis://${configService.getOrThrow<string>('REDIS_HOST')}:${configService.getOrThrow<number>('REDIS_PORT')}`,
+                              database: configService.getOrThrow<number>('REDIS_DB'),
+                              password: configService.get<string | undefined>('REDIS_PASSWORD'),
+                          },
+                          {
+                              namespace: 'squidward',
+                              keyPrefixSeparator: ':',
+                          },
+                      ),
+                  ],
+              };
+          },
+      }),
       QueuesModule,
       SquidwardBackendModules,
   ],
   controllers: [],
   providers: [
-      AppService
+      AppService,
   ],
 })
 export class AppModule {}

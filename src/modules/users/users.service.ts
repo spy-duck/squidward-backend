@@ -3,7 +3,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { some } from 'lodash-es';
 
 import { NodesUpdateUserQueueService, NodesRemoveUserQueueService, NodesAddUserQueueService } from '@/queues';
-import { StartNodeResponseModel, StopNodeResponseModel } from '@/modules/nodes/models';
 import { safeExecute } from '@/common/helpers/safe-execute';
 import { ERRORS, USER_STATUS } from '@contract/constants';
 import { encryptPassword } from '@/common/helpers';
@@ -72,7 +71,7 @@ export class UsersService {
     }
     
     async createUser(request: CreateUserInterface): Promise<ICommandResponse<CreateUserResponseModel>> {
-        return this.execute<StartNodeResponseModel>(
+        return this.execute<CreateUserResponseModel>(
             async () => {
                 const existsErrorResponse = await this.validateForUserExists(
                     request,
@@ -104,7 +103,7 @@ export class UsersService {
                     response: new CreateUserResponseModel(true),
                 };
             },
-            (errorMessage) => new StopNodeResponseModel(false, errorMessage),
+            (errorMessage) => new CreateUserResponseModel(false, errorMessage),
         );
     }
     

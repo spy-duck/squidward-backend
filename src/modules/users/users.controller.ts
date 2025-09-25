@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Param, UseGuards } from '@nestjs/common';
 
 import {
     UserCreateContract,
@@ -6,8 +6,10 @@ import {
     UserUpdateContract,
     UserRemoveContract,
 } from '@contract/commands';
+import { RolesGuard } from '@/common/guards/roles /roles.guard';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { errorHandler } from '@/common/helpers';
+import { JwtGuard } from '@/common/guards/jwt';
 
 import {
     UsersListResponseDto,
@@ -16,6 +18,7 @@ import {
 } from './dto';
 import { UsersService } from './users.service';
 
+@UseGuards(JwtGuard, RolesGuard)
 @Controller()
 export class UsersController {
     constructor(

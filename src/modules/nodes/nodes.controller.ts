@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Param, UseGuards } from '@nestjs/common';
 
 import {
     NodeCreateContract, NodeKeygenContract, NodeRestartContract,
@@ -8,8 +8,10 @@ import {
     NodeUpdateContract,
 } from '@contract/commands';
 import { NodeRemoveContract } from '@contract/commands/nodes/node-remove.contract';
+import { RolesGuard } from '@/common/guards/roles /roles.guard';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { errorHandler } from '@/common/helpers';
+import { JwtGuard } from '@/common/guards/jwt';
 
 import {
     NodeCreateRequestDto, NodeCreateResponseDto,
@@ -22,6 +24,7 @@ import {
 } from './dto';
 import { NodesService } from './nodes.service';
 
+@UseGuards(JwtGuard, RolesGuard)
 @Controller()
 export class NodesController {
     constructor(
