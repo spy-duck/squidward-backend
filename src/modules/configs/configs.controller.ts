@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
 
 import {
     ConfigCreateContract,
@@ -7,10 +7,10 @@ import {
     ConfigRemoveContract,
     ConfigGetOneContract,
 } from '@contract/commands';
-import { RolesGuard } from '@/common/guards/roles /roles.guard';
 import { Endpoint } from '@/common/decorators/endpoint';
+import { Roles } from '@/common/decorators/roles';
 import { errorHandler } from '@/common/helpers';
-import { JwtGuard } from '@/common/guards/jwt';
+import { ROLE } from '@contract/constants';
 
 import {
     ConfigCreateRequestDto, ConfigCreateResponseDto,
@@ -19,7 +19,7 @@ import {
 } from './dto';
 import { ConfigsService } from './configs.service';
 
-@UseGuards(JwtGuard, RolesGuard)
+@Roles(ROLE.ADMIN, ROLE.API)
 @Controller()
 export class ConfigsController {
     constructor(

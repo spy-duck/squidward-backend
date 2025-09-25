@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 import { isDevelopment } from '@/common/utils/is-development';
+import { getDocs } from '@/common/utils/startup-app/get-docs';
 
 import { AppModule } from './app.module';
 
@@ -37,8 +38,13 @@ async function bootstrap() {
             instance: logger,
         }),
     });
+    
     app.use(json({ limit: '1000mb' }));
+    
     app.use(compression());
+    
+    // app.setGlobalPrefix(ROOT);
+    
     const config = app.get(ConfigService);
     
     app.use(helmet());
@@ -48,6 +54,9 @@ async function bootstrap() {
     }
     
     app.useGlobalPipes(new ZodValidationPipe());
+    
+    
+    await getDocs(app, config);
     
     await app.listen(Number(config.getOrThrow<string>('APP_PORT')))
         .then(() => {

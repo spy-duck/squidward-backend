@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
+import { SKIP_ROLES_GUARD } from '@/common/decorators/skip-roles-guard';
 import { HttpExceptionWithErrorCodeType } from '@/common/exceptions';
 import { ERRORS, ROLE, TRole } from '@contract/constants';
 
@@ -10,13 +11,22 @@ export class RolesGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
     
     canActivate(context: ExecutionContext): boolean {
-        const requiredRoles = this.reflector.getAllAndOverride<TRole[]>(ROLE, [
+        const isRolesGuardSkip = this.reflector.getAllAndOverride<boolean>(SKIP_ROLES_GUARD, [
             context.getHandler(),
             context.getClass(),
         ]);
         
-        if (!requiredRoles) {
+        if (isRolesGuardSkip) {
             return true;
+        }
+        
+        const requiredRoles = this.reflector.getAllAndOverride<TRole[]>(ROLE, [
+            context.getHandler(),
+            context.getClass(),
+        ]);
+
+        if (!requiredRoles) {
+            return false;
         }
         
         const { user } = context.switchToHttp().getRequest();

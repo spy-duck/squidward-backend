@@ -1,5 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
+import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 
 import { createKeyv } from '@keyv/redis';
@@ -7,7 +8,9 @@ import { createKeyv } from '@keyv/redis';
 import { DatabaseOptions } from '@/database/definition/database.module-definition';
 import { SquidwardBackendModules } from '@/modules/squidward-backend.modules';
 import { DatabaseModule } from '@/database/definition/database.module';
+import { RolesGuard } from '@/common/guards/roles /roles.guard';
 import { QueuesModule } from '@/queues/queues.module';
+import { JwtGuard } from '@/common/guards/jwt';
 
 import { AppService } from './app.service';
 
@@ -55,6 +58,14 @@ import { AppService } from './app.service';
   ],
   controllers: [],
   providers: [
+      {
+          provide: APP_GUARD,
+          useClass: JwtGuard,
+      },
+      {
+          provide: APP_GUARD,
+          useClass: RolesGuard,
+      },
       AppService,
   ],
 })
