@@ -14,7 +14,8 @@ export namespace AuthCheckContract {
     
     export const ResponseSchema = z.object({
         success: z.boolean(),
-        isChangePasswordRequired: z.boolean().nullable(),
+        isChangePasswordRequired: z.boolean().nullable()
+            .describe('If the user is required to change their password'),
         error: z.string().nullable(),
     });
     

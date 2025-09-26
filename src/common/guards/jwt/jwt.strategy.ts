@@ -6,9 +6,9 @@ import { ConfigService } from '@nestjs/config';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Cache } from 'cache-manager';
 
-import { ApiRepository } from '@/modules/api-tokens/repositories/api.repository';
+import { ApiTokensRepository } from '@/modules/api-tokens/repositories/api-tokens.repository';
 import { AdminRepository } from '@/modules/admin/repositories/admin.repository';
-import { ApiEntity } from '@/modules/api-tokens/entities/api.entity';
+import { ApiTokenEntity } from '@/modules/api-tokens/entities/api-token.entity';
 import { AdminEntity } from '@/modules/admin/entities/admin.entity';
 import { IJWTAuthPayload } from '@/modules/auth/interfaces';
 import { ROLE } from '@contract/constants';
@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'squidward-jwt-guard
         @Inject(CACHE_MANAGER) private cacheManager: Cache,
         configService: ConfigService,
         private readonly adminRepository: AdminRepository,
-        private readonly apiRepository: ApiRepository,
+        private readonly apiRepository: ApiTokensRepository,
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -62,7 +62,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'squidward-jwt-guard
         return this.adminRepository.getByUsername(username);
     }
     
-    private async getTokenByUuid(apiTokenUuid: string): Promise<ApiEntity | null> {
+    private async getTokenByUuid(apiTokenUuid: string): Promise<ApiTokenEntity | null> {
         return this.apiRepository.getByUuid(apiTokenUuid);
     }
     

@@ -81,7 +81,7 @@ export class NodesService implements OnModuleInit {
         
         return {
             success: false,
-            code: ERRORS.USER_ALREADY_EXISTS.code,
+            code: ERRORS.NODE_ALREADY_EXISTS.code,
             response: makeResponse(message),
             message,
         }

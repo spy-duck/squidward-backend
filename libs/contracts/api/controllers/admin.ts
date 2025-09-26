@@ -6,5 +6,5 @@ export const ADMIN_ROUTES = {
 
 export const ADMIN_CONTROLLER_INFO = {
     tag: 'Administrator controller',
-    description: 'Manage administrator credentials and settings',
+    description: 'Manage administrator credentials and settings.',
 } as const;

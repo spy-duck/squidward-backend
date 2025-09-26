@@ -2,7 +2,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 
-import { ApiRepository } from '@/modules/api-tokens/repositories/api.repository';
+import { ApiTokensRepository } from '@/modules/api-tokens/repositories/api-tokens.repository';
 import { AdminRepository } from '@/modules/admin/repositories/admin.repository';
 import { JwtStrategy } from '@/common/guards/jwt/jwt.strategy';
 
@@ -20,6 +20,6 @@ import { AuthService } from './auth.service';
         }),
     ],
     controllers: [ AuthController ],
-    providers: [ AdminRepository, ApiRepository, JwtStrategy, AuthService ],
+    providers: [ AdminRepository, ApiTokensRepository, JwtStrategy, AuthService ],
 })
 export class AuthModule {}

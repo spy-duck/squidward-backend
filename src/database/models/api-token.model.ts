@@ -4,10 +4,10 @@ export interface ApiTokenModel {
     uuid: Generated<string>;
     token: string;
     tokenName: string;
+    expireAt: Date;
     createdAt: Date;
-    updatedAt: Date;
 }
 
-export type ApiTokenModelInsertable = Insertable<Omit<ApiTokenModel, 'createdAt' | 'updatedAt'>>;
+export type ApiTokenModelInsertable = Insertable<ApiTokenModel>;
 export type ApiTokenModelSelectable = Selectable<ApiTokenModel>;
 export type ApiTokenModelUpdateable = Updateable<ApiTokenModel>;

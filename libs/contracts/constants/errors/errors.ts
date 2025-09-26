@@ -14,6 +14,7 @@ export const ERRORS = {
     
     NODE_NOT_FOUND: { code: 'N001', message: 'Node not found', httpCode: 404 },
     NODE_INVALID_STATUS_FOR_START: { code: 'N002', message: 'Start failed. Invalid status of node', httpCode: 400 },
+    NODE_ALREADY_EXISTS: { code: 'N003', message: 'Node already exists', httpCode: 400 },
     
     USER_NOT_FOUND: { code: 'U001', message: 'User not found', httpCode: 404 },
     USER_ALREADY_EXISTS: { code: 'U002', message: 'User already exists', httpCode: 400 },
@@ -21,4 +22,6 @@ export const ERRORS = {
     KEYGEN_ERROR: { code: 'K001', message: 'Keygen error', httpCode: 400 },
     
     ADMIN_FORBIDDEN_CREDENTIALS_ERROR: { code: 'D006', message: 'Don\'t use the default username. IT\'S NOT SECURE!', httpCode: 400 },
+    
+    API_TOKEN_ALREADY_EXISTS: { code: 'T001', message: 'API token already exists', httpCode: 400 },
 };

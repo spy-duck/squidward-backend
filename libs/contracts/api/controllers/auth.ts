@@ -7,5 +7,5 @@ export const AUTH_ROUTES = {
 
 export const AUTH_CONTROLLER_INFO = {
     tag: 'Authentication',
-    description: 'Authentication methods',
+    description: 'Authentication methods.',
 } as const;

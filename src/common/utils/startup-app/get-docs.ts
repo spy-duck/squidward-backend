@@ -6,7 +6,15 @@ import { ConfigService } from '@nestjs/config';
 import { apiReference } from '@scalar/nestjs-api-reference';
 import { readPackageJSON } from 'pkg-types';
 
+import * as CONTROLLERS from '@contract/api/controllers';
 
+const controllersInfo = Object.entries<{ tag: string, description: string }>(CONTROLLERS as any)
+    .filter(([key]) => key.endsWith('_INFO'))
+    .map(([, value] ) => [
+        value.tag,
+        value.description,
+    ]);
+console.log(controllersInfo);
 const description = `
 Squidward is proxy management tool, built on top of squid, with a focus on simplicity and ease of use.
 `;
@@ -42,9 +50,9 @@ export async function getDocs(app: INestApplication<unknown>, config: ConfigServ
             .setVersion(pkg.version!)
             .setLicense('AGPL-3.0', 'https://github.com/squidward/panel?tab=AGPL-3.0-1-ov-file');
 
-        // Object.values(CONTROLLERS_INFO).reduce((builder, { tag, description }) => {
-        //     return builder.addTag(tag, description);
-        // }, configSwagger);
+        controllersInfo.forEach(([tag, description]) => {
+            configSwagger.addTag(tag, description);
+        });
 
         const builtConfigSwagger = configSwagger.build();
 

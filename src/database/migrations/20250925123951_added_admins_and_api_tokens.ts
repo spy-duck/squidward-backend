@@ -38,10 +38,10 @@ export async function up(database: Kysely<TDatabase>): Promise<void> {
     await database.schema
         .createTable('apiTokens')
         .addColumn('uuid', 'uuid', col => col.notNull().primaryKey().defaultTo(sql`gen_random_uuid()`))
-        .addColumn('token', 'varchar(255)', col => col.notNull())
+        .addColumn('token', 'text', col => col.notNull())
         .addColumn('tokenName', 'varchar(255)', col => col.notNull())
+        .addColumn('expireAt', 'timestamp', col => col.notNull())
         .addColumn('createdAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
-        .addColumn('updatedAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
         .execute();
 }
 

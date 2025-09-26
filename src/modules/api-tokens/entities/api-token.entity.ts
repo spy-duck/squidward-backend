@@ -1,11 +1,11 @@
-export class ApiEntity {
+export class ApiTokenEntity {
     public uuid: string;
     public token: string;
     public tokenName: string;
+    public expireAt: Date;
     public createdAt: Date;
-    public updatedAt: Date;
     
-    constructor(apiToken: Partial<ApiEntity>) {
+    constructor(apiToken: Partial<ApiTokenEntity>) {
         Object.assign(this, apiToken);
         return this;
     }

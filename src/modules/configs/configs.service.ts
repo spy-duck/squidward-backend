@@ -55,7 +55,7 @@ export class ConfigsService {
         }
     }
     
-    async usersList(): Promise<ICommandResponse<ConfigsListResponseModel>> {
+    async certsList(): Promise<ICommandResponse<ConfigsListResponseModel>> {
         try {
             return {
                 success: true,
@@ -79,7 +79,7 @@ export class ConfigsService {
         }
     }
     
-    async updateUser(request: ConfigUpdateInterface): Promise<ICommandResponse<ConfigUpdateResponseModel>> {
+    async updateCert(request: ConfigUpdateInterface): Promise<ICommandResponse<ConfigUpdateResponseModel>> {
         try {
             await this.configsRepository.update(
                 new ConfigEntity({
@@ -108,7 +108,7 @@ export class ConfigsService {
         }
     }
     
-    async removeUser(request: ConfigRemoveInterface): Promise<ICommandResponse<ConfigRemoveResponseModel>> {
+    async removeCert(request: ConfigRemoveInterface): Promise<ICommandResponse<ConfigRemoveResponseModel>> {
         try {
             const config = await this.configsRepository.getByUuid(request.uuid);
             

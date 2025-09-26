@@ -1,4 +1,4 @@
-import { ApiBearerAuth, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, HttpStatus } from '@nestjs/common';
 
 import { AuthCheckContract, AuthLoginContract } from '@contract/commands';
@@ -13,7 +13,6 @@ import { errorHandler } from '@/common/helpers';
 import { AuthCheckResponseDto, AuthLoginRequestDto, AuthLoginResponseDto } from './dto';
 import { AuthService } from './auth.service';
 
-@ApiBearerAuth('Authorization')
 @ApiTags(AUTH_CONTROLLER_INFO.tag)
 @Controller()
 export class AuthController {
@@ -21,6 +20,8 @@ export class AuthController {
         private readonly authService: AuthService,
     ) {}
     
+    @ApiBearerAuth('Authorization')
+    @ApiResponse({ type: AuthCheckResponseDto, description: 'Success check' })
     @Endpoint({
         command: AuthCheckContract,
         httpCode: HttpStatus.OK,
@@ -32,17 +33,6 @@ export class AuthController {
     }
     
     @ApiResponse({ type: AuthLoginResponseDto, description: 'Access token for further requests' })
-    @ApiUnauthorizedResponse({
-        description: 'Unauthorized - Invalid credentials',
-        schema: {
-            type: 'object',
-            properties: {
-                statusCode: { type: 'number', example: 401 },
-                message: { type: 'string', example: 'Invalid credentials' },
-                error: { type: 'string', example: 'Unauthorized' },
-            },
-        },
-    })
     @Endpoint({
         command: AuthLoginContract,
         httpCode: HttpStatus.OK,

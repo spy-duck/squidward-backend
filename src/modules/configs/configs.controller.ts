@@ -45,7 +45,7 @@ export class ConfigsController {
         httpCode: HttpStatus.OK,
     })
     async configsList(): Promise<ConfigsListResponseDto> {
-        const response = await this.configsService.usersList();
+        const response = await this.configsService.certsList();
         return { response: errorHandler(response) };
     }
     
@@ -55,7 +55,7 @@ export class ConfigsController {
         apiBody: ConfigUpdateRequestDto,
     })
     async updateConfig(@Body() body: ConfigUpdateRequestDto): Promise<ConfigUpdateResponseDto> {
-        const response = await this.configsService.updateUser(body);
+        const response = await this.configsService.updateCert(body);
         return { response: errorHandler(response) };
     }
     
@@ -64,7 +64,7 @@ export class ConfigsController {
         httpCode: HttpStatus.OK,
     })
     async removeConfig(@Param() body: ConfigRemoveRequestDto): Promise<ConfigRemoveResponseDto> {
-        const response = await this.configsService.removeUser(body);
+        const response = await this.configsService.removeCert(body);
         return { response: errorHandler(response) };
     }
     
