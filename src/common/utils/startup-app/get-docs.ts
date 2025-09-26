@@ -13,7 +13,7 @@ Squidward is proxy management tool, built on top of squid, with a focus on simpl
 
 export async function getDocs(app: INestApplication<unknown>, config: ConfigService) {
     const isSwaggerEnabled = config.getOrThrow<string>('IS_DOCS_ENABLED');
-
+    
     if (isSwaggerEnabled === 'true') {
         const pkg = await readPackageJSON();
 
@@ -66,7 +66,7 @@ export async function getDocs(app: INestApplication<unknown>, config: ConfigServ
             documentFactory,
             options,
         );
-
+        
         app.use(
             config.getOrThrow<string>('SCALAR_PATH'),
 

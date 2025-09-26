@@ -5,9 +5,9 @@ import { ConfigSchema } from '../schemas/config.schema';
 
 export const NodeSchema = z.object({
     uuid: z.uuid(),
-    name: z.string().nonempty().min(3, 'Min. 3 characters').trim(),
-    host: z.url().nonempty().trim()
-        .or(z.ipv4().nonempty().trim()),
+    name: z.string().trim().nonempty().min(3, 'Min. 3 characters'),
+    host: z.string().trim().nonempty().regex(/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/)
+        .or(z.ipv4().trim().nonempty()),
     port: z.number().int(),
     description: z.string().trim().optional().nullable(),
     configId: z.uuid(),

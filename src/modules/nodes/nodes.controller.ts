@@ -1,3 +1,4 @@
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
 
 import {
@@ -9,6 +10,7 @@ import {
 } from '@contract/commands';
 import { NodeRemoveContract } from '@contract/commands/nodes/node-remove.contract';
 import { Endpoint } from '@/common/decorators/endpoint';
+import { NODES_CONTROLLER_INFO } from '@contract/api';
 import { Roles } from '@/common/decorators/roles';
 import { errorHandler } from '@/common/helpers';
 import { ROLE } from '@contract/constants';
@@ -24,6 +26,8 @@ import {
 } from './dto';
 import { NodesService } from './nodes.service';
 
+@ApiBearerAuth('Authorization')
+@ApiTags(NODES_CONTROLLER_INFO.tag)
 @Roles(ROLE.ADMIN, ROLE.API)
 @Controller()
 export class NodesController {
@@ -31,6 +35,7 @@ export class NodesController {
         private readonly nodesService: NodesService,
     ) {}
     
+    @ApiResponse({ type: NodeCreateResponseDto, description: 'Node created' })
     @Endpoint({
         command: NodeCreateContract,
         httpCode: HttpStatus.CREATED,
@@ -41,6 +46,7 @@ export class NodesController {
         return { response: errorHandler(response) };
     }
     
+    @ApiResponse({ type: NodesListResponseDto, description: 'Nodes fetched successfully' })
     @Endpoint({
         command: NodesListContract,
         httpCode: HttpStatus.OK,
@@ -50,6 +56,7 @@ export class NodesController {
         return { response: errorHandler(response) };
     }
     
+    @ApiResponse({ type: NodeUpdateResponseDto, description: 'Node updated successfully' })
     @Endpoint({
         command: NodeUpdateContract,
         httpCode: HttpStatus.OK,
@@ -60,6 +67,7 @@ export class NodesController {
         return { response: errorHandler(response) };
     }
     
+    @ApiResponse({ type: NodeRemoveResponseDto, description: 'Node removed successfully' })
     @Endpoint({
         command: NodeRemoveContract,
         httpCode: HttpStatus.OK,
@@ -69,6 +77,7 @@ export class NodesController {
         return { response: errorHandler(response) };
     }
     
+    @ApiResponse({ type: NodeStartResponseDto, description: 'Node task for start node created successfully' })
     @Endpoint({
         command: NodeStartContract,
         httpCode: HttpStatus.OK,
@@ -78,6 +87,7 @@ export class NodesController {
         return { response: errorHandler(response) };
     }
     
+    @ApiResponse({ type: NodeRestartResponseDto, description: 'Node task for restart node created successfully' })
     @Endpoint({
         command: NodeRestartContract,
         httpCode: HttpStatus.OK,
@@ -87,6 +97,7 @@ export class NodesController {
         return { response: errorHandler(response) };
     }
     
+    @ApiResponse({ type: NodeStopResponseDto, description: 'Node task for stop node created successfully' })
     @Endpoint({
         command: NodeStopContract,
         httpCode: HttpStatus.OK,
@@ -96,6 +107,7 @@ export class NodesController {
         return { response: errorHandler(response) };
     }
     
+    @ApiResponse({ type: NodeKeygenResponseDto, description: 'Node credentials generated successfully' })
     @Endpoint({
         command: NodeKeygenContract,
         httpCode: HttpStatus.OK,

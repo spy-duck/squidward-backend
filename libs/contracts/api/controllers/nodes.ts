@@ -10,3 +10,8 @@ export const NODES_ROUTES = {
     RESTART:  (uuid: string) => `${uuid}/action/restart`,
     KEYGEN: 'keygen',
 } as const;
+
+export const NODES_CONTROLLER_INFO = {
+    tag: 'Nodes',
+    description: 'Manages nodes, starts and stops them and etc.',
+} as const;

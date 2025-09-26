@@ -6,41 +6,54 @@ import { USER_STATUS_VALUES } from '../constants/users';
 export const UserSchema = z.object({
     uuid: z.uuid(),
     name: z.string().min(3, 'Min. 3 characters').trim(),
-    username: z.string().min(5, 'Min. 5 characters').trim(),
-    password: z.string().min(8, 'Min. 8 characters').trim(),
-    status: z.enum(USER_STATUS_VALUES),
-    
-    email: z.email().trim().nullable(),
-    telegramId: z.number().nullable(),
+    username: z.string().min(5, 'Min. 5 characters').trim()
+        .describe('Username for authentication'),
+    password: z.string().min(8, 'Min. 8 characters').trim()
+        .describe('Password for authentication'),
+    status: z.enum(USER_STATUS_VALUES)
+        .describe('User status'),
+    email: z.email()
+        .trim()
+        .nullable()
+        .meta({
+            title: "Email address",
+            description: "User email address",
+        }),
+    telegramId: z
+        .number()
+        .nullable()
+        .meta({
+            title: "Telegram ID",
+            description: "User telegram ID",
+        }),
     usedTrafficBytes: z.number().nullable(),
     
     firstConnectedAt: z
-        .date().nullable()
-        .or(z
-            .iso
-            .datetime()
-            .nullable()
-            .transform((str) => str && new Date(str)),
-        ),
+        .iso
+        .datetime()
+        .transform((v) => v ? new Date(v) : null)
+        .pipe(z.date().nullable())
+        .optional(),
     
     expireAt: z
-        .date()
-        .or(z
-            .iso
-            .datetime()
-            .transform((str) => new Date(str)),
-        ),
+        .iso
+        .datetime()
+        .transform((v) => v ? new Date(v) : null)
+        .pipe(z.date()),
     
     createdAt: z
-        .string()
+        .iso
         .datetime()
-        .optional()
-        .transform((str) => str && new Date(str)),
+        .transform((v) => v ? new Date(v) : null)
+        .pipe(z.date())
+        .optional(),
+    
     updatedAt: z
-        .string()
+        .iso
         .datetime()
-        .optional()
-        .transform((str) => str && new Date(str)),
+        .transform((v) => v ? new Date(v) : null)
+        .pipe(z.date())
+        .optional(),
 });
 
 export type TUser = z.infer<typeof UserSchema>;

@@ -1,4 +1,4 @@
-import { ApiResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { Body, Controller, HttpStatus } from '@nestjs/common';
 
 import { AuthCheckContract, AuthLoginContract } from '@contract/commands';
@@ -7,11 +7,14 @@ import { SkipRolesGuard } from '@/common/decorators/skip-roles-guard';
 import { SkipJwtGuard } from '@/common/decorators/skip-jwt-guard';
 import { IJWTAuthPayload } from '@/modules/auth/interfaces';
 import { Endpoint } from '@/common/decorators/endpoint';
+import { AUTH_CONTROLLER_INFO } from '@contract/api';
 import { errorHandler } from '@/common/helpers';
 
 import { AuthCheckResponseDto, AuthLoginRequestDto, AuthLoginResponseDto } from './dto';
 import { AuthService } from './auth.service';
 
+@ApiBearerAuth('Authorization')
+@ApiTags(AUTH_CONTROLLER_INFO.tag)
 @Controller()
 export class AuthController {
     constructor(
@@ -28,7 +31,7 @@ export class AuthController {
         return errorHandler(response);
     }
     
-    @ApiResponse({ type: AuthLoginRequestDto, description: 'Access token for further requests' })
+    @ApiResponse({ type: AuthLoginResponseDto, description: 'Access token for further requests' })
     @ApiUnauthorizedResponse({
         description: 'Unauthorized - Invalid credentials',
         schema: {

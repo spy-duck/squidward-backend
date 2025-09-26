@@ -1,7 +1,7 @@
 import { createZodDto } from 'nestjs-zod';
 
-import { NodeRemoveContract } from '@contract/commands/nodes/node-remove.contract';
+import { UserRemoveContract } from '@contract/commands';
 
 
-export class RemoveNodeRequestDto extends createZodDto(NodeRemoveContract.RequestSchema) {}
-export class RemoveNodeResponseDto extends createZodDto(NodeRemoveContract.ResponseSchema) {}
+export class RemoveUserRequestDto extends createZodDto(UserRemoveContract.RequestSchema) {}
+export class RemoveUserResponseDto extends createZodDto(UserRemoveContract.ResponseSchema) {}

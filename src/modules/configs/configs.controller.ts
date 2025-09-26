@@ -1,4 +1,5 @@
 import { Body, Controller, HttpStatus, Param } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import {
     ConfigCreateContract,
@@ -7,6 +8,7 @@ import {
     ConfigRemoveContract,
     ConfigGetOneContract,
 } from '@contract/commands';
+import {  CONFIGS_CONTROLLER_INFO } from '@contract/api';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { Roles } from '@/common/decorators/roles';
 import { errorHandler } from '@/common/helpers';
@@ -19,6 +21,8 @@ import {
 } from './dto';
 import { ConfigsService } from './configs.service';
 
+@ApiBearerAuth('Authorization')
+@ApiTags(CONFIGS_CONTROLLER_INFO.tag)
 @Roles(ROLE.ADMIN, ROLE.API)
 @Controller()
 export class ConfigsController {

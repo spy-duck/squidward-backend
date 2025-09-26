@@ -9,7 +9,7 @@ export namespace AuthLoginContract {
     export const endpointDetails = getEndpointDetails(
         REST_API.AUTH.LOGIN,
         'post',
-        'User login',
+        'Admin login',
     );
     
     export const RequestSchema = z.object({

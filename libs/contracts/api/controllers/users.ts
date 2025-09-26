@@ -6,3 +6,8 @@ export const USERS_ROUTES = {
     UPDATE:  (uuid: string) => uuid, // put method
     REMOVE:  (uuid: string) => uuid, // delete method
 } as const;
+
+export const USERS_CONTROLLER_INFO = {
+    tag: 'Users',
+    description: 'Manage users, change their status, reset traffic, etc.',
+} as const;

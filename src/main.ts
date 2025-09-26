@@ -6,7 +6,7 @@ import winston, { createLogger } from 'winston';
 import { ZodValidationPipe } from 'nestjs-zod';
 import compression from 'compression';
 import { json } from 'express';
-import helmet from 'helmet';
+// import helmet from 'helmet';
 import morgan from 'morgan';
 
 import { isDevelopment } from '@/common/utils/is-development';
@@ -47,16 +47,23 @@ async function bootstrap() {
     
     const config = app.get(ConfigService);
     
-    app.use(helmet());
+    // app.use(helmet());
     
     if (isDevelopment()) {
         app.use(morgan('short'));
     }
     
-    app.useGlobalPipes(new ZodValidationPipe());
     
     
     await getDocs(app, config);
+    
+    app.enableCors({
+        origin: isDevelopment() ? '*' : config.getOrThrow<string>('FRONT_END_DOMAIN'),
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: false,
+    });
+    
+    app.useGlobalPipes(new ZodValidationPipe());
     
     await app.listen(Number(config.getOrThrow<string>('APP_PORT')))
         .then(() => {

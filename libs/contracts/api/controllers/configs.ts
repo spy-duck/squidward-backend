@@ -7,3 +7,8 @@ export const CONFIGS_ROUTES = {
     REMOVE:  (uuid: string) => uuid, // delete method
     GET_ONE:  (uuid: string) => uuid, // get method
 } as const;
+
+export const CONFIGS_CONTROLLER_INFO = {
+    tag: 'Squid configs',
+    description: 'Manages squid configs.',
+} as const;

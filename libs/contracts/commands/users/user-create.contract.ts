@@ -22,7 +22,8 @@ export namespace UserCreateContract {
             email: true,
             telegramId: true,
             expireAt: true,
-        });
+        })
+        .describe('Create a new user');
     
     export type Request = z.infer<typeof RequestSchema>;
     

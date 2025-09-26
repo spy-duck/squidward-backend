@@ -1,10 +1,11 @@
-import { ApiResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { Body, Controller, HttpStatus } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { ContextUser } from '@/common/decorators/context-user.decorator';
 import { AdminChangeCredentialsContract } from '@contract/commands';
 import { IJWTAuthPayload } from '@/modules/auth/interfaces';
 import { Endpoint } from '@/common/decorators/endpoint';
+import { ADMIN_CONTROLLER_INFO } from '@contract/api';
 import { Roles } from '@/common/decorators/roles';
 import { errorHandler } from '@/common/helpers';
 import { ROLE } from '@contract/constants';
@@ -12,6 +13,8 @@ import { ROLE } from '@contract/constants';
 import { AdminChangeCredentialsRequestDto, AdminChangeCredentialsResponseDto } from './dto';
 import { AdminService } from './admin.service';
 
+@ApiBearerAuth('Authorization')
+@ApiTags(ADMIN_CONTROLLER_INFO.tag)
 @Roles(ROLE.ADMIN)
 @Controller()
 export class AdminController {
@@ -19,19 +22,7 @@ export class AdminController {
         private readonly adminService: AdminService,
     ) {}
 
-    @ApiResponse({ type: AdminChangeCredentialsRequestDto, description: 'Access token for further requests' })
-    @ApiUnauthorizedResponse({
-        description: 'Unauthorized - Invalid credentials',
-        schema: {
-            type: 'object',
-            properties: {
-                statusCode: { type: 'number', example: 401 },
-                message: { type: 'string', example: 'Invalid credentials' },
-                error: { type: 'string', example: 'Unauthorized' },
-            },
-        },
-    })
-    @Endpoint({
+     @Endpoint({
         command: AdminChangeCredentialsContract,
         httpCode: HttpStatus.CREATED,
     })
