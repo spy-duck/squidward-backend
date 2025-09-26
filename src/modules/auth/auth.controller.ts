@@ -2,8 +2,10 @@ import { ApiResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { Body, Controller, HttpStatus } from '@nestjs/common';
 
 import { AuthCheckContract, AuthLoginContract } from '@contract/commands';
+import { ContextUser } from '@/common/decorators/context-user.decorator';
 import { SkipRolesGuard } from '@/common/decorators/skip-roles-guard';
 import { SkipJwtGuard } from '@/common/decorators/skip-jwt-guard';
+import { IJWTAuthPayload } from '@/modules/auth/interfaces';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { errorHandler } from '@/common/helpers';
 
@@ -21,8 +23,8 @@ export class AuthController {
         httpCode: HttpStatus.OK,
     })
     @SkipRolesGuard()
-    async checkAuth(): Promise<AuthCheckResponseDto> {
-        const response = await this.authService.check();
+    async checkAuth(@ContextUser() contextUser: IJWTAuthPayload): Promise<AuthCheckResponseDto> {
+        const response = await this.authService.check(contextUser);
         return errorHandler(response);
     }
     

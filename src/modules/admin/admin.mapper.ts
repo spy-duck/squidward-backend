@@ -13,6 +13,7 @@ export class AdminMapper {
             username: entity.username,
             passwordHash: entity.passwordHash,
             role: entity.role,
+            isInitialPasswordChanged: entity.isInitialPasswordChanged,
         }
     }
     

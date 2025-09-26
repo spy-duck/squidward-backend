@@ -19,4 +19,23 @@ export class AdminRepository {
             .executeTakeFirst();
         return admin ? AdminMapper.toEntity(admin) : null;
     }
+    
+    async getByUuid(adminUuid: string): Promise<AdminEntity | null> {
+        const admin = await this.db
+            .selectFrom('admins')
+            .selectAll()
+            .where('uuid', '=', adminUuid)
+            .executeTakeFirst();
+        return admin ? AdminMapper.toEntity(admin) : null;
+    }
+    
+    async changeCredentials(entity: AdminEntity): Promise<AdminEntity | null> {
+        const admin = await this.db
+            .updateTable('admins')
+            .set(AdminMapper.toModel(entity))
+            .where('uuid', '=', entity.uuid)
+            .returningAll()
+            .executeTakeFirst();
+        return admin ? AdminMapper.toEntity(admin) : null;
+    }
 }

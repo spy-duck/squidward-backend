@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { AuthLoginInterface } from '@/modules/auth/interfaces/auth-login.interface';
 import { AdminRepository } from '@/modules/admin/repositories/admin.repository';
+import { IJWTAuthPayload } from '@/modules/auth/interfaces';
 import { ERRORS, ROLE } from '@contract/constants';
 import { comparePassword } from '@/common/helpers';
 import { ICommandResponse } from '@/common/types';
@@ -26,11 +27,24 @@ export class AuthService {
         
     }
     
-    async check(): Promise<ICommandResponse<AuthCheckResponseModel>> {
+    async check(contextUser: IJWTAuthPayload): Promise<ICommandResponse<AuthCheckResponseModel>> {
         try {
+            const admin = await this.adminRepository.getByUuid(contextUser.uuid!);
+            if (!admin) {
+                return {
+                    success: false,
+                    code: ERRORS.UNAUTHORIZED.code,
+                    response: new AuthCheckResponseModel(false, ERRORS.UNAUTHORIZED.message),
+                };
+            }
+            if (admin.role !== ROLE.ADMIN) {}
             return {
                 success: true,
-                response: new AuthCheckResponseModel(true, null),
+                response: new AuthCheckResponseModel(
+                    true,
+                    null,
+                    !admin.isInitialPasswordChanged
+                ),
             };
         } catch (error) {
             this.logger.error(error);
@@ -41,7 +55,7 @@ export class AuthService {
             return {
                 success: false,
                 code: ERRORS.INTERNAL_SERVER_ERROR.code,
-                response: new AuthLoginResponseModel(false, message),
+                response: new AuthCheckResponseModel(false, message),
             };
         }
     }

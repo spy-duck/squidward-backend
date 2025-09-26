@@ -8,6 +8,7 @@ export interface AdminModel {
     username: string;
     passwordHash: string;
     role: TRoleTypes;
+    isInitialPasswordChanged: boolean;
     createdAt: Date;
     updatedAt: Date;
 }

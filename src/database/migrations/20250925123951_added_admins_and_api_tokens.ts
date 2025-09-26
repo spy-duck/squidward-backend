@@ -18,6 +18,7 @@ export async function up(database: Kysely<TDatabase>): Promise<void> {
         .addColumn('username', 'varchar(255)', col => col.notNull())
         .addColumn('passwordHash', 'varchar(255)', col => col.notNull())
         .addColumn('role', 'varchar(255)', col => col.notNull())
+        .addColumn('isInitialPasswordChanged', 'boolean', col => col.notNull().defaultTo(false))
         .addColumn('createdAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
         .addColumn('updatedAt', 'timestamp', col => col.notNull().defaultTo(sql`now()`))
         .execute();
@@ -28,6 +29,7 @@ export async function up(database: Kysely<TDatabase>): Promise<void> {
             username: 'squidward',
             passwordHash: await encryptPassword('squidward'),
             role: ROLE.ADMIN,
+            isInitialPasswordChanged: false,
             createdAt: new Date(),
             updatedAt: new Date(),
         })

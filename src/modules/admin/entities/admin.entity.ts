@@ -5,6 +5,7 @@ export class AdminEntity {
     public username: string;
     public passwordHash: string;
     public role: TRoleTypes;
+    public isInitialPasswordChanged: boolean;
     
     public createdAt: Date;
     public updatedAt: Date;
