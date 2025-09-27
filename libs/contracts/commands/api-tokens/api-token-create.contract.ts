@@ -1,8 +1,9 @@
+import dayjs from 'dayjs';
 import { z } from 'zod';
 
 import { getEndpointDetails } from '../../constants/endpoint-details';
-import { REST_API } from '../../api';
 import { ApiTokenSchema } from '../../schemas';
+import { REST_API } from '../../api';
 
 export namespace ApiTokenCreateContract {
     export const url = REST_API.API_TOKENS.CREATE;
@@ -17,6 +18,14 @@ export namespace ApiTokenCreateContract {
         .pick({
             tokenName: true,
             expireAt: true,
+        })
+        .safeExtend({
+            expireAt: z
+                .iso
+                .datetime()
+                .transform((v) => new Date(v))
+                .pipe(z.date().min(dayjs().add(1, 'day').toDate()))
+                .describe('Token expiration date'),
         })
         .describe('Create a new API token');
     

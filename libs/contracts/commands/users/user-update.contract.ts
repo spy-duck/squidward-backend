@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { z } from 'zod';
 
 import { getEndpointDetails } from '../../constants/endpoint-details';
@@ -29,6 +30,12 @@ export namespace UserUpdateContract {
                 .min(8, 'Min. 8 characters')
                 .nullable()
                 .optional(),
+            expireAt: z
+                .iso
+                .datetime()
+                .transform((v) => new Date(v))
+                .pipe(z.date().min(dayjs().toDate()))
+                .describe('User expiration date.'),
         });
     
     export type Request = z.infer<typeof RequestSchema>;

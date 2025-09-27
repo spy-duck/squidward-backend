@@ -8,7 +8,9 @@ import { SkipJwtGuard } from '@/common/decorators/skip-jwt-guard';
 import { IJWTAuthPayload } from '@/modules/auth/interfaces';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { AUTH_CONTROLLER_INFO } from '@contract/api';
+import { Roles } from '@/common/decorators/roles';
 import { errorHandler } from '@/common/helpers';
+import { ROLE } from '@contract/constants';
 
 import { AuthCheckResponseDto, AuthLoginRequestDto, AuthLoginResponseDto } from './dto';
 import { AuthService } from './auth.service';
@@ -26,7 +28,7 @@ export class AuthController {
         command: AuthCheckContract,
         httpCode: HttpStatus.OK,
     })
-    @SkipRolesGuard()
+    @Roles(ROLE.ADMIN)
     async checkAuth(@ContextUser() contextUser: IJWTAuthPayload): Promise<AuthCheckResponseDto> {
         const response = await this.authService.check(contextUser);
         return errorHandler(response);

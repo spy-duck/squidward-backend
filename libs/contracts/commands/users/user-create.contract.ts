@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { z } from 'zod';
 
 import { getEndpointDetails } from '../../constants/endpoint-details';
@@ -22,6 +23,14 @@ export namespace UserCreateContract {
             email: true,
             telegramId: true,
             expireAt: true,
+        })
+        .safeExtend({
+            expireAt: z
+                .iso
+                .datetime()
+                .transform((v) => new Date(v))
+                .pipe(z.date().min(dayjs().toDate()))
+                .describe('Token expiration date'),
         })
         .describe('Create a new user');
     

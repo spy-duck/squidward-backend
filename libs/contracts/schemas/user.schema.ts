@@ -33,7 +33,8 @@ export const UserSchema = z.object({
         .datetime()
         .transform((v) => v ? new Date(v) : null)
         .pipe(z.date().nullable())
-        .optional(),
+        .optional()
+        .nullable(),
     
     expireAt: z
         .iso

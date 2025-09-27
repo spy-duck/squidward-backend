@@ -2,10 +2,10 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
 import { utilities as winstonModuleUtilities, WinstonModule } from 'nest-winston';
+import { json, NextFunction, Request, Response } from 'express';
 import winston, { createLogger } from 'winston';
 import { ZodValidationPipe } from 'nestjs-zod';
 import compression from 'compression';
-import { json } from 'express';
 // import helmet from 'helmet';
 import morgan from 'morgan';
 
@@ -53,7 +53,11 @@ async function bootstrap() {
         app.use(morgan('short'));
     }
     
-    
+    app.use(function noRobotsMiddleware(req: Request, res: Response, next: NextFunction) {
+        res.setHeader('x-robots-tag', 'noindex, nofollow, noarchive, nosnippet, noimageindex');
+        
+        return next();
+    });
     
     await getDocs(app, config);
     

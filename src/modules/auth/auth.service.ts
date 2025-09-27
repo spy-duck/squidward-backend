@@ -14,7 +14,6 @@ import { AuthCheckResponseModel, AuthLoginResponseModel } from './models';
 @Injectable()
 export class AuthService {
     private readonly logger = new Logger(AuthService.name);
-    private readonly jwtSecret: string;
     private readonly jwtLifetime: number;
     
     constructor(
@@ -22,9 +21,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly adminRepository: AdminRepository,
     ) {
-        this.jwtSecret = this.configService.getOrThrow<string>('JWT_AUTH_SECRET');
         this.jwtLifetime = this.configService.getOrThrow<number>('JWT_AUTH_LIFETIME');
-        
     }
     
     async check(contextUser: IJWTAuthPayload): Promise<ICommandResponse<AuthCheckResponseModel>> {
@@ -87,7 +84,6 @@ export class AuthService {
                     role: ROLE.ADMIN,
                 },
                 {
-                    secret: this.jwtSecret,
                     expiresIn: `${ this.jwtLifetime }h`,
                 },
             );

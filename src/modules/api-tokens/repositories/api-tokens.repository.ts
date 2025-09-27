@@ -40,6 +40,16 @@ export class ApiTokensRepository {
         return ApiTokensMapper.toEntity(apiToken);
     }
     
+    async update(entity: ApiTokenEntity): Promise<ApiTokenEntity> {
+        const apiToken = await this.db
+            .updateTable('apiTokens')
+            .set(ApiTokensMapper.toModel(entity))
+            .where('uuid', '=', entity.uuid)
+            .returningAll()
+            .executeTakeFirstOrThrow();
+        return ApiTokensMapper.toEntity(apiToken);
+    }
+    
     async getAll(): Promise<ApiTokenEntity[]> {
         const apiTokens = await this.db
             .selectFrom('apiTokens')

@@ -14,7 +14,7 @@ const controllersInfo = Object.entries<{ tag: string, description: string }>(CON
         value.tag,
         value.description,
     ]);
-console.log(controllersInfo);
+
 const description = `
 Squidward is proxy management tool, built on top of squid, with a focus on simplicity and ease of use.
 `;
