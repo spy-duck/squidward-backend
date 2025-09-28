@@ -1,4 +1,21 @@
 services:
+  squidward:
+    image: squidwardproxy/squidward
+    container_name: 'squidward'
+    hostname: remnawave
+    restart: always
+    ports:
+      - '127.0.0.1:4000:4000'
+    env_file:
+      - .env
+    networks:
+      - squidward-network-internal
+    depends_on:
+      squidward-db:
+        condition: service_healthy
+      squidward-redis:
+        condition: service_healthy
+
   squidward-db:
     image: postgres:17.6-bookworm
     environment:
@@ -21,12 +38,43 @@ services:
       - postgres_db
       - postgres_user
       - postgres_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$(cat /run/secrets/postgres_user) -d $$(cat /run/secrets/postgres_db)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  squidward-redis:
+    image: valkey/valkey:9.0-alpine3.22
+    container_name: squidward-redis
+    hostname: squidward-redis
+    restart: unless-stopped
+    networks:
+      - squidward-network-internal
+      - squidward-network-external # DEV ONLY
+    expose:
+      - '6379'
+    volumes:
+      - squidward-redis-vol:/data
+    entrypoint: "/bin/sh -c \"valkey-server --requirepass $$(cat /run/secrets/valkey_password)\""
+    secrets:
+      - valkey_password
+    healthcheck:
+      test: [ 'CMD', 'valkey-cli', 'ping' ]
+      interval: 3s
+      timeout: 10s
+      retries: 3
 
 volumes:
   squidward-db-vol:
     driver: local
     external: false
     name: squidward-db-vol
+  squidward-redis-vol:
+    driver: local
+    external: false
+    name: squidward-redis-vol
 
 networks:
   squidward-network-internal:
@@ -49,3 +97,5 @@ secrets:
     environment: POSTGRES_USER
   postgres_password:
     environment: POSTGRES_PASSWORD
+  valkey_password:
+    environment: REDIS_PASSWORD
