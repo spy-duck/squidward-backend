@@ -32,7 +32,10 @@ export class AdminRepository {
     async changeCredentials(entity: AdminEntity): Promise<AdminEntity | null> {
         const admin = await this.db
             .updateTable('admins')
-            .set(AdminMapper.toModel(entity))
+            .set(AdminMapper.toModel({
+                ...entity,
+                updatedAt: new Date(),
+            }))
             .where('uuid', '=', entity.uuid)
             .returningAll()
             .executeTakeFirst();

@@ -89,7 +89,10 @@ export class NodesRepository {
     async update(nodeEntity: NodeEntity): Promise<NodeEntity> {
         const node = await this.db
             .updateTable('nodes')
-            .set(NodesMapper.toModel(nodeEntity))
+            .set(NodesMapper.toModel({
+                ...nodeEntity,
+                updatedAt: new Date(),
+            }))
             .where('uuid', '=', nodeEntity.uuid)
             .returningAll()
             .executeTakeFirstOrThrow();

@@ -5,6 +5,7 @@ import {
     ApiTokenModel,
     CertModel,
     ConfigModel,
+    HostModel,
     NodeModel,
     UserModel,
 } from './models';
@@ -12,10 +13,11 @@ import {
 export interface TDatabase {
     admins: AdminModel;
     apiTokens: ApiTokenModel;
+    certs: CertModel;
+    configs: ConfigModel;
+    hosts: HostModel;
     nodes: NodeModel;
     users: UserModel;
-    configs: ConfigModel;
-    certs: CertModel;
 }
 
 export class Database extends Kysely<TDatabase> {}

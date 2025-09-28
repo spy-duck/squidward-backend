@@ -57,7 +57,10 @@ export class UsersRepository {
     async update(userEntity: UserEntity): Promise<UserEntity> {
         const user = await this.db
             .updateTable('users')
-            .set(UsersMapper.toModel(userEntity))
+            .set(UsersMapper.toModel({
+                ...userEntity,
+                updatedAt: new Date(),
+            }))
             .where('uuid', '=', userEntity.uuid)
             .returningAll()
             .executeTakeFirstOrThrow();

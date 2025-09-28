@@ -48,7 +48,10 @@ export class ConfigsRepository {
     async update(configEntity: ConfigEntity): Promise<ConfigEntity> {
         const config = await this.db
             .updateTable('configs')
-            .set(ConfigsMapper.toModel(configEntity))
+            .set(ConfigsMapper.toModel({
+                ...configEntity,
+                updatedAt: new Date(),
+            }))
             .where('uuid', '=', configEntity.uuid)
             .returningAll()
             .executeTakeFirstOrThrow();

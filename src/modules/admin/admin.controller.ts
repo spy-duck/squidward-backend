@@ -14,7 +14,7 @@ import { AdminChangeCredentialsRequestDto, AdminChangeCredentialsResponseDto } f
 import { AdminService } from './admin.service';
 
 @ApiBearerAuth('Authorization')
-@ApiTags(ADMIN_CONTROLLER_INFO.tag, 'Something')
+@ApiTags(ADMIN_CONTROLLER_INFO.tag)
 @Roles(ROLE.ADMIN)
 @Controller()
 export class AdminController {

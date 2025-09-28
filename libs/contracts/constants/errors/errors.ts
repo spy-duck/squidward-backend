@@ -24,4 +24,8 @@ export const ERRORS = {
     ADMIN_FORBIDDEN_CREDENTIALS_ERROR: { code: 'D006', message: 'Don\'t use the default username. IT\'S NOT SECURE!', httpCode: 400 },
     
     API_TOKEN_ALREADY_EXISTS: { code: 'T001', message: 'API token already exists', httpCode: 400 },
+    
+    HOST_NOT_FOUND: { code: 'H001', message: 'Host not found', httpCode: 404 },
+    HOST_ALREADY_EXISTS: { code: 'H002', message: 'Host already exists', httpCode: 400 },
+    
 };
