@@ -7,9 +7,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-import { encryptPassword } from '@/common/helpers';
-import { TDatabase } from '@/database/database';
+import { TDatabase } from '../database';
 import { ROLE } from '@contract/constants';
+import bcrypt from 'bcrypt';
 
 export async function up(database: Kysely<TDatabase>): Promise<void> {
     await database.schema
@@ -27,7 +27,7 @@ export async function up(database: Kysely<TDatabase>): Promise<void> {
         .insertInto('admins')
         .values({
             username: 'squidward',
-            passwordHash: await encryptPassword('squidward'),
+            passwordHash: await bcrypt.hash('squidward', 10),
             role: ROLE.ADMIN,
             isInitialPasswordChanged: false,
             createdAt: new Date(),

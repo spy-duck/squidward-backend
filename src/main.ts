@@ -69,7 +69,7 @@ async function bootstrap() {
     
     app.useGlobalPipes(new ZodValidationPipe());
     
-    await app.listen(Number(config.getOrThrow<string>('APP_PORT')))
+    await app.listen(+config.getOrThrow<string>('APP_PORT'))
         .then(() => {
             logger.info(
                 `Server is running on http://localhost:${ config.getOrThrow<string>('APP_PORT') }`,

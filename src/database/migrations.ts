@@ -6,14 +6,14 @@ import { config } from 'dotenv';
 import * as path from 'path';
 import { Pool } from 'pg';
 
-import { Database } from '@/database/database';
+import { Database } from './database';
 
 config({
     path: [
         path.resolve('.env'),
     ],
 });
-const migrationsPath = path.resolve('./src/database/migrations');
+const migrationsPath = path.resolve(__dirname, './migrations');
 consola.info('MIGRATIONS_PATH', migrationsPath);
 
 const options = commandLineArgs([

@@ -39,16 +39,17 @@ ENV PM2_DISABLE_VERSION_CHECK=true
 
 
 COPY --from=backend-build /opt/app/dist ./dist
+COPY --from=backend-build /opt/squidward-node /opt/squidward-node
 COPY --from=frontend /opt/frontend/dist ./frontend
 COPY --from=backend-build /opt/app/node_modules ./node_modules
 COPY package*.json ./
 
 COPY ecosystem.config.js ./
-COPY docker-entrypoint.sh ./
 
 RUN npm install pm2 -g \
     && npm link
 
+COPY docker-entrypoint.sh ./
 
 ENTRYPOINT [ "/bin/sh", "docker-entrypoint.sh" ]
 

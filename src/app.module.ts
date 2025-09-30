@@ -1,18 +1,21 @@
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConditionalModule, ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+
+import { join } from 'node:path';
 
 import { createKeyv } from '@keyv/redis';
-
 import { DatabaseOptions } from '@/database/definition/database.module-definition';
 import { SquidwardBackendModules } from '@/modules/squidward-backend.modules';
 import { DatabaseModule } from '@/database/definition/database.module';
 import { RolesGuard } from '@/common/guards/roles /roles.guard';
 import { QueuesModule } from '@/queues/queues.module';
-import { JwtGuard } from '@/common/guards/jwt';
 
+import { JwtGuard } from '@/common/guards/jwt';
 import { AppService } from './app.service';
+import { isFrontendDisabled } from '@/common/setup-app';
 
 @Module({
   imports: [
@@ -53,6 +56,32 @@ import { AppService } from './app.service';
               };
           },
       }),
+      ConditionalModule.registerWhen(
+          ServeStaticModule.forRootAsync({
+              imports: [ConfigModule],
+              inject: [ConfigService],
+              useFactory: (configService: ConfigService) => [
+                  {
+                      rootPath: join(
+                          __dirname,
+                          '..',
+                          '..',
+                          'frontend',
+                      ),
+                      renderPath: '*splat',
+                      exclude: [
+                          '/api/*splat',
+                          configService.getOrThrow<string>('SWAGGER_PATH'),
+                          configService.getOrThrow<string>('SCALAR_PATH'),
+                      ],
+                      serveStaticOptions: {
+                          dotfiles: 'ignore',
+                      },
+                  },
+              ],
+          }),
+          () => !isFrontendDisabled(),
+      ),
       QueuesModule,
       SquidwardBackendModules,
   ],

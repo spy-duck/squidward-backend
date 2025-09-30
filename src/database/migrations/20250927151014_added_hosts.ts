@@ -4,7 +4,7 @@
  **/
 import { Kysely, sql } from 'kysely';
 
-import { TDatabase } from '@/database/database';
+import { TDatabase } from '../database';
 
 export async function up(database: Kysely<TDatabase>): Promise<void> {
     await database.schema
