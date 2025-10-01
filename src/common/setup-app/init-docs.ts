@@ -19,7 +19,7 @@ const description = `
 Squidward is proxy management tool, built on top of squid, with a focus on simplicity and ease of use.
 `;
 
-export async function getDocs(app: INestApplication<unknown>, config: ConfigService) {
+export async function initDocs(app: INestApplication<unknown>, config: ConfigService) {
     const isSwaggerEnabled = config.getOrThrow<string>('IS_DOCS_ENABLED');
     
     if (isSwaggerEnabled === 'true') {
