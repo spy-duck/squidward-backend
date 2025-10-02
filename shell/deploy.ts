@@ -1,10 +1,10 @@
 import { spawnSync, execSync } from 'node:child_process';
-import { consola } from 'consola';
-import { colorize } from 'consola/utils';
-import { readPackageJSON } from 'pkg-types';
 import commandLineArgs from 'command-line-args';
+import { readPackageJSON } from 'pkg-types';
+import { colorize } from 'consola/utils';
+import { consola } from 'consola';
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+ 
 const options = commandLineArgs([
     { name: 'yes', alias: 'y', type: Boolean },
     { name: 'no-push', alias: 'n', type: Boolean },
@@ -28,7 +28,7 @@ void (async () => {
         }
     });
     
-    const loader = createLoader();
+    // const loader = createLoader();
     
     if (!options.yes && !await consola.prompt('Confirm deploy', { type: 'confirm' })) {
         consola.log('Exit...');
@@ -49,9 +49,11 @@ void (async () => {
     spawnSync('docker', [
         'build',
         '--progress=plain',
-        ...(options['no-cache'] ? ['--no-cache'] : []),
+        ...(options['no-cache'] ? [ '--no-cache' ] : []),
         '-t',
-        `${imageName}:${ pkg.version }`,
+        `${ imageName }:${ pkg.version }`,
+        ' -t',
+        `${ imageName }:latest`,
         '.',
     ], { stdio: 'inherit', shell: true });
     consola.success('Docker image build finished');
@@ -59,7 +61,7 @@ void (async () => {
     if (!options['no-push'] && await consola.prompt('Push docker image to Docker Hub', { type: 'confirm' })) {
         spawnSync('docker', [
             'push',
-            `${imageName}:${ pkg.version }`,
+            `${ imageName }:${ pkg.version }`,
         ], { stdio: 'inherit', shell: true });
     }
     
