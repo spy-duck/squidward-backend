@@ -46,11 +46,11 @@ module.exports = {
             instance_var: 'INSTANCE_ID',
             env_development: {
                 NODE_ENV: 'development',
-                INSTANCE_TYPE: 'processor',
+                INSTANCE_TYPE: 'processors',
             },
             env_production: {
                 NODE_ENV: 'production',
-                INSTANCE_TYPE: 'processor',
+                INSTANCE_TYPE: 'processors',
             },
             namespace: 'jobs',
         },

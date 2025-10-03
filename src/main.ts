@@ -14,7 +14,7 @@ import { getLogger, initDocs, isDevelopment } from '@/common/setup-app';
 import { AppModule } from './app.module';
 
 
-const logger = getLogger('');
+const logger = getLogger('Backend');
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {

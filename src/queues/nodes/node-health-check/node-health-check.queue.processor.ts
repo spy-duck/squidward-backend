@@ -30,7 +30,6 @@ export class NodeHealthCheckQueueProcessor extends WorkerHost {
             return;
         }
         
-        
         try {
             const result = await this.nodeApiService.healthCheck(node.host, node.port);
             

@@ -11,7 +11,7 @@ export function getLogger(appName: string, instanceId?: string) {
                 format: 'YYYY-MM-DD HH:mm:ss.SSS',
             }),
             winston.format.align(),
-            winstonModuleUtilities.format.nestLike(appName ? `${appName}: #${instanceId}` : '', {
+            winstonModuleUtilities.format.nestLike(appName + (instanceId !== undefined ? `: #${instanceId}` : ''), {
                 colors: true,
                 prettyPrint: true,
                 processId: false,
