@@ -37,18 +37,11 @@ void (async () => {
     
     consola.start(`Starting deploy v${ pkg.version }...`);
     
-    consola.start(`Starting building node contracts`);
-    execSync('rm -rf node_contracts');
-    execSync('mkdir -p node_contracts');
-    execSync('cp -r ../squidward-node/libs/contracts/* node_contracts');
-    execSync('cd node_contracts && npm pack');
-    consola.success('Node contracts build finished');
-    
-    
     consola.start(`Starting building docker image`);
     spawnSync('docker', [
         'build',
         '--progress=plain',
+        '--build-arg CI=true',
         ...(options['no-cache'] ? [ '--no-cache' ] : []),
         '-t',
         `${ imageName }:${ pkg.version }`,
@@ -61,7 +54,8 @@ void (async () => {
     if (!options['no-push'] && await consola.prompt('Push docker image to Docker Hub', { type: 'confirm' })) {
         spawnSync('docker', [
             'push',
-            `${ imageName }:${ pkg.version }`,
+            '--all-tags',
+            imageName,
         ], { stdio: 'inherit', shell: true });
     }
     
