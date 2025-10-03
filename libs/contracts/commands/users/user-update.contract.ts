@@ -35,7 +35,7 @@ export namespace UserUpdateContract {
                 .datetime()
                 .transform((v) => new Date(v))
                 .pipe(z.date().min(dayjs().toDate()))
-                .describe('User expiration date.'),
+                .describe('User subscription expiration date.'),
         });
     
     export type Request = z.infer<typeof RequestSchema>;

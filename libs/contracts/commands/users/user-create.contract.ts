@@ -30,7 +30,7 @@ export namespace UserCreateContract {
                 .datetime()
                 .transform((v) => new Date(v))
                 .pipe(z.date().min(dayjs().toDate()))
-                .describe('Token expiration date'),
+                .describe('User subscription expiration date'),
         })
         .describe('Create a new user');
     
