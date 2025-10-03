@@ -4,5 +4,5 @@
 
 ## Install 
 ```shell
-sudo bash <(curl -Ls https://raw.githubusercontent.com/spy-duck/squidward-backend/refs/heads/master/shell/install-squidward.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/spy-duck/squidward-backend/refs/heads/main/shell/install-squidward.sh)
 ```
