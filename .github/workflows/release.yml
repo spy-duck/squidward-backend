@@ -38,23 +38,6 @@ jobs:
           build-args: |
             CI=true
 
-      - name: Update release notes
-        uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_name }}
-          generate_release_notes: true
-          append_body: true
-          make_latest: true
-          draft: false
-          prerelease: false
-          name: ${{ github.ref_name }}
-          body: |
-            # Squidward Panel v${{ github.ref_name }}
-
-            ${{ env.CHANGELOG }}
-
   release-backend-contracts:
     runs-on: ubuntu-latest
     steps:
