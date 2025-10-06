@@ -9,7 +9,6 @@ import { isProcessorsInstance } from '@/common/utils/environment';
 import { NodeApiModule } from '@/common/node-api/node-api.module';
 import { QUEUES } from '@/queues/queue.enum';
 
-import { NodeHealthCheckQueueModule } from '../node-health-check/node-health-check.queue.module';
 import { NodeStopQueueProcessor } from './node-stop.queue.processor';
 import { NodeStopQueueService } from './node-stop.queue.service';
 
@@ -19,7 +18,9 @@ const providers = isProcessorsInstance()
         NodeStopQueueProcessor,
     ]
     : [];
-const imports = isProcessorsInstance() ? [ NodeHealthCheckQueueModule, NodeApiModule ] : [];
+const imports = isProcessorsInstance() ? [
+    NodeApiModule,
+] : [];
 
 @Module({
     imports: [

@@ -108,7 +108,10 @@ export class NodesService implements OnModuleInit {
                     port: request.port,
                     configId: request.configId,
                     description: request.description,
+                    countryCode: request.countryCode,
                     state: NODE_STATE.CREATED,
+                    isConnected: false,
+                    isStarted: false,
                 }),
             )
             return {
@@ -179,6 +182,7 @@ export class NodesService implements OnModuleInit {
                     port: request.port,
                     configId: request.configId,
                     description: request.description,
+                    countryCode: request.countryCode,
                     updatedAt: new Date(),
                 }),
             )

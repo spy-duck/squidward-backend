@@ -9,6 +9,8 @@ export class NodeEntity {
     readonly configId: string;
     readonly description: string | null;
     readonly isConnected: boolean;
+    readonly isStarted: boolean;
+    readonly countryCode: string;
     readonly createdAt: Date;
     readonly updatedAt: Date;
     readonly lastConnectedAt: Date;

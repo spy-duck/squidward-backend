@@ -1,5 +1,11 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 
+import axios, { AxiosInstance } from 'axios';
+import * as jwt from 'jsonwebtoken';
+import * as https from 'node:https';
+
+import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
+
 import {
     NodeHealthContract,
     SquidStartContract,
@@ -9,11 +15,6 @@ import {
     PostUsersContract,
     AddUserContract, RemoveUserContract, UpdateUserContract,
 } from '@squidward-node/contracts';
-import axios, { AxiosInstance } from 'axios';
-import * as jwt from 'jsonwebtoken';
-import * as https from 'node:https';
-
-import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
 
 @Injectable()
 export class NodeApiService implements OnModuleInit {
@@ -82,7 +83,7 @@ export class NodeApiService implements OnModuleInit {
             url: this.getNodeUrl(host, SquidStartContract.url, port),
             timeout: 20000,
         });
-        return NodeHealthContract.ResponseSchema.parse(response.data);
+        return SquidStartContract.ResponseSchema.parseAsync(response.data);
     }
     
     async squidStop(host: string, port: null | number): Promise<SquidStopContract.Response> {

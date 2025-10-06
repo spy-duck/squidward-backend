@@ -6,7 +6,6 @@ import { Job } from 'bullmq';
 import { NodesSharedService } from '@/queues/nodes/nodes-shared/nodes-shared.service';
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { NodeApiService } from '@/common/node-api/node-api.service';
-import { NodeHealthCheckQueueService } from '@/queues';
 import { QUEUES } from '@/queues/queue.enum';
 
 @Processor(QUEUES.NODE_RESTART, {
@@ -18,7 +17,6 @@ export class NodeRestartQueueProcessor extends WorkerHost {
     constructor(
         private readonly nodesRepository: NodesRepository,
         private readonly nodesQueueSharedService: NodesSharedService,
-        private readonly nodeHealthCheckQueueService: NodeHealthCheckQueueService,
         private readonly nodeApiService: NodeApiService,
     ) {
         super();
@@ -43,7 +41,6 @@ export class NodeRestartQueueProcessor extends WorkerHost {
         const { response } = await this.nodeApiService.squidRestart(node.host, node.port);
         
         if (response.success) {
-            await this.nodeHealthCheckQueueService.healthCheckNode({ nodeUuid: node.uuid });
             this.logger.log(`Node ${ node.name } [${ node.uuid }] restarted successfully`);
         } else {
             this.logger.error(

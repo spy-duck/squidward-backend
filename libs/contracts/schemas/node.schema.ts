@@ -22,11 +22,12 @@ export const NodeSchema = z.object({
         .datetime()
         .optional()
         .transform((str) => str && new Date(str)),
-    isConnected: z.boolean(),
-    state: z.enum(NODE_STATE_VALUES),
-    lastConnectedAt: z.iso.datetime().nullable(),
+    isConnected: z.boolean().describe('Is node connected now'),
+    isStarted: z.boolean().describe('Is node was started'),
+    countryCode: z.string().length(2).describe('Node countryCode'),
+    state: z.enum(NODE_STATE_VALUES).describe('State of node'),
+    lastConnectedAt: z.iso.datetime().nullable().describe('Last connected at'),
     lastOnlineAt: z.iso.datetime().nullable(),
-    
 });
 
 export type TNode = z.infer<typeof NodeSchema>;

@@ -11,7 +11,6 @@ import { isProcessorsInstance } from '@/common/utils/environment';
 import { NodeApiModule } from '@/common/node-api/node-api.module';
 import { QUEUES } from '@/queues/queue.enum';
 
-import { NodeHealthCheckQueueModule } from '../node-health-check/node-health-check.queue.module';
 import { NodeRestartQueueProcessor } from './node-restart.queue.processor';
 import { NodeRestartQueueService } from './node-restart.queue.service';
 
@@ -24,7 +23,6 @@ const providers = isProcessorsInstance()
     : [];
 
 const imports = isProcessorsInstance() ? [
-    NodeHealthCheckQueueModule,
     NodesSharedModule,
     NodeApiModule,
 ] : [];
