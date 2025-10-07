@@ -15,8 +15,6 @@ import { isFrontendDisabled } from '@/common/setup-app';
 import { QueuesModule } from '@/queues/queues.module';
 import { JwtGuard } from '@/common/guards/jwt';
 
-import { AppService } from './app.service';
-
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -95,7 +93,6 @@ import { AppService } from './app.service';
             provide: APP_GUARD,
             useClass: RolesGuard,
         },
-        AppService,
     ],
 })
 export class AppModule {}

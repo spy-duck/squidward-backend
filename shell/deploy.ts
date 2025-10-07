@@ -1,10 +1,10 @@
-import { spawnSync, execSync } from 'node:child_process';
 import commandLineArgs from 'command-line-args';
+import { spawnSync } from 'node:child_process';
 import { readPackageJSON } from 'pkg-types';
 import { colorize } from 'consola/utils';
 import { consola } from 'consola';
 
- 
+
 const options = commandLineArgs([
     { name: 'yes', alias: 'y', type: Boolean },
     { name: 'no-push', alias: 'n', type: Boolean },
