@@ -34,7 +34,13 @@ export class AuthService {
                     response: new AuthCheckResponseModel(false, ERRORS.UNAUTHORIZED.message),
                 };
             }
-            if (admin.role !== ROLE.ADMIN) {}
+            if (admin.role !== ROLE.ADMIN) {
+                return {
+                    success: false,
+                    code: ERRORS.FORBIDDEN_ERROR.code,
+                    response: new AuthCheckResponseModel(false, ERRORS.FORBIDDEN_ERROR.message),
+                };
+            }
             return {
                 success: true,
                 response: new AuthCheckResponseModel(
