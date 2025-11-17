@@ -6,8 +6,8 @@ import { NodeApiService } from '@/common/node-api/node-api.service';
 import { NodeEntity } from '@/modules/nodes/entities/node.entity';
 
 @Injectable()
-export class NodesSharedService {
-    private readonly logger = new Logger(NodesSharedService.name);
+export class NodesSetupService {
+    private readonly logger = new Logger(NodesSetupService.name);
     
     constructor(
         private readonly configsRepository: ConfigsRepository,

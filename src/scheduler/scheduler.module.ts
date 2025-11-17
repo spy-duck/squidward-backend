@@ -2,11 +2,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { Module } from '@nestjs/common';
 
+import { DatabaseModule } from '@/database/definition/database.module';
 import { DatabaseOptions } from '@/database/definition/database.module-definition';
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
-import { NodeHealthCheckTask } from '@/scheduler/tasks/node-health-check.task';
-import { DatabaseModule } from '@/database/definition/database.module';
+import { UsersRepository } from '@/modules/users/repositories/users.repository';
 import { QueuesModule } from '@/queues/queues.module';
+import * as tasks from '@/scheduler/tasks';
 
 @Module({
     imports: [
@@ -30,7 +31,8 @@ import { QueuesModule } from '@/queues/queues.module';
     ],
     providers: [
         NodesRepository,
-        NodeHealthCheckTask,
+        UsersRepository,
+        tasks.NodeHealthCheckTask,
     ],
 })
 export class SchedulerModule {}

@@ -5,7 +5,7 @@ import { ConfigsRepository } from '@/modules/configs/repositories/configs.reposi
 import { UsersRepository } from '@/modules/users/repositories/users.repository';
 import { NodeApiModule } from '@/common/node-api/node-api.module';
 
-import { NodesSharedService } from './nodes-shared.service';
+import { NodesSetupService } from './nodes-setup.service';
 
 @Module({
     imports: [
@@ -14,12 +14,12 @@ import { NodesSharedService } from './nodes-shared.service';
     providers: [
         UsersRepository,
         ConfigsRepository,
-        NodesSharedService,
+        NodesSetupService,
     ],
     exports: [
         UsersRepository,
         ConfigsRepository,
-        NodesSharedService,
+        NodesSetupService,
     ],
 })
-export class NodesSharedModule {}
+export class NodesSetupModule {}

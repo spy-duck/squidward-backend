@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { BullBoardModule } from '@bull-board/nestjs';
 
-import { NodesSharedService } from '@/queues/nodes/nodes-shared/nodes-shared.service';
+import { NodesSetupService } from '@/queues/nodes/nodes-setup/nodes-setup.service';
 import { ConfigsRepository } from '@/modules/configs/repositories/configs.repository';
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { UsersRepository } from '@/modules/users/repositories/users.repository';
@@ -21,7 +21,7 @@ const providers = isProcessorsInstance()
         NodesRepository,
         ConfigsRepository,
         UsersRepository,
-        NodesSharedService,
+        NodesSetupService,
         NodeStartQueueProcessor,
     ]
     : []

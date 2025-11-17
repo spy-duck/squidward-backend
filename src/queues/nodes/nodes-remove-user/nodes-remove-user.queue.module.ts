@@ -18,6 +18,7 @@ const providers = isProcessorsInstance()
         NodesRemoveUserQueueProcessor,
     ]
     : [];
+
 const imports = isProcessorsInstance() ? [ NodeApiModule ] : [];
 
 @Module({
