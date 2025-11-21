@@ -91,4 +91,14 @@ export class UsersRepository {
             .executeTakeFirst();
         return user ? UsersMapper.toEntity(user) : null;
     }
+    
+    async getAllExpired(): Promise<UserEntity[]> {
+        const users = await this.db
+            .selectFrom('users')
+            .selectAll()
+            .where('status', '=', USER_STATUS.ACTIVE)
+            .where('expireAt', '<=', new Date())
+            .execute();
+        return users.map(UsersMapper.toEntity);
+    }
 }
