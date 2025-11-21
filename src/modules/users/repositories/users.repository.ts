@@ -25,6 +25,7 @@ export class UsersRepository {
         const users = await this.db
             .selectFrom('users')
             .selectAll()
+            .orderBy('expireAt', 'asc')
             .execute();
         return users.map(UsersMapper.toEntity);
     }

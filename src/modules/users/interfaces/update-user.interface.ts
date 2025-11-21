@@ -8,5 +8,5 @@ export type UpdateUserInterface = {
     status: TUserStatus
     email: string | null;
     telegramId: number | null;
-    expireAt: Date;
+    expireAt?: Date;
 }
