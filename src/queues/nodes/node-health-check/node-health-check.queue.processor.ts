@@ -30,7 +30,6 @@ export class NodeHealthCheckQueueProcessor extends WorkerHost {
             return;
         }
         
-        
         try {
             const result = await this.nodeApiService.healthCheck(node.host, node.port);
             
@@ -38,13 +37,17 @@ export class NodeHealthCheckQueueProcessor extends WorkerHost {
                 ...node,
                 isConnected: true,
                 state: result.response.state as TNodeState,
+                lastOnlineAt: new Date(),
+                ...node.state !== NODE_STATE.RUNNING && result.response.state === NODE_STATE.RUNNING && {
+                    lastConnectedAt: new Date(),
+                },
             });
         } catch (error) {
             this.logger.error(error);
             await this.nodesRepository.update({
                 ...node,
                 isConnected: false,
-                state: NODE_STATE.OFFLINE,
+                state: NODE_STATE.FATAL,
             });
         }
     }
