@@ -41,6 +41,10 @@ export class NodeStartQueueProcessor extends WorkerHost {
         
         const { response } = await this.nodeApiService.squidStart(node.host, node.port);
         if (response.success) {
+            await this.nodesRepository.update({
+                ...node,
+                isStarted: true,
+            });
             await this.nodeHealthCheckQueueService.healthCheckNode({ nodeUuid: node.uuid });
             this.logger.log(`Node ${ node.name } [${ node.uuid }] started successfully`);
         } else {

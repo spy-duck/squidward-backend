@@ -9,10 +9,12 @@ export class NodeEntity {
     readonly configId: string;
     readonly description: string | null;
     readonly isConnected: boolean;
+    readonly isStarted: boolean;
     readonly createdAt: Date;
     readonly updatedAt: Date;
     readonly lastConnectedAt: Date;
     readonly lastOnlineAt: Date;
+    readonly lastCheckHealth: Date;
     readonly state: TNodeState;
     readonly config: Pick<ConfigEntity, 'name'> | null;
     

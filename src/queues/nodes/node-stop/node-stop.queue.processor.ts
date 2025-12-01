@@ -34,6 +34,10 @@ export class NodeStopQueueProcessor extends WorkerHost {
         const { response } = await this.nodeApiService.squidStop(node.host, node.port);
         
         if (response.success) {
+            await this.nodesRepository.update({
+                ...node,
+                isStarted: false,
+            });
             await this.nodeHealthCheckQueueService.healthCheckNode({ nodeUuid: node.uuid });
             this.logger.log(`Node ${ node.name } [${ node.uuid }] stopped successfully`);
         } else {

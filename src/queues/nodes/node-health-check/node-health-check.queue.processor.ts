@@ -7,6 +7,7 @@ import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { NodeApiService } from '@/common/node-api/node-api.service';
 import { NODE_STATE, TNodeState } from '@contract/constants';
 import { QUEUES } from '@/queues/queue.enum';
+import dayjs from 'dayjs';
 
 @Processor(QUEUES.NODE_HEALTH_CHECK, {
     concurrency: 40,
@@ -38,16 +39,33 @@ export class NodeHealthCheckQueueProcessor extends WorkerHost {
                 isConnected: true,
                 state: result.response.state as TNodeState,
                 lastOnlineAt: new Date(),
+                lastCheckHealth: new Date(),
                 ...node.state !== NODE_STATE.RUNNING && result.response.state === NODE_STATE.RUNNING && {
                     lastConnectedAt: new Date(),
                 },
             });
+            
+            if (
+                node.isStarted
+                && result.response.state
+                && ![
+                    NODE_STATE.STARTING,
+                    NODE_STATE.RUNNING,
+                    NODE_STATE.SHUTDOWN,
+                    NODE_STATE.RESTARTING,
+                ].includes(result.response.state as any)
+                && dayjs().diff(node.lastCheckHealth, 'minutes') > 1
+            ) {
+                // TODO: start node
+            }
+            
         } catch (error) {
             this.logger.error(error);
             await this.nodesRepository.update({
                 ...node,
                 isConnected: false,
                 state: NODE_STATE.FATAL,
+                lastCheckHealth: new Date(),
             });
         }
     }
