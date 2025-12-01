@@ -63,6 +63,7 @@ export class NodesSetupService {
                 uuid: user.uuid,
                 username: user.username,
                 password: user.password,
+                expireAt: user.expireAt,
             })),
         );
         if (!response.success) {

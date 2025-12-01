@@ -42,6 +42,7 @@ export class NodesAddUserQueueProcessor extends WorkerHost {
                     uuid: user.uuid,
                     username: user.username,
                     password: user.password,
+                    expireAt: user.expireAt,
                 });
                 
                 if (response.success) {
