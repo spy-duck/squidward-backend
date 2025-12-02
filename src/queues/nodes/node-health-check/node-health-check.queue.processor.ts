@@ -75,6 +75,10 @@ export class NodeHealthCheckQueueProcessor extends WorkerHost {
     }
     
     private async handlerNodeConnected(node: NodeEntity) {
+        await this.nodesRepository.update({
+            ...node,
+            state: NODE_STATE.STARTING,
+        });
         await this.nodeStartQueueService.startNode({
             nodeUuid: node.uuid,
         });
