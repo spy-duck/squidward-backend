@@ -23,6 +23,7 @@ export class NodesMapper {
             lastConnectedAt: model.lastConnectedAt,
             lastOnlineAt: model.lastOnlineAt,
             state: model.state,
+            version: model.version,
             ...model.config && {
                 config: ConfigsMapper.toEntity(model.config),
             }
@@ -44,6 +45,7 @@ export class NodesMapper {
             lastConnectedAt: entity.lastConnectedAt,
             lastOnlineAt: entity.lastOnlineAt,
             state: entity.state,
+            version: entity.version,
         }
     }
     
