@@ -14,12 +14,12 @@ export class CheckForExpireSubscriptionTask {
         private readonly nodesRemoveUserQueueService: NodesRemoveUserQueueService,
     ) {}
     
-    @Cron(JOBS_INTERVALS.CHECK_EXPIRED_USERS, {
+    @Cron(JOBS_INTERVALS.CHECK_EXPIRE_SUBSCRIPTIONS, {
         name: CheckForExpireSubscriptionTask.CRON_NAME,
         waitForCompletion: true,
     })
     async handleCron() {
-        const users = await this.usersRepository.getExpiredUsers();
+        const users = await this.usersRepository.getAllExpired();
         for (const user of users) {
             try {
                 await this.nodesRemoveUserQueueService.removeUser({
