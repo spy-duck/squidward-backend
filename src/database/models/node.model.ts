@@ -14,6 +14,7 @@ export interface NodeModel {
     state: TNodeState;
     isStarted: boolean;
     countryCode: string;
+    version: string | null;
     createdAt?: Date;
     updatedAt?: Date;
     lastConnectedAt?: Date;

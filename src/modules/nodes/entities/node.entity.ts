@@ -17,6 +17,7 @@ export class NodeEntity {
     readonly lastOnlineAt: Date;
     readonly lastCheckHealth: Date;
     readonly state: TNodeState;
+    readonly version: string | null;
     readonly config: Pick<ConfigEntity, 'name'> | null;
     
     constructor(node: Partial<NodeEntity>) {

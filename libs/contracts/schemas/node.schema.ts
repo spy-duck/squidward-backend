@@ -28,6 +28,7 @@ export const NodeSchema = z.object({
     state: z.enum(NODE_STATE_VALUES).describe('State of node'),
     lastConnectedAt: z.iso.datetime().nullable().describe('Last connected at'),
     lastOnlineAt: z.iso.datetime().nullable(),
+    version: z.string().nullable(),
 });
 
 export type TNode = z.infer<typeof NodeSchema>;

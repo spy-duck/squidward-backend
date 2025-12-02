@@ -10,7 +10,7 @@ import { NodeEntity } from '@/modules/nodes/entities';
 import { QUEUES } from '@/queues/queue.enum';
 
 import { NodeStartQueueService } from '../node-start/node-start.queue.service';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 
 @Processor(QUEUES.NODE_HEALTH_CHECK, {
     concurrency: 40,
@@ -43,6 +43,7 @@ export class NodeHealthCheckQueueProcessor extends WorkerHost {
                 ...node,
                 isConnected: true,
                 state: result.response.state as TNodeState,
+                version: result.response.version,
                 lastOnlineAt: new Date(),
                 lastCheckHealth: new Date(),
                 ...node.state !== NODE_STATE.RUNNING && result.response.state === NODE_STATE.RUNNING && {
@@ -56,10 +57,9 @@ export class NodeHealthCheckQueueProcessor extends WorkerHost {
                 && ![
                     NODE_STATE.STARTING,
                     NODE_STATE.RUNNING,
-                    NODE_STATE.SHUTDOWN,
                     NODE_STATE.RESTARTING,
                 ].includes(result.response.state as any)
-                && dayjs().diff(node.lastCheckHealth, 'minutes') > 1
+                // && dayjs().diff(node.lastCheckHealth, 'minutes') > 1
             ) {
                 await this.handlerNodeConnected(updatedNode);
             }
@@ -75,10 +75,8 @@ export class NodeHealthCheckQueueProcessor extends WorkerHost {
     }
     
     private async handlerNodeConnected(node: NodeEntity) {
-        if (node.isStarted) {
-            await this.nodeStartQueueService.startNode({
-                nodeUuid: node.uuid,
-            });
-        }
+        await this.nodeStartQueueService.startNode({
+            nodeUuid: node.uuid,
+        });
     }
 }

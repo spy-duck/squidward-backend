@@ -30,6 +30,7 @@ export namespace NodesListContract {
         updatedAt: true,
         isConnected: true,
         state: true,
+        version: true,
     }).safeExtend({
         config: ConfigSchema.pick({
             name: true,
