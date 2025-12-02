@@ -9,8 +9,8 @@
     "build": "nest build",
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch",
-    "start:scheduler:dev": "NODE_ENV=development INSTANCE=scheduler nest start scheduler --watch",
-    "start:processors:dev": "NODE_ENV=development INSTANCE=processors nest start processors --watch",
+    "start:scheduler:dev": "NODE_ENV=development INSTANCE_TYPE=scheduler nest start scheduler --watch",
+    "start:processors:dev": "NODE_ENV=development INSTANCE_TYPE=processors nest start processors --watch",
     "start:debug": "NODE_ENV=development nest start --debug --watch",
     "start:prod": "NODE_ENV=development node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -22,7 +22,8 @@
     "migrations:create": "tsx ./src/database/migrations-create",
     "migrations:up": "tsx ./src/database/migrations --up",
     "migrations:down": "tsx ./src/database/migrations --down",
-    "migrations:up:prod": "node ./dist/src/database/migrations.js --up"
+    "migrations:up:prod": "node ./dist/src/database/migrations.js --up",
+    "postinstall": "node shell/postinstall.js"
   },
   "dependencies": {
     "@bull-board/api": "^6.13.0",
@@ -45,7 +46,6 @@
     "@peculiar/webcrypto": "^1.5.0",
     "@peculiar/x509": "^1.14.0",
     "@scalar/nestjs-api-reference": "^1.0.2",
-    "@squidward-node/contracts": "file:../squidward-node/libs/contracts",
     "axios": "^1.12.1",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.58.5",
@@ -69,6 +69,7 @@
     "pg": "^8.16.3",
     "pkg-types": "^2.3.0",
     "reflect-metadata": "^0.2.2",
+    "request-ip": "^3.3.0",
     "rxjs": "^7.8.1",
     "winston": "^3.17.0",
     "zod": "^4.1.11"
@@ -91,6 +92,7 @@
     "@types/passport": "^0",
     "@types/passport-jwt": "^4",
     "@types/pg": "^8",
+    "@types/request-ip": "^0.0.41",
     "@types/supertest": "^6.0.2",
     "eslint": "^9.18.0",
     "eslint-plugin-paths": "^1.1.0",

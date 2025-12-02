@@ -10,10 +10,10 @@ deploy:
 	tsx ./shell/deploy.js
 
 migration_create:
-	@yarn run migrations:create
+	@npm run migrations:create
 
 migration_up:
-	@yarn run migrations:up
+	@npm run migrations:up
 
 migration_down:
-	@yarn run migrations:down
+	@npm run migrations:down

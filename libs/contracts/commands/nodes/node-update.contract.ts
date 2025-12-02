@@ -21,6 +21,7 @@ export namespace NodeUpdateContract {
             port: true,
             configId: true,
             description: true,
+            countryCode: true,
         });
     
     export type Request = z.infer<typeof RequestSchema>;

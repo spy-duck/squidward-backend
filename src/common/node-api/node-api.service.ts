@@ -1,5 +1,12 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 
+import axios, { AxiosInstance } from 'axios';
+import { readPackageJSON } from 'pkg-types';
+import * as jwt from 'jsonwebtoken';
+import * as https from 'node:https';
+
+import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
+
 import {
     NodeHealthContract,
     SquidStartContract,
@@ -9,11 +16,6 @@ import {
     PostUsersContract,
     AddUserContract, RemoveUserContract, UpdateUserContract,
 } from '@squidward-node/contracts';
-import axios, { AxiosInstance } from 'axios';
-import * as jwt from 'jsonwebtoken';
-import * as https from 'node:https';
-
-import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
 
 @Injectable()
 export class NodeApiService implements OnModuleInit {
@@ -27,8 +29,13 @@ export class NodeApiService implements OnModuleInit {
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
+                'User-Agent': `squidward-backend/`,
             },
         });
+        readPackageJSON()
+            .then((pkg) => {
+                this.nodeAxios.defaults.headers['User-Agent'] = `squidward-backend/${ pkg.version }`;
+            });
     }
     
     async onModuleInit(): Promise<void> {
@@ -56,14 +63,14 @@ export class NodeApiService implements OnModuleInit {
             algorithm: 'RS256',
             expiresIn: '9999d',
         });
-
-        this.nodeAxios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
+        this.nodeAxios.defaults.headers.common['Authorization'] = `Bearer ${ token }`;
     }
     
     private getNodeUrl(host: string, path: string, port: null | number): string {
         const protocol = 'https';
-        const portSuffix = port ? `:${port}` : '';
-        return `${protocol}://${host}${portSuffix}${path}`;
+        const portSuffix = port ? `:${ port }` : '';
+        return `${ protocol }://${ host }${ portSuffix }${ path }`;
     }
     
     async healthCheck(host: string, port: null | number): Promise<NodeHealthContract.Response> {
@@ -72,7 +79,7 @@ export class NodeApiService implements OnModuleInit {
             url: this.getNodeUrl(host, NodeHealthContract.url, port),
             timeout: 5000,
         });
-        return NodeHealthContract.ResponseSchema.parse(response.data);
+        return NodeHealthContract.ResponseSchema.parseAsync(response.data);
     }
     
     
@@ -82,7 +89,7 @@ export class NodeApiService implements OnModuleInit {
             url: this.getNodeUrl(host, SquidStartContract.url, port),
             timeout: 20000,
         });
-        return NodeHealthContract.ResponseSchema.parse(response.data);
+        return SquidStartContract.ResponseSchema.parseAsync(response.data);
     }
     
     async squidStop(host: string, port: null | number): Promise<SquidStopContract.Response> {
@@ -91,7 +98,7 @@ export class NodeApiService implements OnModuleInit {
             url: this.getNodeUrl(host, SquidStopContract.url, port),
             timeout: 20000,
         });
-        return SquidStopContract.ResponseSchema.parse(response.data);
+        return SquidStopContract.ResponseSchema.parseAsync(response.data);
     }
     
     async squidRestart(host: string, port: null | number): Promise<SquidRestartContract.Response> {
@@ -100,7 +107,7 @@ export class NodeApiService implements OnModuleInit {
             url: this.getNodeUrl(host, SquidRestartContract.url, port),
             timeout: 20000,
         });
-        return SquidRestartContract.ResponseSchema.parse(response.data);
+        return SquidRestartContract.ResponseSchema.parseAsync(response.data);
     }
     
     async setSquidConfig(host: string, port: null | number, config: string): Promise<SquidConfigContract.Response> {
@@ -113,7 +120,7 @@ export class NodeApiService implements OnModuleInit {
             data: requestData,
             timeout: 20000,
         });
-        return SquidConfigContract.ResponseSchema.parse(response.data);
+        return SquidConfigContract.ResponseSchema.parseAsync(response.data);
     }
     
     async postUsers(host: string, port: null | number, users: PostUsersContract.Request['data']): Promise<PostUsersContract.Response> {
@@ -126,7 +133,7 @@ export class NodeApiService implements OnModuleInit {
             data: requestData,
             timeout: 20000,
         });
-        return PostUsersContract.ResponseSchema.parse(response.data);
+        return PostUsersContract.ResponseSchema.parseAsync(response.data);
     }
     
     async addUser(host: string, port: null | number, user: AddUserContract.Request): Promise<AddUserContract.Response> {
@@ -136,7 +143,7 @@ export class NodeApiService implements OnModuleInit {
             data: user,
             timeout: 20000,
         });
-        return AddUserContract.ResponseSchema.parse(response.data);
+        return AddUserContract.ResponseSchema.parseAsync(response.data);
     }
     
     async removeUser(host: string, port: null | number, user: RemoveUserContract.Request): Promise<RemoveUserContract.Response> {
@@ -146,7 +153,7 @@ export class NodeApiService implements OnModuleInit {
             data: user,
             timeout: 20000,
         });
-        return RemoveUserContract.ResponseSchema.parse(response.data);
+        return RemoveUserContract.ResponseSchema.parseAsync(response.data);
     }
     
     async updateUser(host: string, port: null | number, user: UpdateUserContract.Request): Promise<UpdateUserContract.Response> {
@@ -156,6 +163,6 @@ export class NodeApiService implements OnModuleInit {
             data: user,
             timeout: 20000,
         });
-        return UpdateUserContract.ResponseSchema.parse(response.data);
+        return UpdateUserContract.ResponseSchema.parseAsync(response.data);
     }
 }

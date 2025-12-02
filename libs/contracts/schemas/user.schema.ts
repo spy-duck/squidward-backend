@@ -13,7 +13,6 @@ export const UserSchema = z.object({
     status: z.enum(USER_STATUS_VALUES)
         .describe('User status'),
     email: z.email()
-        .trim()
         .nullable()
         .meta({
             title: "Email address",

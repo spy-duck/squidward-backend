@@ -4,28 +4,26 @@ import { Module } from '@nestjs/common';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { BullBoardModule } from '@bull-board/nestjs';
 
-import { NodesSetupService } from '@/queues/nodes/nodes-setup/nodes-setup.service';
-import { NodesSetupModule } from '@/queues/nodes/nodes-setup/nodes-setup.module';
+import { NodesSharedService } from '@/queues/nodes/nodes-shared/nodes-shared.service';
+import { NodesSharedModule } from '@/queues/nodes/nodes-shared/nodes-shared.module';
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { isProcessorsInstance } from '@/common/utils/environment';
 import { NodeApiModule } from '@/common/node-api/node-api.module';
 import { QUEUES } from '@/queues/queue.enum';
 
-import { NodeHealthCheckQueueModule } from '../node-health-check/node-health-check.queue.module';
 import { NodeRestartQueueProcessor } from './node-restart.queue.processor';
 import { NodeRestartQueueService } from './node-restart.queue.service';
 
 const providers = isProcessorsInstance()
     ? [
         NodesRepository,
-        NodesSetupService,
+        NodesSharedService,
         NodeRestartQueueProcessor,
     ]
     : [];
 
 const imports = isProcessorsInstance() ? [
-    NodeHealthCheckQueueModule,
-    NodesSetupModule,
+    NodesSharedModule,
     NodeApiModule,
 ] : [];
 

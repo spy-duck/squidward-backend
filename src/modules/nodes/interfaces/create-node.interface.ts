@@ -3,5 +3,6 @@ export type CreateNodeInterface = {
     host: string;
     port: number;
     configId: string;
+    countryCode: string;
     description?: string | null;
 }

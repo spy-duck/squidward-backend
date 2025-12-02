@@ -1,10 +1,10 @@
-import { spawnSync, execSync } from 'node:child_process';
-import { consola } from 'consola';
-import { colorize } from 'consola/utils';
-import { readPackageJSON } from 'pkg-types';
 import commandLineArgs from 'command-line-args';
+import { spawnSync } from 'node:child_process';
+import { readPackageJSON } from 'pkg-types';
+import { colorize } from 'consola/utils';
+import { consola } from 'consola';
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
 const options = commandLineArgs([
     { name: 'yes', alias: 'y', type: Boolean },
     { name: 'no-push', alias: 'n', type: Boolean },
@@ -28,7 +28,7 @@ void (async () => {
         }
     });
     
-    const loader = createLoader();
+    // const loader = createLoader();
     
     if (!options.yes && !await consola.prompt('Confirm deploy', { type: 'confirm' })) {
         consola.log('Exit...');
@@ -37,21 +37,16 @@ void (async () => {
     
     consola.start(`Starting deploy v${ pkg.version }...`);
     
-    consola.start(`Starting building node contracts`);
-    execSync('rm -rf node_contracts');
-    execSync('mkdir -p node_contracts');
-    execSync('cp -r ../squidward-node/libs/contracts/* node_contracts');
-    execSync('cd node_contracts && npm pack');
-    consola.success('Node contracts build finished');
-    
-    
     consola.start(`Starting building docker image`);
     spawnSync('docker', [
         'build',
         '--progress=plain',
-        ...(options['no-cache'] ? ['--no-cache'] : []),
+        '--build-arg CI=true',
+        ...(options['no-cache'] ? [ '--no-cache' ] : []),
         '-t',
-        `${imageName}:${ pkg.version }`,
+        `${ imageName }:${ pkg.version }`,
+        ' -t',
+        `${ imageName }:latest`,
         '.',
     ], { stdio: 'inherit', shell: true });
     consola.success('Docker image build finished');
@@ -59,7 +54,8 @@ void (async () => {
     if (!options['no-push'] && await consola.prompt('Push docker image to Docker Hub', { type: 'confirm' })) {
         spawnSync('docker', [
             'push',
-            `${imageName}:${ pkg.version }`,
+            '--all-tags',
+            imageName,
         ], { stdio: 'inherit', shell: true });
     }
     

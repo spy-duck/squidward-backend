@@ -1,36 +1,20 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
-import { utilities as winstonModuleUtilities, WinstonModule } from 'nest-winston';
-import { json, NextFunction, Request, Response } from 'express';
-import winston, { createLogger } from 'winston';
 import { ZodValidationPipe } from 'nestjs-zod';
+import { WinstonModule } from 'nest-winston';
 import compression from 'compression';
+import { json } from 'express';
 // import helmet from 'helmet';
 import morgan from 'morgan';
 
-import { isDevelopment } from '@/common/utils/is-development';
-import { getDocs } from '@/common/utils/startup-app/get-docs';
+import { getRealIpMiddleware, noRabotsMiddleware, proxyCheckMiddleware } from '@/common/middlewares';
+import { getLogger, initDocs, isDevelopment } from '@/common/setup-app';
 
 import { AppModule } from './app.module';
 
 
-const logger = createLogger({
-    transports: [ new winston.transports.Console() ],
-    format: winston.format.combine(
-        winston.format.timestamp({
-            format: 'YYYY-MM-DD HH:mm:ss.SSS',
-        }),
-        winston.format.align(),
-        winstonModuleUtilities.format.nestLike('', {
-            colors: true,
-            prettyPrint: true,
-            processId: false,
-            appName: false,
-        }),
-    ),
-    level: isDevelopment() ? 'debug' : 'info',
-});
+const logger = getLogger('Backend');
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
@@ -43,23 +27,20 @@ async function bootstrap() {
     
     app.use(compression());
     
-    // app.setGlobalPrefix(ROOT);
+    app.use(getRealIpMiddleware(), noRabotsMiddleware, proxyCheckMiddleware);
     
     const config = app.get(ConfigService);
     
     // app.use(helmet());
     
     if (isDevelopment()) {
-        app.use(morgan('short'));
+        app.use(morgan(
+            ':remote-addr - ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"',
+        ));
     }
     
-    app.use(function noRobotsMiddleware(req: Request, res: Response, next: NextFunction) {
-        res.setHeader('x-robots-tag', 'noindex, nofollow, noarchive, nosnippet, noimageindex');
-        
-        return next();
-    });
     
-    await getDocs(app, config);
+    await initDocs(app, config);
     
     app.enableCors({
         origin: isDevelopment() ? '*' : config.getOrThrow<string>('FRONT_END_DOMAIN'),
@@ -69,14 +50,14 @@ async function bootstrap() {
     
     app.useGlobalPipes(new ZodValidationPipe());
     
+    app.enableShutdownHooks();
+    
     await app.listen(+config.getOrThrow<string>('APP_PORT'))
         .then(() => {
             logger.info(
                 `Server is running on http://localhost:${ config.getOrThrow<string>('APP_PORT') }`,
             );
         });
-    
-    app.enableShutdownHooks();
 }
 
 bootstrap();

@@ -10,6 +10,7 @@ export class NodeEntity {
     readonly description: string | null;
     readonly isConnected: boolean;
     readonly isStarted: boolean;
+    readonly countryCode: string;
     readonly createdAt: Date;
     readonly updatedAt: Date;
     readonly lastConnectedAt: Date;

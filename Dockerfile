@@ -11,13 +11,15 @@ RUN rm frontend.zip
 
 
 FROM node:22.19.0-alpine AS backend-build
+
 WORKDIR /opt/app
+
+ARG CI
 
 RUN npm install -g typescript
 
+COPY shell/postinstall.js ./shell/postinstall.js
 COPY package*.json ./
-
-COPY node_contracts /opt/squidward-node/libs/contracts
 
 RUN npm ci
 
@@ -29,21 +31,23 @@ RUN npm cache clean --force
 #RUN npm prune --omit=dev
 
 FROM node:22.19.0-alpine
+
 WORKDIR /opt/app
 
+ARG CI
+ARG CI_POSTINSTALL_DISABLED=true
 
 RUN apk add --no-cache mimalloc curl
-ENV LD_PRELOAD=/usr/lib/libmimalloc.so
 
+ENV LD_PRELOAD=/usr/lib/libmimalloc.so
 ENV PM2_DISABLE_VERSION_CHECK=true
 
-
 COPY --from=backend-build /opt/app/dist ./dist
-COPY --from=backend-build /opt/squidward-node /opt/squidward-node
 COPY --from=frontend /opt/frontend/dist ./frontend
 COPY --from=backend-build /opt/app/node_modules ./node_modules
-COPY package*.json ./
+COPY --from=backend-build /opt/app/shell/postinstall.js ./shell/postinstall.js
 
+COPY package*.json ./
 COPY ecosystem.config.js ./
 
 RUN npm install pm2 -g \

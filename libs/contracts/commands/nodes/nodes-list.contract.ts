@@ -24,6 +24,7 @@ export namespace NodesListContract {
         port: true,
         configId: true,
         config: true,
+        countryCode: true,
         description: true,
         createdAt: true,
         updatedAt: true,

@@ -11,6 +11,7 @@ import { QUEUES } from '@/queues/queue.enum';
 
 import { NodeHealthCheckQueueProcessor } from './node-health-check.queue.processor';
 import { NodeHealthCheckQueueService } from './node-health-check.queue.service';
+import { NodeStartQueueModule } from '../node-start';
 
 const providers = isProcessorsInstance()
     ? [
@@ -19,7 +20,10 @@ const providers = isProcessorsInstance()
     ]
     : [];
 
-const imports = isProcessorsInstance() ? [ NodeApiModule ] : [];
+const imports = isProcessorsInstance() ? [
+    NodeStartQueueModule,
+    NodeApiModule,
+] : [];
 
 @Module({
     imports: [

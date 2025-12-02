@@ -25,6 +25,7 @@ export class UsersRepository {
         const users = await this.db
             .selectFrom('users')
             .selectAll()
+            .orderBy('expireAt', 'asc')
             .execute();
         return users.map(UsersMapper.toEntity);
     }
@@ -92,11 +93,12 @@ export class UsersRepository {
         return user ? UsersMapper.toEntity(user) : null;
     }
     
-    async getExpiredUsers(): Promise<UserEntity[]> {
+    async getAllExpired(): Promise<UserEntity[]> {
         const users = await this.db
             .selectFrom('users')
             .selectAll()
-            .where('expireAt', '<', new Date())
+            .where('status', '=', USER_STATUS.ACTIVE)
+            .where('expireAt', '<=', new Date())
             .execute();
         return users.map(UsersMapper.toEntity);
     }

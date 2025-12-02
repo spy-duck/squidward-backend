@@ -152,34 +152,46 @@ export class UsersService {
                     response: new UpdateUserResponseModel(false, 'User not found'),
                 };
             }
+
+            const status = (() => {
+                switch (true) {
+                    case request.expireAt && user.status === USER_STATUS.EXPIRED && request.status === USER_STATUS.EXPIRED:
+                        return USER_STATUS.ACTIVE;
+                    default:
+                        return request.status;
+                }
+            })();
             
             await this.usersRepository.update(
                 new UserEntity({
                     uuid: request.uuid,
                     name: request.name,
                     username: request.username,
+                    status,
+                    email: request.email,
+                    telegramId: request.telegramId,
+                    updatedAt: new Date(),
                     ...request.password && {
                         password: await encryptPassword(request.password),
                     },
-                    status: request.status,
-                    email: request.email,
-                    telegramId: request.telegramId,
-                    expireAt: request.expireAt,
-                    updatedAt: new Date(),
+                    ...request.expireAt && {
+                        expireAt: request.expireAt,
+                    },
                 }),
             );
             
-            if (user.status === USER_STATUS.ACTIVE && request.status !== USER_STATUS.ACTIVE) {
+            if (user.status === USER_STATUS.ACTIVE && status !== USER_STATUS.ACTIVE) {
                 await this.nodesRemoveUserQueueService.removeUser({
                     userUuid: request.uuid,
                 });
             }
             
-            if (user.status !== USER_STATUS.ACTIVE && request.status === USER_STATUS.ACTIVE) {
+            if (user.status !== USER_STATUS.ACTIVE && status === USER_STATUS.ACTIVE) {
                 await this.nodesAddUserQueueService.addUser({
                     userUuid: user.uuid,
                 });
             }
+            
             
             if (some([
                 user.username !== request.username,

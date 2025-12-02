@@ -24,7 +24,7 @@ export namespace UserUpdateContract {
             telegramId: true,
             expireAt: true,
         })
-        .safeExtend({
+        .extend({
             password: z
                 .string()
                 .min(8, 'Min. 8 characters')
@@ -33,9 +33,10 @@ export namespace UserUpdateContract {
             expireAt: z
                 .iso
                 .datetime()
-                .transform((v) => new Date(v))
-                .pipe(z.date().min(dayjs().toDate()))
-                .describe('User expiration date.'),
+                .optional()
+                .transform((v) => v ? new Date(v) : undefined)
+                .pipe(z.date().min(dayjs().toDate()).optional())
+                .describe('User subscription expiration date.'),
         });
     
     export type Request = z.infer<typeof RequestSchema>;
