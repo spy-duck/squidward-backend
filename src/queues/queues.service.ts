@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 
+import { camelCase, upperFirst } from 'lodash-es';
 import { Queue } from 'bullmq';
 
 export abstract class QueuesService {
@@ -9,14 +10,15 @@ export abstract class QueuesService {
     
     protected async checkConnection(): Promise<void> {
         const client = await this.queue.client;
+        const queueName = upperFirst(camelCase(this.queue.name));
         
         if (client.status !== 'ready') {
-            const errorMessage = `Queue "${this.queue.name}" is not connected. Current status: [${client.status.toUpperCase()}]`;
+            const errorMessage = `Queue "${queueName}" is not connected. Current status: [${client.status.toUpperCase()}]`;
             this.logger.error(errorMessage);
             throw new Error(errorMessage);
         }
         
-        this.logger.log(`Queue "${this.queue.name}" is connected.`);
+        this.logger.log(`Queue "${queueName}" is connected.`);
     }
     
     protected async drain(delayed?: boolean): Promise<void> {

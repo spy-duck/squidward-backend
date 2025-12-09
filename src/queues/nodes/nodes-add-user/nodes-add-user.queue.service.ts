@@ -12,7 +12,7 @@ import { NodeAddUserJobNames } from './enums';
 
 @Injectable()
 export class NodesAddUserQueueService extends QueuesService implements OnApplicationBootstrap {
-    protected readonly logger: Logger = new Logger(upperFirst(camelCase(QUEUES.NODES_ADD_USER)));
+    protected readonly logger: Logger = new Logger(upperFirst(camelCase(String(QUEUES.NODES_ADD_USER))));
 
     constructor(
         @InjectQueue(QUEUES.NODES_ADD_USER) protected readonly queue: Queue,

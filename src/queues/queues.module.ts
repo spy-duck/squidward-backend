@@ -12,6 +12,7 @@ import {
     NodeRestartQueueModule,
     NodesUpdateUserQueueModule,
     NodesRemoveUserQueueModule,
+    NodesAddUserQueueModule,
 } from './nodes';
 
 const queueModules = [
@@ -21,6 +22,7 @@ const queueModules = [
     NodeRestartQueueModule,
     NodesUpdateUserQueueModule,
     NodesRemoveUserQueueModule,
+    NodesAddUserQueueModule,
 ];
 
 @Module({
