@@ -1,6 +1,6 @@
 services:
   squidward:
-    image: squidwardproxy/squidward
+    image: squidwardproxy/squidward:latest
     container_name: 'squidward'
     hostname: remnawave
     restart: unless-stopped
