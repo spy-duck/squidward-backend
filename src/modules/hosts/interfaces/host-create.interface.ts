@@ -4,4 +4,6 @@ export type HostCreateInterface = {
     countryCode: string;
     nodeId: string;
     enabled: boolean;
+    priority: number;
+    isNew: boolean;
 }

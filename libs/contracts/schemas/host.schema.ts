@@ -48,6 +48,10 @@ export const HostSchema = z.object({
         .pipe(z.date())
         .optional()
         .describe('Token last update date'),
+    
+    priority: z.number().nonnegative().describe('Host priority for sorting'),
+    
+    isNew: z.boolean().describe('Is host new'),
 })
     .describe('Base host');
 

@@ -23,13 +23,17 @@ export class HostsRepository {
     
     async findExist(
         hostName: string,
+        priority: number,
         excludeUuid?: string,
     ): Promise<HostEntity | null> {
         const host = await this.db
             .selectFrom('hosts')
             .selectAll()
             .$if(!!excludeUuid, (wb) => wb.where('uuid', '!=', excludeUuid!))
-            .where('name', '=', hostName)
+            .where(wb => wb.or([
+                wb('name', '=', hostName),
+                wb('priority', '=', priority),
+            ]))
             .executeTakeFirst();
         return host ? HostsMapper.toEntity(host) : null;
     }
@@ -57,6 +61,7 @@ export class HostsRepository {
         const hosts = await this.db
             .selectFrom('hosts')
             .selectAll()
+            .orderBy('priority', 'desc')
             .execute();
         return hosts.map(HostsMapper.toEntity);
     }

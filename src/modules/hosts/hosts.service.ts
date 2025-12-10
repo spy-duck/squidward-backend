@@ -27,6 +27,7 @@ export class HostsService {
     ): Promise<ICommandResponse<T> | null> {
         const exists = await this.hostsRepository.findExist(
             request.name,
+            request.priority,
             excludeUuid,
         );
         
@@ -38,8 +39,10 @@ export class HostsService {
             switch (true) {
                 case exists.name === request.name:
                     return 'Host with same name already exists';
+                case exists.priority === request.priority:
+                    return 'Host with same priority already exists';
                 default:
-                    return 'Host token already exists';
+                    return 'Host already exists';
             }
         })();
         
@@ -69,6 +72,8 @@ export class HostsService {
                     countryCode: request.countryCode,
                     nodeId: request.nodeId,
                     enabled: request.enabled,
+                    priority: request.priority,
+                    isNew: request.isNew,
                 }),
             );
             
@@ -119,6 +124,8 @@ export class HostsService {
                     countryCode: request.countryCode,
                     nodeId: request.nodeId,
                     enabled: request.enabled,
+                    priority: request.priority,
+                    isNew: request.isNew,
                 }),
             );
             

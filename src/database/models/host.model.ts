@@ -11,6 +11,8 @@ export interface HostModel {
     enabled: boolean;
     createdAt: Date;
     updatedAt: Date;
+    priority: number;
+    isNew: boolean;
 }
 
 export type HostModelInsertable = Insertable<HostModel>;

@@ -20,6 +20,8 @@ export namespace HostCreateContract {
             countryCode: true,
             nodeId: true,
             enabled: true,
+            priority: true,
+            isNew: true,
         })
         .describe('New API token');
     

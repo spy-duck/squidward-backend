@@ -5,4 +5,6 @@ export type HostUpdateInterface = {
     countryCode: string;
     nodeId: string;
     enabled: boolean;
+    priority: number;
+    isNew: boolean;
 }

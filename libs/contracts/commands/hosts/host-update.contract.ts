@@ -21,6 +21,8 @@ export namespace HostUpdateContract {
             countryCode: true,
             nodeId: true,
             enabled: true,
+            priority: true,
+            isNew: true,
         })
         .describe('Updated host.');
     

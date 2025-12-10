@@ -7,6 +7,8 @@ export class HostEntity {
     public enabled: boolean;
     public createdAt: Date;
     public updatedAt: Date;
+    public priority: number;
+    public isNew: boolean;
     
     constructor(apiToken: Partial<HostEntity>) {
         Object.assign(this, apiToken);
