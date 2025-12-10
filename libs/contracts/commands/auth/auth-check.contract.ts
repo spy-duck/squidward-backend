@@ -17,6 +17,7 @@ export namespace AuthCheckContract {
         isChangePasswordRequired: z.boolean().nullable()
             .describe('If the user is required to change their password'),
         error: z.string().nullable(),
+        version: z.string().optional(),
     });
     
     export type Response = z.infer<typeof ResponseSchema>;

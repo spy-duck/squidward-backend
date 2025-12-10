@@ -112,6 +112,11 @@ export class NodesService implements OnModuleInit {
                     state: NODE_STATE.CREATED,
                     isConnected: false,
                     isStarted: false,
+                    httpPort: request.httpPort,
+                    httpsEnabled: request.httpsEnabled,
+                    httpsPort: request.httpsPort,
+                    speedLimitEnabled: request.speedLimitEnabled,
+                    speedLimit: request.speedLimit,
                 }),
             )
             return {
@@ -184,6 +189,11 @@ export class NodesService implements OnModuleInit {
                     description: request.description,
                     countryCode: request.countryCode,
                     updatedAt: new Date(),
+                    httpPort: request.httpPort,
+                    httpsEnabled: request.httpsEnabled,
+                    httpsPort: request.httpsPort,
+                    speedLimitEnabled: request.speedLimitEnabled,
+                    speedLimit: request.speedLimit,
                 }),
             )
             return {

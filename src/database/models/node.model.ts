@@ -20,6 +20,11 @@ export interface NodeModel {
     lastConnectedAt?: Date;
     lastOnlineAt?: Date;
     config?: ConfigModelSelectable;
+    httpPort: number;
+    httpsEnabled: boolean | null;
+    httpsPort: number | null;
+    speedLimitEnabled: boolean | null;
+    speedLimit: number | null;
 }
 
 export type NodeModelInsertable = Insertable<NodeModel>;

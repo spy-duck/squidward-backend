@@ -6,4 +6,9 @@ export type UpdateNodeInterface = {
     configId: string;
     countryCode: string;
     description?: string | null;
+    httpPort?: number;
+    httpsEnabled?: boolean | null;
+    httpsPort?: number | null;
+    speedLimitEnabled?: boolean | null;
+    speedLimit?: number | null;
 }

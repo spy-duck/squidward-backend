@@ -24,6 +24,13 @@ export class NodesMapper {
             lastOnlineAt: model.lastOnlineAt,
             state: model.state,
             version: model.version,
+            
+            httpPort: model.httpPort,
+            httpsEnabled: model.httpsEnabled,
+            httpsPort: model.httpsPort,
+            speedLimitEnabled: model.speedLimitEnabled,
+            speedLimit: model.speedLimit,
+            
             ...model.config && {
                 config: ConfigsMapper.toEntity(model.config),
             }
@@ -46,6 +53,11 @@ export class NodesMapper {
             lastOnlineAt: entity.lastOnlineAt,
             state: entity.state,
             version: entity.version,
+            httpPort: entity.httpPort,
+            httpsEnabled: entity.httpsEnabled,
+            httpsPort: entity.httpsPort,
+            speedLimitEnabled: entity.speedLimitEnabled,
+            speedLimit: entity.speedLimit,
         }
     }
     

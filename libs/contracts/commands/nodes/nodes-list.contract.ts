@@ -31,6 +31,11 @@ export namespace NodesListContract {
         isConnected: true,
         state: true,
         version: true,
+        httpPort: true,
+        httpsEnabled: true,
+        httpsPort: true,
+        speedLimitEnabled: true,
+        speedLimit: true,
     }).safeExtend({
         config: ConfigSchema.pick({
             name: true,

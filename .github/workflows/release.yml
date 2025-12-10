@@ -37,6 +37,7 @@ jobs:
             squidwardproxy/squidward:${{ github.ref_name }}
           build-args: |
             CI=true
+            TAG=${{ github.ref_name }}
 
   release-backend-contracts:
     runs-on: ubuntu-latest
@@ -58,6 +59,7 @@ jobs:
       - name: Create contracts package
         run: |
           cd libs/contracts/
+          sed -i 's/"version": ".*"/"version": "${{ github.ref_name }}"/' package.json
           npm pack
           mv squidward-contracts-*.tgz  ../../squidward-contracts.tgz
 

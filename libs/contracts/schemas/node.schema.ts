@@ -29,6 +29,11 @@ export const NodeSchema = z.object({
     lastConnectedAt: z.iso.datetime().nullable().describe('Last connected at'),
     lastOnlineAt: z.iso.datetime().nullable(),
     version: z.string().nullable().optional(),
+    httpPort: z.number().nonnegative().max(65535).describe('Proxy HTTP port'),
+    httpsEnabled: z.boolean().nullable().optional().describe('Is enabled HTTPS proxy on node'),
+    httpsPort: z.number().nonnegative().max(65535).nullable().optional().describe('Proxy HTTPS port'),
+    speedLimitEnabled: z.boolean().nullable().optional().describe('Is enabled proxy speed limit per user on node'),
+    speedLimit: z.number().nonnegative().nullable().optional().describe('Speed limit per user'),
 });
 
 export type TNode = z.infer<typeof NodeSchema>;

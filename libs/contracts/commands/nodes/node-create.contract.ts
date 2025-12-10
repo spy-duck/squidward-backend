@@ -21,6 +21,11 @@ export namespace NodeCreateContract {
             configId: true,
             description: true,
             countryCode: true,
+            httpPort: true,
+            httpsEnabled: true,
+            httpsPort: true,
+            speedLimitEnabled: true,
+            speedLimit: true,
         });
     
     export type Request = z.infer<typeof RequestSchema>;

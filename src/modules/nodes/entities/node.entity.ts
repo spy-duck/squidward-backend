@@ -19,6 +19,11 @@ export class NodeEntity {
     readonly state: TNodeState;
     readonly version: string | null;
     readonly config: Pick<ConfigEntity, 'name'> | null;
+    readonly httpPort: number;
+    readonly httpsEnabled: boolean | null;
+    readonly httpsPort: number | null;
+    readonly speedLimitEnabled: boolean | null;
+    readonly speedLimit: number | null;
     
     constructor(node: Partial<NodeEntity>) {
         Object.assign(this, node);
