@@ -42,7 +42,7 @@ RUN apk add --no-cache mimalloc curl
 
 ENV LD_PRELOAD=/usr/lib/libmimalloc.so
 ENV PM2_DISABLE_VERSION_CHECK=true
-ENV PANEL_VERSION=TAG
+ENV PANEL_VERSION=$TAG
 
 COPY --from=backend-build /opt/app/dist ./dist
 COPY --from=frontend /opt/frontend/dist ./frontend
