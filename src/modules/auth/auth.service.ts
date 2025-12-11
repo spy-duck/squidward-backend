@@ -46,7 +46,8 @@ export class AuthService {
                 response: new AuthCheckResponseModel(
                     true,
                     null,
-                    !admin.isInitialPasswordChanged
+                    !admin.isInitialPasswordChanged,
+                    this.configService.get('PANEL_VERSION')
                 ),
             };
         } catch (error) {

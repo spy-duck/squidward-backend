@@ -90,6 +90,7 @@
     "@types/lodash-es": "^4",
     "@types/morgan": "^1",
     "@types/node": "^22.10.7",
+    "@types/nunjucks": "^3.2.6",
     "@types/passport": "^0",
     "@types/passport-jwt": "^4",
     "@types/pg": "^8",

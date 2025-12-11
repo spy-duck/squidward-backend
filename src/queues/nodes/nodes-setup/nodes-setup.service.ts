@@ -4,6 +4,7 @@ import { ConfigsRepository } from '@/modules/configs/repositories/configs.reposi
 import { UsersRepository } from '@/modules/users/repositories/users.repository';
 import { NodeApiService } from '@/common/node-api/node-api.service';
 import { NodeEntity } from '@/modules/nodes/entities/node.entity';
+import { SquidConfigBuilder } from '@/builders';
 
 @Injectable()
 export class NodesSetupService {
@@ -41,10 +42,14 @@ export class NodesSetupService {
             this.logger.error(`Config with uuid ${ node.configId } for node ${ node.uuid } not found`);
             return false;
         }
+        
         const { response } = await this.nodeApiService.setSquidConfig(
             node.host,
             node.port,
-            config.config,
+            SquidConfigBuilder.buildConfig(
+                node,
+                config,
+            ),
         );
         if (!response.success) {
             this.logger.error(

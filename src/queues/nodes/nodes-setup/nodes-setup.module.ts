@@ -1,4 +1,3 @@
-
 import { Module } from '@nestjs/common';
 
 import { ConfigsRepository } from '@/modules/configs/repositories/configs.repository';
