@@ -4,7 +4,7 @@ import { ConfigsRepository } from '@/modules/configs/repositories/configs.reposi
 import { UsersRepository } from '@/modules/users/repositories/users.repository';
 import { NodeApiService } from '@/common/node-api/node-api.service';
 import { NodeEntity } from '@/modules/nodes/entities/node.entity';
-import { SquidConfigBuilder } from '@/builders';
+import { SquidConfigBuilder } from '@/common/builders';
 
 @Injectable()
 export class NodesSetupService {
