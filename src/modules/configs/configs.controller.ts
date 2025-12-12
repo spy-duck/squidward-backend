@@ -45,7 +45,7 @@ export class ConfigsController {
         httpCode: HttpStatus.OK,
     })
     async configsList(): Promise<ConfigsListResponseDto> {
-        const response = await this.configsService.certsList();
+        const response = await this.configsService.configsList();
         return { response: errorHandler(response) };
     }
     
@@ -55,7 +55,7 @@ export class ConfigsController {
         apiBody: ConfigUpdateRequestDto,
     })
     async updateConfig(@Body() body: ConfigUpdateRequestDto): Promise<ConfigUpdateResponseDto> {
-        const response = await this.configsService.updateCert(body);
+        const response = await this.configsService.updateConfig(body);
         return { response: errorHandler(response) };
     }
     

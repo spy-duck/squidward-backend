@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import dayjs from 'dayjs';
 
+import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
+import { NodeRestartQueueService } from '@/queues';
 import { ICommandResponse } from '@/common/types';
 import { ERRORS } from '@contract/constants';
 
@@ -26,6 +28,8 @@ export class ConfigsService {
     
     constructor(
         private readonly configsRepository: ConfigsRepository,
+        private readonly nodesRepository: NodesRepository,
+        private readonly nodeRestartQueueService: NodeRestartQueueService,
     ) {}
     
     async createConfig(request: ConfigCreateInterface): Promise<ICommandResponse<ConfigCreateResponseModel>> {
@@ -55,7 +59,7 @@ export class ConfigsService {
         }
     }
     
-    async certsList(): Promise<ICommandResponse<ConfigsListResponseModel>> {
+    async configsList(): Promise<ICommandResponse<ConfigsListResponseModel>> {
         try {
             return {
                 success: true,
@@ -79,7 +83,7 @@ export class ConfigsService {
         }
     }
     
-    async updateCert(request: ConfigUpdateInterface): Promise<ICommandResponse<ConfigUpdateResponseModel>> {
+    async updateConfig(request: ConfigUpdateInterface): Promise<ICommandResponse<ConfigUpdateResponseModel>> {
         try {
             await this.configsRepository.update(
                 new ConfigEntity({
@@ -90,6 +94,13 @@ export class ConfigsService {
                     updatedAt: new Date(),
                 })
             )
+            
+            const relatedNodes = await this.nodesRepository.getAllByConfigUuid(request.uuid);
+            
+            for (const node of relatedNodes) {
+                await this.nodeRestartQueueService.restartNode({ nodeUuid: node.uuid });
+            }
+            
             return {
                 success: true,
                 response: new ConfigCreateResponseModel(true),

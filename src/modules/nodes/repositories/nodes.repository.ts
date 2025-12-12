@@ -115,4 +115,13 @@ export class NodesRepository {
             .executeTakeFirst();
         return node ? NodesMapper.toEntity(node) : null;
     }
+    
+    async getAllByConfigUuid(configUuid: string): Promise<NodeEntity[]> {
+        const nodes = await this.db
+            .selectFrom('nodes')
+            .selectAll()
+            .where('configId', '=', configUuid)
+            .execute();
+        return nodes.map(NodesMapper.toEntity);
+    }
 }

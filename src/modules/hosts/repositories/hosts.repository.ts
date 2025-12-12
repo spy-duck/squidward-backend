@@ -72,4 +72,11 @@ export class HostsRepository {
             .where('uuid', '=', hostUuid)
             .execute();
     }
+    
+    async deleteByNodeUuid(nodeUuid: string): Promise<void> {
+        await this.db
+            .deleteFrom('hosts')
+            .where('nodeId', '=', nodeUuid)
+            .execute();
+    }
 }

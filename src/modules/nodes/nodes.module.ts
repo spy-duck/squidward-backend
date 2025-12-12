@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { NodeRestartQueueModule, NodeStartQueueModule, NodeStopQueueModule } from '@/queues';
 import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
+import { HostsRepository } from '@/modules/hosts/repositories/hosts.repository';
 
 import { NodesRepository } from './repositories/nodes.repository';
 import { NodesController } from './nodes.controller';
@@ -13,6 +14,7 @@ import { NodesService } from './nodes.service';
     providers: [
         CertsRepository, 
         NodesRepository, 
+        HostsRepository, 
         NodesService,
     ],
 })

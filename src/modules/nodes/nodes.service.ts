@@ -1,7 +1,10 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
+import { some } from 'lodash-es';
+
 import { NodeRestartQueueService, NodeStartQueueService, NodeStopQueueService } from '@/queues';
 import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
+import { HostsRepository } from '@/modules/hosts/repositories/hosts.repository';
 import { ERRORS, NODE_STATE, TNodeState } from '@contract/constants';
 import { NodeCredentialsEntity } from '@/modules/nodes/entities';
 import { safeExecute } from '@/common/helpers/safe-execute';
@@ -36,6 +39,7 @@ export class NodesService implements OnModuleInit {
     
     constructor(
         private readonly nodesRepository: NodesRepository,
+        private readonly hostsRepository: HostsRepository,
         private readonly certsRepository: CertsRepository,
         private readonly nodeStartQueueService: NodeStartQueueService,
         private readonly nodeRestartQueueService: NodeRestartQueueService,
@@ -171,31 +175,39 @@ export class NodesService implements OnModuleInit {
                     response: new UpdateNodeResponseModel(false, ERRORS.NODE_NOT_FOUND.message),
                 };
             }
+            
             const existsErrorResponse = await this.validateForNodeExists(
                 request,
                 (message) => new UpdateNodeResponseModel(false, message),
                 request.uuid,
             );
+            
             if (existsErrorResponse) {
                 return existsErrorResponse;
             }
-            await this.nodesRepository.update(
-                new NodeEntity({
-                    uuid: request.uuid,
-                    name: request.name,
-                    host: request.host,
-                    port: request.port,
-                    configId: request.configId,
-                    description: request.description,
-                    countryCode: request.countryCode,
-                    updatedAt: new Date(),
-                    httpPort: request.httpPort,
-                    httpsEnabled: request.httpsEnabled,
-                    httpsPort: request.httpsPort,
-                    speedLimitEnabled: request.speedLimitEnabled,
-                    speedLimit: request.speedLimit,
-                }),
-            )
+            
+            const updatedNode = new NodeEntity({
+                uuid: request.uuid,
+                name: request.name,
+                host: request.host,
+                port: request.port,
+                configId: request.configId,
+                description: request.description,
+                countryCode: request.countryCode,
+                updatedAt: new Date(),
+                httpPort: request.httpPort,
+                httpsEnabled: request.httpsEnabled,
+                httpsPort: request.httpsPort,
+                speedLimitEnabled: request.speedLimitEnabled,
+                speedLimit: request.speedLimit,
+            });
+            
+            await this.nodesRepository.update(updatedNode);
+            
+            if (this.validateForRestartNode(node, updatedNode)) {
+                await this.nodeRestartQueueService.restartNode({ nodeUuid: node.uuid });
+            }
+            
             return {
                 success: true,
                 response: new UpdateNodeResponseModel(true),
@@ -214,6 +226,19 @@ export class NodesService implements OnModuleInit {
         }
     }
     
+    private validateForRestartNode(node: NodeEntity, updatedNode: NodeEntity): boolean {
+        return some([
+            node.host != updatedNode.host,
+            node.port != updatedNode.port,
+            node.httpPort != updatedNode.httpPort,
+            node.httpsPort != updatedNode.httpsPort,
+            node.httpsEnabled != updatedNode.httpsEnabled,
+            node.speedLimitEnabled != updatedNode.speedLimitEnabled,
+            node.speedLimit != updatedNode.speedLimit,
+            node.configId != updatedNode.configId,
+        ])
+    }
+    
     async removeNode(request: RemoveNodeInterface): Promise<ICommandResponse<RemoveNodeResponseModel>> {
         try {
             const node = await this.nodesRepository.getByUuid(request.uuid);
@@ -224,7 +249,12 @@ export class NodesService implements OnModuleInit {
                     response: new RemoveNodeResponseModel(false, ERRORS.NODE_NOT_FOUND.message),
                 };
             }
+            
+            await this.nodeStopQueueService.stopNode({ nodeUuid: request.uuid });
+            
+            await this.hostsRepository.deleteByNodeUuid(request.uuid);
             await this.nodesRepository.delete(request.uuid);
+            
             return {
                 success: true,
                 response: new RemoveNodeResponseModel(true),
