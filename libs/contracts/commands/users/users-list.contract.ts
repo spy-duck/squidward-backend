@@ -29,6 +29,7 @@ export namespace UsersListContract {
         expireAt: true,
         createdAt: true,
         updatedAt: true,
+        metrics: true,
     });
     
     export const ResponseSchema = z.object({

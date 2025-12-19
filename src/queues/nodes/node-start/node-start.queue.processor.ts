@@ -3,10 +3,10 @@ import { Logger } from '@nestjs/common';
 
 import { Job } from 'bullmq';
 
+import { NodesSetupService } from '@/queues/nodes/nodes-setup/nodes-setup.service';
 import { NodesRepository } from '@/modules/nodes/repositories/nodes.repository';
 import { NodeApiService } from '@/common/node-api/node-api.service';
 import { QUEUES } from '@/queues/queue.enum';
-import { NodesSetupService } from '@/queues/nodes/nodes-setup/nodes-setup.service';
 
 @Processor(QUEUES.NODE_START, {
     concurrency: 40,
@@ -40,8 +40,6 @@ export class NodeStartQueueProcessor extends WorkerHost {
         }
         
         const { response } = await this.nodeApiService.squidStart(node.host, node.port);
-        
-        console.log(response);
         
         if (response.success) {
             await this.nodesRepository.update({

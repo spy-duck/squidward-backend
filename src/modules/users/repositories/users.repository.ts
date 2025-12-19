@@ -4,7 +4,9 @@ import { USER_STATUS } from '@contract/constants';
 import { Database } from '@/database/database';
 
 import { UserEntity } from '../entities/user.entity';
-import { UsersMapper } from '../users.mapper';
+import { UsersMapper } from '../mappers/users.mapper';
+import { jsonObjectFrom } from 'kysely/helpers/postgres';
+import { sql } from 'kysely';
 
 @Injectable()
 export class UsersRepository {
@@ -25,8 +27,23 @@ export class UsersRepository {
         const users = await this.db
             .selectFrom('users')
             .selectAll()
+            .select([
+                (sb) => jsonObjectFrom(
+                    sb
+                        .selectFrom('usersMetrics')
+                        .select([
+                            sql<number>`SUM(upload)`.as('upload'),
+                            sql<number>`SUM(download)`.as('download'),
+                            sql<number>`SUM(total)`.as('total'),
+                        ])
+                        .whereRef('userUuid', '=', 'users.uuid')
+                        .groupBy('userUuid')
+                )
+                    .as('metrics'),
+            ])
             .orderBy('expireAt', 'asc')
             .execute();
+  
         return users.map(UsersMapper.toEntity);
     }
     
@@ -49,10 +66,16 @@ export class UsersRepository {
     }
     
     async delete(userUuid: string): Promise<void> {
-        await this.db
-            .deleteFrom('users')
-            .where('uuid', '=', userUuid)
-            .execute();
+        await this.db.transaction().execute(async (trx) => {
+            await trx
+                .deleteFrom('usersMetrics')
+                .where('userUuid', '=', userUuid)
+                .execute();
+            await trx
+                .deleteFrom('users')
+                .where('uuid', '=', userUuid)
+                .execute();
+        });
     }
     
     async update(userEntity: UserEntity): Promise<UserEntity> {
