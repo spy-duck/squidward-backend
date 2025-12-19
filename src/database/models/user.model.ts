@@ -1,5 +1,6 @@
 import { Generated, Selectable, Insertable, Updateable } from 'kysely';
 
+import { UserMetricsModelSelectable } from '@/database/models/user-metrics.model';
 import { TUserStatus } from '@contract/constants/users';
 
 export interface UserModel {
@@ -20,3 +21,7 @@ export interface UserModel {
 export type UserModelInsertable = Insertable<UserModel>;
 export type UserModelSelectable = Selectable<UserModel>;
 export type UserModelUpdateable = Updateable<UserModel>;
+
+export type UserRelations = {
+    metrics?: Partial<UserMetricsModelSelectable> | null;
+}

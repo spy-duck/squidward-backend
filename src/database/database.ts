@@ -6,7 +6,7 @@ import {
     CertModel,
     ConfigModel,
     HostModel,
-    NodeModel,
+    NodeModel, UserMetricsModel,
     UserModel,
 } from './models';
 
@@ -18,6 +18,7 @@ export interface TDatabase {
     hosts: HostModel;
     nodes: NodeModel;
     users: UserModel;
+    usersMetrics: UserMetricsModel;
 }
 
 export class Database extends Kysely<TDatabase> {}

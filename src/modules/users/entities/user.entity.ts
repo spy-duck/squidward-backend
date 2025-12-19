@@ -1,3 +1,4 @@
+import { UserMetricsEntity } from '@/modules/users/entities/user-metrics.entity';
 import { TUserStatus } from '@contract/constants';
 
 export class UserEntity {
@@ -13,6 +14,7 @@ export class UserEntity {
     readonly expireAt: Date;
     readonly createdAt: Date;
     readonly updatedAt: Date;
+    readonly metrics?: UserMetricsEntity | null;
     
     constructor(user: Partial<UserEntity>) {
         Object.assign(this, user);

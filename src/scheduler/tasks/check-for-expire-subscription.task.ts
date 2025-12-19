@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { UsersRepository } from '@/modules/users/repositories/users.repository';
 import { Cron } from '@nestjs/schedule';
+
+import { UsersRepository } from '@/modules/users/repositories/users.repository';
 import { JOBS_INTERVALS } from '@/scheduler/intervals';
 import { NodesRemoveUserQueueService } from '@/queues';
 
