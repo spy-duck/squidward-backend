@@ -1,13 +1,14 @@
 import {
     UserModelInsertable,
     UserModelSelectable,
-    UserModelUpdateable,
+    UserModelUpdateable, UserRelations,
 } from '@/database/models';
+import { UserMetricsMapper } from '@/modules/users/mappers';
 
-import { UserEntity } from './entities/user.entity';
+import { UserEntity } from '../entities/user.entity';
 
 export class UsersMapper {
-    static toEntity = (model: UserModelSelectable): UserEntity => {
+    static toEntity = (model: UserModelSelectable & UserRelations): UserEntity => {
         return new UserEntity({
             uuid: model.uuid,
             name: model.name,
@@ -21,6 +22,8 @@ export class UsersMapper {
             expireAt: model.expireAt,
             createdAt: model.createdAt,
             updatedAt: model.updatedAt,
+            
+            metrics: model.metrics ? UserMetricsMapper.toEntity(model.metrics) : null,
         })
     }
     

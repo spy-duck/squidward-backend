@@ -14,7 +14,10 @@ import {
     SquidRestartContract,
     SquidConfigContract,
     PostUsersContract,
-    AddUserContract, RemoveUserContract, UpdateUserContract,
+    AddUserContract,
+    RemoveUserContract,
+    UpdateUserContract,
+    MetricsUsersContract,
 } from '@squidward-node/contracts';
 
 @Injectable()
@@ -25,7 +28,7 @@ export class NodeApiService implements OnModuleInit {
         private readonly certsRepository: CertsRepository,
     ) {
         this.nodeAxios = axios.create({
-            timeout: 30_000,
+            timeout: 10_000,
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -164,5 +167,14 @@ export class NodeApiService implements OnModuleInit {
             timeout: 20000,
         });
         return UpdateUserContract.ResponseSchema.parseAsync(response.data);
+    }
+    
+    async getNodeUsersMetrics(host: string, port: null | number): Promise<MetricsUsersContract.Response> {
+        const response = await this.nodeAxios.request({
+            method: 'POST',
+            url: this.getNodeUrl(host, MetricsUsersContract.url, port),
+            timeout: 5000,
+        });
+        return MetricsUsersContract.ResponseSchema.parseAsync(response.data);
     }
 }

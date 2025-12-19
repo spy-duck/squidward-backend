@@ -14,6 +14,7 @@ import { RolesGuard } from '@/common/guards/roles /roles.guard';
 import { isFrontendDisabled } from '@/common/setup-app';
 import { QueuesModule } from '@/queues/queues.module';
 import { JwtGuard } from '@/common/guards/jwt';
+import '@/common/utils/bigint-serialize';
 
 @Module({
     imports: [
