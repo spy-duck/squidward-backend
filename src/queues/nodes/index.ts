@@ -1,4 +1,3 @@
-export * from './node-get-users-metrics';
 export * from './node-health-check';
 export * from './node-restart';
 export * from './node-start';

@@ -4,7 +4,7 @@ import { NodeModelInsertable, NodeModelSelectable, NodeModelUpdateable } from '@
 import { ConfigsMapper } from '@/modules/configs/configs.mapper';
 import { NodeCredentialsEntity } from '@/modules/nodes/entities';
 
-import { NodeEntity } from './entities/node.entity';
+import { NodeEntity } from '../entities/node.entity';
 
 export class NodesMapper {
     static toEntity = (model: NodeModelSelectable): NodeEntity => {

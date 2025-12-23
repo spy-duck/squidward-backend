@@ -6,9 +6,9 @@ import { NodeRestartQueueService, NodeStartQueueService, NodeStopQueueService } 
 import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
 import { HostsRepository } from '@/modules/hosts/repositories/hosts.repository';
 import { ERRORS, NODE_STATE, TNodeState } from '@contract/constants';
+import { NodesMapper } from '@/modules/nodes/mappers/nodes.mapper';
 import { NodeCredentialsEntity } from '@/modules/nodes/entities';
 import { safeExecute } from '@/common/helpers/safe-execute';
-import { NodesMapper } from '@/modules/nodes/nodes.mapper';
 import { generateNodeCert } from '@/common/utils/keygen';
 import { ICommandResponse } from '@/common/types';
 

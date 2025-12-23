@@ -6,7 +6,9 @@ import {
     CertModel,
     ConfigModel,
     HostModel,
-    NodeModel, UserMetricsModel,
+    NodeMetricsModel,
+    NodeModel,
+    UserMetricsModel,
     UserModel,
 } from './models';
 
@@ -17,6 +19,7 @@ export interface TDatabase {
     configs: ConfigModel;
     hosts: HostModel;
     nodes: NodeModel;
+    nodesMetrics: NodeMetricsModel;
     users: UserModel;
     usersMetrics: UserMetricsModel;
 }

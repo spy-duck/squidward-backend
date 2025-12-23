@@ -25,7 +25,7 @@ export class NodeGetUsersMetricsQueueService extends QueuesService implements On
     }
     
     public async getNodeUsersMetrics(payload: { nodeUuid: string }) {
-        this.logger.log(`Task for get node metrics: ${payload.nodeUuid}`);
+        this.logger.log(`Task for get node users metrics: ${payload.nodeUuid}`);
         await this.queue.add(NodeGetUsersMetricsJobNames.nodeGetUsersMetrics, payload, {
             removeOnComplete: true,
             removeOnFail: true,

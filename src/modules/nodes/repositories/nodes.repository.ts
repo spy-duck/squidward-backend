@@ -6,7 +6,7 @@ import { NodeEntity } from '@/modules/nodes/entities/node.entity';
 import { NODE_STATE } from '@contract/constants';
 import { Database } from '@/database/database';
 
-import { NodesMapper } from '../nodes.mapper';
+import { NodesMapper } from '../mappers/nodes.mapper';
 
 @Injectable()
 export class NodesRepository {

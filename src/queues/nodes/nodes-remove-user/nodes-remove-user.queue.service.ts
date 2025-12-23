@@ -12,7 +12,7 @@ import { NodeRemoveUserJobNames } from './enums';
 
 @Injectable()
 export class NodesRemoveUserQueueService extends QueuesService implements OnApplicationBootstrap {
-    protected readonly logger: Logger = new Logger(upperFirst(camelCase(QUEUES.NODES_REMOVE_USER)));
+    protected readonly logger = new Logger(upperFirst(camelCase(QUEUES.NODES_REMOVE_USER)));
 
     constructor(
         @InjectQueue(QUEUES.NODES_REMOVE_USER) protected readonly queue: Queue,

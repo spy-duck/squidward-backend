@@ -13,8 +13,11 @@ import {
     NodesUpdateUserQueueModule,
     NodesRemoveUserQueueModule,
     NodesAddUserQueueModule,
-    NodeGetUsersMetricsQueueModule,
 } from './nodes';
+import {
+    NodeGetNodeMetricsQueueModule,
+    NodeGetUsersMetricsQueueModule,
+} from './metrics';
 
 const queueModules = [
     NodeStartQueueModule,
@@ -24,6 +27,7 @@ const queueModules = [
     NodesUpdateUserQueueModule,
     NodesRemoveUserQueueModule,
     NodesAddUserQueueModule,
+    NodeGetNodeMetricsQueueModule,
     NodeGetUsersMetricsQueueModule,
 ];
 

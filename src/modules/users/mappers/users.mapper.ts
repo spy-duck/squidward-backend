@@ -43,6 +43,18 @@ export class UsersMapper {
     }
     
     static toModel = (entity: UserEntity): UserModelUpdateable => {
-        return entity;
+        return {
+            uuid: entity.uuid,
+            name: entity.name,
+            username: entity.username,
+            password: entity.password,
+            status: entity.status,
+            email: entity.email,
+            telegramId: entity.telegramId,
+            usedTrafficBytes: entity.usedTrafficBytes,
+            firstConnectedAt: entity.firstConnectedAt,
+            expireAt: entity.expireAt,
+            updatedAt: entity.updatedAt,
+        };
     }
 }
