@@ -36,6 +36,7 @@ export namespace NodesListContract {
         httpsPort: true,
         speedLimitEnabled: true,
         speedLimit: true,
+        metrics: true,
     }).safeExtend({
         config: ConfigSchema.pick({
             name: true,

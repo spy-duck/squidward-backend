@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
+import { sql } from 'kysely';
 
 import { NodeEntity } from '@/modules/nodes/entities/node.entity';
 import { NODE_STATE } from '@contract/constants';
@@ -35,6 +36,17 @@ export class NodesRepository {
                         ])
                         .whereRef('configs.uuid', '=', 'nodes.configId'),
                 ).as('config'),
+                (sb) => jsonObjectFrom(
+                    sb
+                        .selectFrom('nodesMetrics')
+                        .select([
+                            sql<number>`SUM(upload)`.as('upload'),
+                            sql<number>`SUM(download)`.as('download'),
+                            sql<number>`SUM(total)`.as('total'),
+                        ])
+                        .whereRef('nodeUuid', '=', 'nodes.uuid')
+                )
+                    .as('metrics'),
             ])
             .orderBy('name')
             .execute();

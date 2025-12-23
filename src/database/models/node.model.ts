@@ -1,5 +1,6 @@
 import { Generated, Selectable, Insertable, Updateable } from 'kysely';
 
+import { NodeMetricsModelInsertable } from '@/database/models/node-metrics.model';
 import { ConfigModelSelectable } from '@/database/models/config.model';
 import { TNodeState } from '@contract/constants/nodes/node.state';
 
@@ -30,3 +31,8 @@ export interface NodeModel {
 export type NodeModelInsertable = Insertable<NodeModel>;
 export type NodeModelSelectable = Selectable<NodeModel>;
 export type NodeModelUpdateable = Updateable<NodeModel>;
+
+
+export type NodeRelations = {
+    metrics?: Partial<NodeMetricsModelInsertable> | null;
+}

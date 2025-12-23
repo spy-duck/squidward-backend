@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { USER_STATUS_VALUES } from '../constants/users';
-import { bigintSchema } from './common';
+import { metricsSchema } from './common';
 
 
 export const UserSchema = z.object({
@@ -56,11 +56,7 @@ export const UserSchema = z.object({
         .pipe(z.date())
         .optional(),
     
-    metrics: z.object({
-        upload: bigintSchema,
-        download: bigintSchema,
-        total: bigintSchema,
-    }).optional().nullable(),
+    metrics: metricsSchema.optional().nullable(),
 });
 
 export type TUser = z.infer<typeof UserSchema>;

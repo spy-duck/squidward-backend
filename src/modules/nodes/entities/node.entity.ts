@@ -1,3 +1,4 @@
+import { NodeMetricsEntity } from '@/modules/nodes/entities/node-metrics.entity';
 import { ConfigEntity } from '@/modules/configs/entities/config.entity';
 import { TNodeState } from '@contract/constants/nodes/node.state';
 
@@ -24,6 +25,8 @@ export class NodeEntity {
     readonly httpsPort: number | null;
     readonly speedLimitEnabled: boolean | null;
     readonly speedLimit: number | null;
+    
+    readonly metrics?: NodeMetricsEntity | null;
     
     constructor(node: Partial<NodeEntity>) {
         Object.assign(this, node);

@@ -1,13 +1,14 @@
 import { omit } from 'lodash-es';
 
-import { NodeModelInsertable, NodeModelSelectable, NodeModelUpdateable } from '@/database/models';
+import { NodeModelInsertable, NodeModelSelectable, NodeModelUpdateable, NodeRelations } from '@/database/models';
+import { NodeMetricsMapper } from '@/modules/nodes/mappers/node-metrics.mapper';
 import { ConfigsMapper } from '@/modules/configs/configs.mapper';
 import { NodeCredentialsEntity } from '@/modules/nodes/entities';
 
 import { NodeEntity } from '../entities/node.entity';
 
 export class NodesMapper {
-    static toEntity = (model: NodeModelSelectable): NodeEntity => {
+    static toEntity = (model: NodeModelSelectable & NodeRelations): NodeEntity => {
         return new NodeEntity({
             uuid: model.uuid,
             name: model.name,
@@ -33,7 +34,9 @@ export class NodesMapper {
             
             ...model.config && {
                 config: ConfigsMapper.toEntity(model.config),
-            }
+            },
+            
+            metrics: model.metrics ? NodeMetricsMapper.toEntity(model.metrics) : null,
         })
     }
     
@@ -64,6 +67,7 @@ export class NodesMapper {
     static toModel = (entity: NodeEntity): NodeModelUpdateable => {
         return omit(entity, [
             'config',
+            'metrics',
         ]);
     }
     

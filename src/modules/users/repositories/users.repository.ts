@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
+import { jsonObjectFrom } from 'kysely/helpers/postgres';
+import { sql } from 'kysely';
+
 import { USER_STATUS } from '@contract/constants';
 import { Database } from '@/database/database';
 
-import { UserEntity } from '../entities/user.entity';
 import { UsersMapper } from '../mappers/users.mapper';
-import { jsonObjectFrom } from 'kysely/helpers/postgres';
-import { sql } from 'kysely';
+import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class UsersRepository {

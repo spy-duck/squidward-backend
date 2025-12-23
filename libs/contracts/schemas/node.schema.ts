@@ -1,7 +1,8 @@
 import { z } from 'zod';
 
 import { NODE_STATE_VALUES } from '../constants/nodes/node.state';
-import { ConfigSchema } from '../schemas/config.schema';
+import { ConfigSchema } from './config.schema';
+import { metricsSchema } from './common';
 
 export const NodeSchema = z.object({
     uuid: z.uuid(),
@@ -11,7 +12,6 @@ export const NodeSchema = z.object({
     port: z.number().int(),
     description: z.string().trim().optional().nullable(),
     configId: z.uuid(),
-    config: ConfigSchema.partial().nullable(),
     createdAt: z
         .string()
         .datetime()
@@ -34,6 +34,9 @@ export const NodeSchema = z.object({
     httpsPort: z.number().nonnegative().max(65535).nullable().optional().describe('Proxy HTTPS port'),
     speedLimitEnabled: z.boolean().nullable().optional().describe('Is enabled proxy speed limit per user on node'),
     speedLimit: z.number().nonnegative().nullable().optional().describe('Speed limit per user'),
+    
+    config: ConfigSchema.partial().nullable(),
+    metrics: metricsSchema.optional().nullable(),
 });
 
 export type TNode = z.infer<typeof NodeSchema>;
