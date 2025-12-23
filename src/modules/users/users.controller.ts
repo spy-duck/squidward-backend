@@ -5,7 +5,7 @@ import {
     UserCreateContract,
     UsersListContract,
     UserUpdateContract,
-    UserRemoveContract,
+    UserRemoveContract, UserResetTrafficContract,
 } from '@contract/commands';
 import { Endpoint } from '@/common/decorators/endpoint';
 import { USERS_CONTROLLER_INFO } from '@contract/api';
@@ -17,6 +17,7 @@ import {
     UsersListResponseDto,
     RemoveUserRequestDto, RemoveUserResponseDto,
     UserUpdateRequestDto, UserUpdateResponseDto, CreateUserRequestDto, CreateUserResponseDto,
+    ResetUserTrafficResponseDto, ResetUserTrafficParamsDto,
 } from './dto';
 import { UsersService } from './users.service';
 
@@ -68,6 +69,16 @@ export class UsersController {
     })
     async removeUser(@Param() body: RemoveUserRequestDto): Promise<RemoveUserResponseDto> {
         const response = await this.usersService.removeUser(body);
+        return { response: errorHandler(response) };
+    }
+    
+    @ApiResponse({ type: ResetUserTrafficResponseDto, description: 'User traffic reset successfully.' })
+    @Endpoint({
+        command: UserResetTrafficContract,
+        httpCode: HttpStatus.OK,
+    })
+    async resetUserTraffic(@Param() body: ResetUserTrafficParamsDto): Promise<ResetUserTrafficResponseDto> {
+        const response = await this.usersService.resetUserTraffic(body);
         return { response: errorHandler(response) };
     }
 }

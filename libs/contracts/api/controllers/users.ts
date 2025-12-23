@@ -5,6 +5,7 @@ export const USERS_ROUTES = {
     CREATE: '', // post method
     UPDATE:  (uuid: string) => uuid, // put method
     REMOVE:  (uuid: string) => uuid, // delete method
+    RESET_TRAFFIC:  (uuid: string) => `${uuid}/reset-traffic`,
 } as const;
 
 export const USERS_CONTROLLER_INFO = {

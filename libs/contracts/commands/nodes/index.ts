@@ -1,6 +1,7 @@
 export * from './node-create.contract';
 export * from './node-keygen.contract';
 export * from './node-remove.contract';
+export * from './node-reset-traffic.contract';
 export * from './node-restart.contract';
 export * from './node-start.contract';
 export * from './node-stop.contract';

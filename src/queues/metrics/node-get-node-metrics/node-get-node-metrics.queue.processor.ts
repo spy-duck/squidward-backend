@@ -45,7 +45,7 @@ export class NodeGetNodeMetricsQueueProcessor extends WorkerHost {
     
     private async getMetrics(node: NodeEntity): Promise<MetricsNodeContract.Response['response'] | undefined> {
         try {
-            const response = await this.nodeApiService.getNodeUsersMetrics(node.host, node.port);
+            const response = await this.nodeApiService.getNodeMetrics(node.host, node.port);
             return response.response;
         } catch (error) {
             this.logger.error(error);

@@ -28,4 +28,15 @@ export class NodesMetricsRepository {
             .executeTakeFirstOrThrow();
     }
     
+    async resetUserMetrics(nodeUuid: string): Promise<void> {
+        await this.db
+            .updateTable('nodesMetrics')
+            .set({
+                upload: 0,
+                download: 0,
+                total: 0,
+            })
+            .where('nodeUuid', '=', nodeUuid)
+            .execute();
+    }
 }

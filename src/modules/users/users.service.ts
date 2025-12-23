@@ -12,10 +12,10 @@ import {
     UpdateUserResponseModel,
     CreateUserResponseModel,
     UsersListResponseModel,
-    RemoveUserResponseModel,
+    RemoveUserResponseModel, ResetUserTrafficResponseModel,
 } from './models';
-import { CreateUserInterface, RemoveUserInterface, UpdateUserInterface } from './interfaces';
-import { UsersRepository } from './repositories/users.repository';
+import { CreateUserInterface, RemoveUserInterface, ResetUserTrafficInterface, UpdateUserInterface } from './interfaces';
+import { UsersRepository, UsersMetricsRepository } from './repositories';
 import { UserEntity } from './entities/user.entity';
 
 @Injectable()
@@ -28,6 +28,7 @@ export class UsersService {
         private readonly nodesAddUserQueueService: NodesAddUserQueueService,
         private readonly nodesRemoveUserQueueService: NodesRemoveUserQueueService,
         private readonly nodesUpdateUserQueueService: NodesUpdateUserQueueService,
+        private readonly usersMetricsRepository: UsersMetricsRepository,
     ) {}
     
     private async validateForUserExists<T>(
@@ -229,7 +230,7 @@ export class UsersService {
             
             return {
                 success: true,
-                response: new CreateUserResponseModel(true),
+                response: new RemoveUserResponseModel(true),
             };
         } catch (error) {
             this.logger.error(error);
@@ -240,7 +241,29 @@ export class UsersService {
             return {
                 success: false,
                 code: ERRORS.INTERNAL_SERVER_ERROR.code,
-                response: new CreateUserResponseModel(false, message),
+                response: new RemoveUserResponseModel(false, message),
+            };
+        }
+    }
+    
+    async resetUserTraffic(request: ResetUserTrafficInterface): Promise<ICommandResponse<ResetUserTrafficResponseModel>> {
+        try {
+            await this.usersMetricsRepository.resetUserMetrics(request.uuid);
+
+            return {
+                success: true,
+                response: new ResetUserTrafficResponseModel(true),
+            };
+        } catch (error) {
+            this.logger.error(error);
+            let message = '';
+            if (error instanceof Error) {
+                message = error.message;
+            }
+            return {
+                success: false,
+                code: ERRORS.INTERNAL_SERVER_ERROR.code,
+                response: new ResetUserTrafficResponseModel(false, message),
             };
         }
     }

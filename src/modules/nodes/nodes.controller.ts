@@ -7,6 +7,7 @@ import {
     NodeStartContract,
     NodeStopContract,
     NodeUpdateContract,
+    NodeResetTrafficContract,
 } from '@contract/commands';
 import { NodeRemoveContract } from '@contract/commands/nodes/node-remove.contract';
 import { Endpoint } from '@/common/decorators/endpoint';
@@ -22,7 +23,8 @@ import {
     NodeUpdateRequestDto, NodeUpdateResponseDto,
     NodeStartRequestDto, NodeStartResponseDto,
     NodeStopRequestDto, NodeStopResponseDto,
-    NodeRestartRequestDto, NodeRestartResponseDto, NodeKeygenResponseDto,
+    NodeRestartRequestDto, NodeRestartResponseDto, NodeKeygenResponseDto, NodeResetTrafficParamsDto,
+    NodeResetTrafficResponseDto,
 } from './dto';
 import { NodesService } from './nodes.service';
 
@@ -114,6 +116,16 @@ export class NodesController {
     })
     async keygenNode(): Promise<NodeKeygenResponseDto> {
         const response = await this.nodesService.keygenNode();
+        return { response: errorHandler(response) };
+    }
+    
+    @ApiResponse({ type: NodeStopResponseDto, description: 'Node task for stop node created successfully' })
+    @Endpoint({
+        command: NodeResetTrafficContract,
+        httpCode: HttpStatus.OK,
+    })
+    async resetNodeTraffic(@Param() params: NodeResetTrafficParamsDto): Promise<NodeResetTrafficResponseDto> {
+        const response = await this.nodesService.resetNodeTraffic(params);
         return { response: errorHandler(response) };
     }
 }

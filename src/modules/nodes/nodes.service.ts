@@ -5,6 +5,7 @@ import { some } from 'lodash-es';
 import { NodeRestartQueueService, NodeStartQueueService, NodeStopQueueService } from '@/queues';
 import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
 import { HostsRepository } from '@/modules/hosts/repositories/hosts.repository';
+import { NodesMetricsRepository } from '@/modules/nodes/repositories';
 import { ERRORS, NODE_STATE, TNodeState } from '@contract/constants';
 import { NodesMapper } from '@/modules/nodes/mappers/nodes.mapper';
 import { NodeCredentialsEntity } from '@/modules/nodes/entities';
@@ -20,11 +21,11 @@ import {
     StartNodeResponseModel,
     StopNodeResponseModel,
     RestartNodeResponseModel,
-    NodesKeygenResponseModel,
+    NodesKeygenResponseModel, ResetNodeTrafficResponseModel,
 } from './models';
 import {
     CreateNodeInterface,
-    RemoveNodeInterface, RestartNodeInterface,
+    RemoveNodeInterface, ResetNodeTrafficInterface, RestartNodeInterface,
     StartNodeInterface,
     StopNodeInterface,
     UpdateNodeInterface,
@@ -44,6 +45,7 @@ export class NodesService implements OnModuleInit {
         private readonly nodeStartQueueService: NodeStartQueueService,
         private readonly nodeRestartQueueService: NodeRestartQueueService,
         private readonly nodeStopQueueService: NodeStopQueueService,
+        private readonly nodesMetricsRepository: NodesMetricsRepository,
     ) {}
     
     async onModuleInit(): Promise<void> {
@@ -423,4 +425,29 @@ export class NodesService implements OnModuleInit {
             (errorMessage) => new NodesKeygenResponseModel(false, '', errorMessage),
         );
     }
+    
+    async resetNodeTraffic(request: ResetNodeTrafficInterface): Promise<ICommandResponse<ResetNodeTrafficResponseModel>> {
+        return this.execute<StartNodeResponseModel>(
+            async () => {
+                const node = await this.nodesRepository.getByUuid(request.uuid);
+                if (!node) {
+                    return {
+                        success: false,
+                        code: ERRORS.NODE_NOT_FOUND.code,
+                        response: new ResetNodeTrafficResponseModel(false, ERRORS.NODE_NOT_FOUND.message),
+                    };
+                }
+                
+               
+                await this.nodesMetricsRepository.resetUserMetrics(node.uuid);
+                
+                return {
+                    success: true,
+                    response: new ResetNodeTrafficResponseModel(true),
+                };
+            },
+            (errorMessage) => new ResetNodeTrafficResponseModel(false, errorMessage),
+        );
+    }
+    
 }

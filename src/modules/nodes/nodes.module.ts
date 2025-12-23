@@ -4,7 +4,7 @@ import { NodeRestartQueueModule, NodeStartQueueModule, NodeStopQueueModule } fro
 import { CertsRepository } from '@/modules/certs/repositories/certs.repository';
 import { HostsRepository } from '@/modules/hosts/repositories/hosts.repository';
 
-import { NodesRepository } from './repositories/nodes.repository';
+import { NodesRepository, NodesMetricsRepository } from './repositories';
 import { NodesController } from './nodes.controller';
 import { NodesService } from './nodes.service';
 
@@ -14,7 +14,8 @@ import { NodesService } from './nodes.service';
     providers: [
         CertsRepository, 
         NodesRepository, 
-        HostsRepository, 
+        HostsRepository,
+        NodesMetricsRepository, 
         NodesService,
     ],
 })

@@ -9,6 +9,7 @@ export const NODES_ROUTES = {
     STOP:  (uuid: string) => `${uuid}/action/stop`,
     RESTART:  (uuid: string) => `${uuid}/action/restart`,
     KEYGEN: 'keygen',
+    RESET_TRAFFIC:  (uuid: string) => `${uuid}/reset-traffic`,
 } as const;
 
 export const NODES_CONTROLLER_INFO = {

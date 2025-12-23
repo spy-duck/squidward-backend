@@ -18,6 +18,7 @@ import {
     RemoveUserContract,
     UpdateUserContract,
     MetricsUsersContract,
+    MetricsNodeContract,
 } from '@squidward-node/contracts';
 
 @Injectable()
@@ -176,5 +177,14 @@ export class NodeApiService implements OnModuleInit {
             timeout: 5000,
         });
         return MetricsUsersContract.ResponseSchema.parseAsync(response.data);
+    }
+    
+    async getNodeMetrics(host: string, port: null | number): Promise<MetricsNodeContract.Response> {
+        const response = await this.nodeAxios.request({
+            method: 'POST',
+            url: this.getNodeUrl(host, MetricsNodeContract.url, port),
+            timeout: 5000,
+        });
+        return MetricsNodeContract.ResponseSchema.parseAsync(response.data);
     }
 }
