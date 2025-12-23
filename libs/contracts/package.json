@@ -2,8 +2,41 @@
   "version": "0.0.1",
   "name": "@squidward/contracts",
   "packageManager": "yarn@4.9.4",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "postinstall": "node ./postinstall.js"
+  },
   "dependencies": {
     "zod": "^4.1.8",
     "dayjs": "^1.11.18"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./api": {
+      "import": "./dist/api/index.js",
+      "require": "./dist/api/index.js",
+      "types": "./dist/api/index.d.ts"
+    },
+    "./commands": {
+      "import": "./dist/commands/index.js",
+      "require": "./dist/commands/index.js",
+      "types": "./dist/commands/index.d.ts"
+    },
+    "./constants": {
+      "import": "./dist/constants/index.js",
+      "require": "./dist/constants/index.js",
+      "types": "./dist/constants/index.d.ts"
+    },
+    "./schemas": {
+      "import": "./dist/schemas/index.js",
+      "require": "./dist/schemas/index.js",
+      "types": "./dist/schemas/index.d.ts"
+    }
   }
 }
