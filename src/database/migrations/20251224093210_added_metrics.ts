@@ -1,5 +1,5 @@
 /**
-** added user metrics - 2025-12-18T15:32:42.920Z
+** added metrics - 2025-12-24T06:32:10.986Z
 ** [Docs: https://kysely.dev/docs/migrations]
 **/
 import { Kysely } from 'kysely';
@@ -10,7 +10,6 @@ export async function up(database: Kysely<TDatabase>): Promise<void> {
     await database.schema
         .createTable('usersMetrics')
         .addColumn('userUuid', 'uuid', (col) => col
-            .primaryKey()
             .references('users.uuid')
             .onDelete('restrict')
             .onUpdate('restrict')
@@ -25,9 +24,9 @@ export async function up(database: Kysely<TDatabase>): Promise<void> {
         .addColumn('upload', 'bigint', col => col.defaultTo(0))
         .addColumn('total', 'bigint', col => col.defaultTo(0))
         .execute();
-
+    
     await database.schema
-        .createIndex('ix_usersMetrics')
+        .createIndex('ux_usersMetrics')
         .on('usersMetrics')
         .columns([
             'userUuid',
@@ -35,9 +34,27 @@ export async function up(database: Kysely<TDatabase>): Promise<void> {
         ])
         .unique()
         .execute();
+    
+    await database.schema
+        .createTable('nodesMetrics')
+        .addColumn('nodeUuid', 'uuid', (col) => col
+            .primaryKey()
+            .references('nodes.uuid')
+            .onDelete('restrict')
+            .onUpdate('restrict')
+            .notNull()
+        )
+        .addColumn('download', 'bigint', col => col.defaultTo(0))
+        .addColumn('upload', 'bigint', col => col.defaultTo(0))
+        .addColumn('total', 'bigint', col => col.defaultTo(0))
+        .execute();
 }
 
 export async function down(database: Kysely<TDatabase>): Promise<void> {
+    await database.schema
+        .dropTable('nodesMetrics')
+        .execute();
+    
     await database.schema
         .dropTable('usersMetrics')
         .execute();
