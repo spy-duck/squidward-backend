@@ -23,6 +23,7 @@
     "migrations:up": "tsx ./src/database/migrations --up",
     "migrations:down": "tsx ./src/database/migrations --down",
     "migrations:up:prod": "node ./dist/src/database/migrations.js --up",
+    "migrations:down:prod": "node ./dist/src/database/migrations.js --down",
     "postinstall": "node shell/postinstall.js"
   },
   "dependencies": {
