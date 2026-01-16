@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { AdminMapper } from '@/modules/admin/admin.mapper';
+import { AdminMapper } from '@/modules/admin/mappers/admin.mapper';
 import { Database } from '@/database/database';
 
 import { AdminEntity } from '../entities/admin.entity';

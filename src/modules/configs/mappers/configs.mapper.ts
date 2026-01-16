@@ -5,7 +5,7 @@ import {
 } from '@/database/models';
 import { isDefined } from '@/common/utils/is-defined';
 
-import { ConfigEntity } from './entities/config.entity';
+import { ConfigEntity } from '../entities/config.entity';
 
 export class ConfigsMapper {
     static toEntity = (model: ConfigModelSelectable): ConfigEntity => {

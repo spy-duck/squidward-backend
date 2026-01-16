@@ -1,6 +1,6 @@
 import { AdminModelInsertable, AdminModelSelectable, AdminModelUpdateable } from '@/database/models/admin.model';
 
-import { AdminEntity } from './entities/admin.entity';
+import { AdminEntity } from '../entities/admin.entity';
 
 export class AdminMapper {
     static toEntity = (model: AdminModelSelectable): AdminEntity => {

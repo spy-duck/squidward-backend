@@ -2,7 +2,7 @@ import { omit } from 'lodash-es';
 
 import { NodeModelInsertable, NodeModelSelectable, NodeModelUpdateable, NodeRelations } from '@/database/models';
 import { NodeMetricsMapper } from '@/modules/nodes/mappers/node-metrics.mapper';
-import { ConfigsMapper } from '@/modules/configs/configs.mapper';
+import { ConfigsMapper } from '@/modules/configs/mappers/configs.mapper';
 import { NodeCredentialsEntity } from '@/modules/nodes/entities';
 
 import { NodeEntity } from '../entities/node.entity';

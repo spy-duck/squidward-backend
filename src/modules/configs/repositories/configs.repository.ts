@@ -4,8 +4,8 @@ import { sql } from 'kysely';
 
 import { Database } from '@/database/database';
 
+import { ConfigsMapper } from '../mappers/configs.mapper';
 import { ConfigEntity } from '../entities/config.entity';
-import { ConfigsMapper } from '../configs.mapper';
 
 @Injectable()
 export class ConfigsRepository {

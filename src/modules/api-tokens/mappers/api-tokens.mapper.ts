@@ -4,7 +4,7 @@ import {
     ApiTokenModelUpdateable,
 } from '@/database/models';
 
-import { ApiTokenEntity } from './entities/api-token.entity';
+import { ApiTokenEntity } from '../entities/api-token.entity';
 
 export class ApiTokensMapper {
     static toEntity = (model: ApiTokenModelSelectable): ApiTokenEntity => {

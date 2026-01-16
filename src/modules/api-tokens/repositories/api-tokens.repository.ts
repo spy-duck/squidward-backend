@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { ApiTokensMapper } from '@/modules/api-tokens/api-tokens.mapper';
+import { ApiTokensMapper } from '@/modules/api-tokens/mappers/api-tokens.mapper';
 import { Database } from '@/database/database';
 
 import { ApiTokenEntity } from '../entities/api-token.entity';
